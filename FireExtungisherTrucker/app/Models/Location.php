@@ -22,22 +22,15 @@ class Location extends Model
     {
         return $this->belongsTo(Company::class);
     }
-//
-//    // Odnos prema pozicijama
-//    public function positions()
-//    {
-//        return $this->hasMany(Position::class);
-//    }
-//
-//    // Odnos prema inventaru
-//    public function inventory()
-//    {
-//        return $this->hasMany(Inventory::class);
-//    }
-//    public function devices()
-//    {
-//        return $this->hasMany(Device::class);
-//    }
+    public function groups()
+    {
+        return $this->hasMany(Group::class);
+    }
+
+    public function devices()
+    {
+        return $this->hasMany(Device::class);
+    }
 
 
 }
