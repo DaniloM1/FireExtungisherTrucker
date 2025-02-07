@@ -64,6 +64,17 @@
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="flex items-center space-x-4">
+                                    <a href="{{ route('groups.show', $group->id) }}"
+                                       class="text-black dark:text-white hover:underline"
+                                       title="{{ __('View Devices') }}">
+                                        <i class="fas fa-fire-extinguisher"></i>
+                                    </a>
+                                    <!-- Dodavanje aparata u grupu -->
+                                    <a href="{{ route('groups.add-device', $group->id) }}"
+                                       class="text-black dark:text-white hover:underline"
+                                       title="{{ __('Add Device') }}">
+                                        <i class="fas fa-plus-circle"></i>
+                                    </a>
                                     <a href="{{ route('groups.edit', $group->id) }}" class="text-black dark:text-white hover:underline" title="{{ __('Edit') }}">
                                         <i class="fas fa-edit"></i>
                                     </a>
@@ -95,6 +106,17 @@
                             <div>{{ __('Description') }}: {{ $group->description ?? '-' }}</div>
                             <div>{{ __('Next Service Date') }}: {{ $group->next_service_date ? \Carbon\Carbon::parse($group->next_service_date)->format('Y-m-d') : '-' }}</div>
                             <div class="mt-4 flex items-center space-x-4">
+                                <a href="{{ route('groups.show', $group->id) }}"
+                                   class="text-black dark:text-white hover:underline"
+                                   title="{{ __('View Devices') }}">
+                                    <i class="fas fa-fire-extinguisher"></i
+                                </a>
+                                <!-- Dodavanje aparata u grupu -->
+                                <a href="{{ route('groups.add-device', $group->id) }}"
+                                   class="text-black dark:text-white hover:underline"
+                                   title="{{ __('Add Device') }}">
+                                    <i class="fas fa-plus-circle"></i>
+                                </a>
                                 <a href="{{ route('groups.edit', $group->id) }}" class="text-black dark:text-white hover:underline" title="{{ __('Edit') }}">
                                     <i class="fas fa-edit"></i>
                                 </a>

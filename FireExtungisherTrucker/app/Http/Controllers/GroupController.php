@@ -58,6 +58,7 @@ class GroupController extends Controller
      */
     public function edit(Group $group)
     {
+//        dd($group);
         return view('admin.groups.edit', compact('group'));
     }
 

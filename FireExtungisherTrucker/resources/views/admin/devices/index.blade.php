@@ -140,6 +140,7 @@
                             <td class="px-6 py-4 whitespace-nowrap">{{ ucfirst($device->status) }}</td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="flex items-center space-x-4">
+
                                     <a href="{{ route('devices.edit', $device->id) }}" class="text-black dark:text-white hover:underline" title="{{ __('Edit') }}">
                                         <i class="fas fa-edit"></i>
                                     </a>
