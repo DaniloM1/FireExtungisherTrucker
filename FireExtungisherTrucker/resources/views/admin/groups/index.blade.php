@@ -1,16 +1,22 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Groups for') }}
-        </h2>
-        <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6 mb-6">
+        <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg mb-6 flex items-center">
+
+            <i class="fa fa-layer-group text-4xl  mr-4  text-black dark:text-white "></i>
+        <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg  mb-6">
+
             <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-2">
                 {{ $location->company->name }}
             </h3>
             <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-2">
                 {{ $location->name }}
             </h3>
+            <p class="text-gray-600 dark:text-gray-400">
+
             {{$location->address}}
+
+            </p>
+        </div>
         </div>
     </x-slot>
 
@@ -38,8 +44,8 @@
         <div class="bg-white dark:bg-gray-800 shadow-sm sm:rounded-lg p-6">
             <!-- Header sa naslovom i Add Group linkom -->
             <div class="flex justify-between items-center mb-6">
-                <h3 class="text-lg font-semibold">{{ __('Group List') }}</h3>
-                <a href="{{ route('locations.groups.create', $location->id) }}" class="hover:underline">
+                <h3 class="text-lg text-gray-800 dark:text-gray-200">{{ __('Group List') }}</h3>
+                <a href="{{ route('locations.groups.create', $location->id) }}"  class="text-lg text-gray-800 dark:text-gray-200 hover:underline">
                     <i class="fas fa-plus"></i> {{ __('Add Group') }}
                 </a>
             </div>
@@ -66,9 +72,9 @@
                     <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                     @forelse ($groups as $group)
                         <tr>
-                            <td class="px-6 py-4 whitespace-nowrap">{{ $group->name }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap">{{ $group->description ?? '-' }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap">
+                            <td class="px-6 py-4 whitespace-nowrap text-gray-800 dark:text-gray-200">{{ $group->name }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-gray-800 dark:text-gray-200">{{ $group->description ?? '-' }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-gray-800 dark:text-gray-200">
                                 {{ $group->next_service_date ? \Carbon\Carbon::parse($group->next_service_date)->format('Y-m-d') : '-' }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
@@ -90,7 +96,7 @@
                                     <form action="{{ route('groups.destroy', $group->id) }}" method="POST" onsubmit="return confirm('{{ __('Are you sure?') }}');">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="hover:text-red-700" title="{{ __('Delete') }}">
+                                        <button type="submit" class="hover:text-red-700  text-black dark:text-white" title="{{ __('Delete') }}">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </form>

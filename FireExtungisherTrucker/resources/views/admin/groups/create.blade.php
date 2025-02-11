@@ -48,11 +48,11 @@
                            class="w-full border-gray-300 dark:border-gray-600 rounded p-2 dark:bg-gray-700 dark:text-white">
                 </div>
 
-                <div class="flex justify-end">
-                    <a href="{{ route('locations.groups.index', $location->id) }}"
-                       class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded mr-2">
-                        {{ __('Cancel') }}
-                    </a>
+{{--                <div class="flex justify-end">--}}
+{{--                    <a href="{{ route('locations.groups.index', $location->id) }}"--}}
+{{--                       class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded mr-2">--}}
+{{--                        {{ __('Cancel') }}--}}
+{{--                    </a>--}}
                     <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
                         {{ __('Save Group') }}
                     </button>

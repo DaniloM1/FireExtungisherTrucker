@@ -97,12 +97,14 @@
                                                title="{{ __('View Locations') }}">
                                                 <i class="fas fa-map-marker-alt"></i>
                                             </a>
+
                                             <!-- Edit -->
                                             <a href="{{ route('companies.edit', $company->id) }}"
                                                class="text-black dark:text-white hover:underline"
                                                title="{{ __('Edit') }}">
                                                 <i class="fas fa-edit"></i>
                                             </a>
+
                                             <!-- Delete -->
                                             <form action="{{ route('companies.destroy', $company->id) }}" method="POST" onsubmit="return confirm('{{ __('Are you sure?') }}');">
                                                 @csrf
@@ -111,6 +113,13 @@
                                                     <i class="fas fa-trash"></i>
                                                 </button>
                                             </form>
+                                            <a  href=""
+                                                class="text-black dark:text-white"
+                                                title="{{__('View Informations')}}"
+                                            >
+                                                <i class="fa-solid fa-info"></i>
+
+                                            </a>
                                         </div>
                                     </td>
                                 </tr>

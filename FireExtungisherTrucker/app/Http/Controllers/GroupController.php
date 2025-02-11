@@ -41,7 +41,7 @@ class GroupController extends Controller
 
         Group::create($validated);
 
-        return redirect()->route('locations.groups.index', $location->id)
+        return redirect()->route('locationsx.groups.index', $location->id)
             ->with('success', 'Group created successfully.');
     }
 
@@ -50,6 +50,7 @@ class GroupController extends Controller
      */
     public function show(Group $group)
     {
+
         return view('admin.groups.show', compact('group'));
     }
 
@@ -75,7 +76,7 @@ class GroupController extends Controller
 
         $group->update($validated);
 
-        return redirect()->route('locations.groups.index', $group->location_id)
+        return redirect()->route('groups.update', $group->id)
             ->with('success', 'Group updated successfully.');
     }
 
