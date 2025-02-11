@@ -1,8 +1,17 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Groups for') }} {{ $location->name }}
+            {{ __('Groups for') }}
         </h2>
+        <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-2">
+                {{ $location->company->name }}
+            </h3>
+            <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-2">
+                {{ $location->name }}
+            </h3>
+            {{$location->address}}
+        </div>
     </x-slot>
 
     <!-- Poruke o uspjehu i greškama -->

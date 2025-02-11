@@ -1,29 +1,22 @@
 
 <x-app-layout>
-
     <x-slot name="header">
-        <span class="font-semibold text-sm text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Company:') }}
-        </span>
-        <h1 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ $location->company->name }}
-        </h1>
-        <span class="font-semibold text-sm text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Location:') }}
-        </span>
-        <h3 class="font-semibold text-xl text-gray-600 dark:text-gray-200 leading-tight">
-            {{ __('Location:') }}    {{ $location->name }}
-            <br>
 
-        </h3>
-        <span class="font-semibold text-sm text-gray-800 dark:text-gray-200 leading-tight">
-            {{__('Adress:')}}
-        </span>
-        <h3  class="font-semibold text-xl text-gray-600 dark:text-gray-200 leading-tight">
-     {{$location->address}}
+        <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-2">
+                {{ $location->company->name }}
+            </h3>
+            <h4 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-2">
+                {{ $location->name }}
+            </h4>
+            <p class="text-gray-600 dark:text-gray-400">
+                {{$location->address}}
+            </p>
 
-        </h3>
+        </div>
+
     </x-slot>
+
 
     <!-- Poruke o uspjehu i greškama -->
     <div class="max-w-7xl mx-auto mt-4">
