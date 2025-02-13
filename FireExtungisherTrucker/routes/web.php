@@ -166,6 +166,7 @@ Route::middleware('auth')->group(function () {
     Route::post('groups/{group}/add-device', [GroupController::class, 'storeDevice'])->name('groups.store-device');
 });
 
+
 /*
 |--------------------------------------------------------------------------
 | Device Routes

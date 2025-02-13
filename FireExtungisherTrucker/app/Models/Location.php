@@ -17,7 +17,8 @@ class Location extends Model
         'longitude',
     ];
 
-    // Odnos prema kompaniji
+
+
     public function company()
     {
         return $this->belongsTo(Company::class);
@@ -29,8 +30,9 @@ class Location extends Model
 
     public function devices()
     {
-        return $this->hasMany(Device::class);
+        return $this->hasMany(Device::class)->whereNull('group_id');
     }
+
 
 
 }
