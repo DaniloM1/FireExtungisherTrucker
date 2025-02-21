@@ -28,15 +28,15 @@
         @keyframes moveRight {
             0% {
                 transform: translateX(0);
-                opacity: 0.2;
+                opacity: 0.5;
             }
             50% {
                 transform: translateX(150px);
-                opacity: 0.5;
+                opacity: 1;
             }
             100% {
                 transform: translateX(0);
-                opacity: 0.2;
+                opacity: 0.5;
             }
         }
         /* Animacija koja pomiče element ulijevo i natrag */
@@ -58,15 +58,15 @@
         @keyframes moveUp {
             0% {
                 transform: translateY(0);
-                opacity: 0.2;
+                opacity: 0.5;
             }
             50% {
                 transform: translateY(-100px);
-                opacity: 0.5;
+                opacity: 1;
             }
             100% {
                 transform: translateY(0);
-                opacity: 0.2;
+                opacity: 0.5;
             }
         }
         /* Animacija koja diagonalno pomiče element */
@@ -205,27 +205,27 @@
 </nav>
 
 <!-- Hero sekcija s animiranim pozadinskim elementima -->
-<div class="  overflow-hidden pt-24 pb-12 bg-gradient-to-r from-red-500 to-orange-600">
+<div class="  overflow-hidden pt-24 pb-12 bg-gradient-to-r from-red-500 to-red-600">
     <!-- Animirani pozadinski elementi -->
     <div class="absolute inset-0 pointer-events-none">
         <div class="absolute" style="top: 10%; left: -50px; opacity: 20%;">
             <i
-                class="fas fa-fire-extinguisher text-white text-6xl opacity-20 animate-moveRight"
+                class="fas fa-fire-extinguisher text-white text-6xl opacity-30 animate-moveRight"
             ></i>
         </div>
         <div class="absolute" style="top: 40%; right: -50px; opacity: 30%;">
             <i
-                class="fas fa-fire-extinguisher text-white text-4xl opacity-20 animate-moveLeft"
+                class="fas fa-fire-extinguisher text-white text-4xl opacity-30 animate-moveLeft"
             ></i>
         </div>
         <div class="absolute" style="bottom: 10%; left: 20%; opacity: 30%;">
             <i
-                class="fas fa-tools text-white text-5xl opacity-20 animate-moveUp"
+                class="fas fa-tools text-white text-5xl opacity-30 animate-moveUp"
             ></i>
         </div>
         <div class="absolute" style="bottom: 20%; right: 30%; opacity: 30%;">
             <i
-                class="fas fa-fire-extinguisher text-white text-7xl opacity-20 animate-moveDiagonal"
+                class="fas fa-fire-extinguisher text-white text-7xl opacity-30 animate-moveDiagonal"
             ></i>
         </div>
     </div>
