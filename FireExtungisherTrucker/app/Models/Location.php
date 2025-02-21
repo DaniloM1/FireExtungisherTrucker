@@ -30,7 +30,7 @@ class Location extends Model
 
     public function devices()
     {
-        return $this->hasMany(Device::class)->whereNull('group_id');
+        return $this->hasMany(Device::class);
     }
 
 
