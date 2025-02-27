@@ -14,6 +14,7 @@ class CompanyFactory extends Factory
             'address' => $this->faker->address,
             'contact_email' => $this->faker->companyEmail,
             'contact_phone' => $this->faker->phoneNumber,
+            'city' => $this->faker->city, // Dodato polje za grad
             'pib' => $this->faker->unique()->numerify('########'),
             'maticni_broj' => $this->faker->unique()->numerify('######'),
             'website' => $this->faker->url,

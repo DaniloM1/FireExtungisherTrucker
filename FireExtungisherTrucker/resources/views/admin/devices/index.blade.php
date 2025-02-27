@@ -13,6 +13,13 @@
                 <p class="text-gray-600 dark:text-gray-400">
                     {{ $location->address }}
                 </p>
+                <p class="text-ellipsis">
+                    Next Service:                   {{ optional($location->serviceEvents->first())->next_service_date ? optional($location->serviceEvents->first())->next_service_date->format('d-m-Y') : 'Nema dostupnog datuma' }}
+
+
+                </p>
+
+
             </div>
         </div>
     </x-slot>

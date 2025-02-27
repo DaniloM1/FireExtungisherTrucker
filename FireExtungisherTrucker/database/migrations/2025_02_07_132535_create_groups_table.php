@@ -16,7 +16,6 @@ class CreateGroupsTable extends Migration
             $table->unsignedBigInteger('location_id');
             $table->string('name');
             $table->text('description')->nullable();
-            $table->date('next_service_date')->nullable(); // Opcionalno: datum sljedećeg servisa za grupu
             $table->timestamps();
 
             // Definicija stranog ključa – grupa pripada lokaciji

@@ -13,6 +13,7 @@ class Company extends Model
     protected $fillable = [
         'name',
         'address',
+        'city', // Dodato polje za grad
         'contact_email',
         'contact_phone',
         'pib',
@@ -26,19 +27,10 @@ class Company extends Model
         return $this->hasMany(Location::class);
     }
 
-    // Definisanje odnosa sa grupama uređaja
-//    public function deviceGroups()
-//    {
-//        return $this->hasMany(DeviceGroup::class);
-//    }
-//    public function users()
-//    {
-//        return $this->hasMany(User::class);
-//    }
-//    public function devices()
-//    {
-//        return $this->hasManyThrough(Device::class, Location::class);
-//    }
-
+    // Ukoliko kasnije budeš želeo da pristupiš uređajima kroz kompaniju,
+    // možeš koristiti hasManyThrough odnos:
+    // public function devices()
+    // {
+    //     return $this->hasManyThrough(Device::class, Location::class);
+    // }
 }
-

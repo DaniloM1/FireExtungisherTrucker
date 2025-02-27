@@ -104,30 +104,35 @@ class RolePermissionSeeder extends Seeder
             'edit services',
         ]);
 
-        // 4. Kreiranje kompanija
+        // 4. Kreiranje kompanija (dodato polje city)
         $companies = [
             [
-                'name' => 'Tech Solutions',
-                'address' => '123 Tech Street',
-                'contact_email' => 'contact@techsolutions.com',
-                'contact_phone' => '+381123456789',
-                'pib' => '123456789',
-                'maticni_broj' => '987654321',
-                'website' => 'https://techsolutions.com',
+                'name'            => 'Tech Solutions',
+                'address'         => '123 Tech Street',
+                'city'            => 'Belgrade',
+                'contact_email'   => 'contact@techsolutions.com',
+                'contact_phone'   => '+381123456789',
+                'pib'             => '123456789',
+                'maticni_broj'    => '987654321',
+                'website'         => 'https://techsolutions.com',
             ],
             [
-                'name' => 'Innovate LLC',
-                'address' => '456 Innovation Ave',
-                'contact_email' => 'info@innovate.com',
-                'contact_phone' => '+381987654321',
-                'pib' => '987654321',
-                'maticni_broj' => '123456789',
-                'website' => 'https://innovate.com',
+                'name'            => 'Innovate LLC',
+                'address'         => '456 Innovation Ave',
+                'city'            => 'Novi Sad',
+                'contact_email'   => 'info@innovate.com',
+                'contact_phone'   => '+381987654321',
+                'pib'             => '987654321',
+                'maticni_broj'    => '123456789',
+                'website'         => 'https://innovate.com',
             ],
         ];
 
         foreach ($companies as $companyData) {
-            Company::firstOrCreate(['pib' => $companyData['pib']], $companyData);
+            Company::firstOrCreate(
+                ['pib' => $companyData['pib']],
+                $companyData
+            );
         }
 
         // 5. Kreiranje korisnika i dodeljivanje uloga
@@ -136,7 +141,7 @@ class RolePermissionSeeder extends Seeder
         $superAdmin = User::firstOrCreate(
             ['email' => 'danil1o@gmail.com'],
             [
-                'name' => 'Super Admin',
+                'name'     => 'Super Admin',
                 'password' => bcrypt('danilo123'), // Promeni lozinku na sigurniju
             ]
         );
@@ -146,7 +151,7 @@ class RolePermissionSeeder extends Seeder
         $admin = User::firstOrCreate(
             ['email' => 'danilo@gmail.com'],
             [
-                'name' => 'Admin User',
+                'name'     => 'Admin User',
                 'password' => bcrypt('danilo123'), // Promeni lozinku na sigurniju
             ]
         );
@@ -157,8 +162,8 @@ class RolePermissionSeeder extends Seeder
             $companyUser = User::firstOrCreate(
                 ['email' => strtolower(str_replace(' ', '', $company->name)) . '@example.com'],
                 [
-                    'name' => $company->name . ' User',
-                    'password' => bcrypt('password'), // Promeni lozinku na sigurniju
+                    'name'       => $company->name . ' User',
+                    'password'   => bcrypt('password'), // Promeni lozinku na sigurniju
                     'company_id' => $company->id,
                 ]
             );
@@ -169,8 +174,8 @@ class RolePermissionSeeder extends Seeder
                 $employee = User::firstOrCreate(
                     ['email' => 'employee' . $i . '@' . strtolower(str_replace(' ', '', $company->name)) . '.com'],
                     [
-                        'name' => 'Employee ' . $i,
-                        'password' => bcrypt('password'), // Promeni lozinku na sigurniju
+                        'name'       => 'Employee ' . $i,
+                        'password'   => bcrypt('password'), // Promeni lozinku na sigurniju
                         'company_id' => $company->id,
                     ]
                 );

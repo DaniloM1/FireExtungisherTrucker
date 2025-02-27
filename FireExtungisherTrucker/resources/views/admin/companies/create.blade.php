@@ -4,7 +4,19 @@
             {{ __('Create Company') }}
         </h2>
     </x-slot>
+    <style>
+        #city-suggestions {
+            position: absolute;
+            width: 100%;
+            max-height: 200px; /* Ograničava visinu */
+            overflow-y: auto; /* Omogućava skrolovanje ako ima previše opcija */
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            z-index: 50; /* Postavlja na vrh */
+        }
 
+    </style>
     <!-- Poruke o uspehu i greškama -->
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 mt-4">
         @if (session('success'))
@@ -59,6 +71,7 @@
                             <input type="text" name="contact_phone" id="phone" value="{{ old('contact_phone') }}"
                                    class="mt-1 block w-full rounded-md border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 focus:border-blue-500 focus:ring-blue-500">
                         </div>
+
                         <div class="mb-4">
                             <label for="pib" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
                                 {{ __('PIB') }}
@@ -66,6 +79,7 @@
                             <input type="number" name="pib" id="pib" value="{{ old('pib') }}"
                                    class="mt-1 block w-full rounded-md border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 focus:border-blue-500 focus:ring-blue-500">
                         </div>
+
                         <div class="mb-4">
                             <label for="address" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
                                 {{ __('Address') }}
@@ -73,13 +87,15 @@
                             <input type="text" name="address" id="address" value="{{ old('address') }}" required
                                    class="mt-1 block w-full rounded-md border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 focus:border-blue-500 focus:ring-blue-500">
                         </div>
+
                         <div class="mb-4">
-                            <label for="maticni_brojs" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                            <label for="maticni_broj" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
                                 {{ __('Maticni Broj') }}
                             </label>
                             <input type="text" name="maticni_broj" id="maticni_broj" value="{{ old('maticni_broj') }}"
                                    class="mt-1 block w-full rounded-md border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 focus:border-blue-500 focus:ring-blue-500">
                         </div>
+
                         <div class="mb-4">
                             <label for="website" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
                                 {{ __('Websajt') }}
@@ -88,18 +104,16 @@
                                    class="mt-1 block w-full rounded-md border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 focus:border-blue-500 focus:ring-blue-500">
                         </div>
 
-                        <!-- Address Field -->
-
-                        <!-- City Field (dinamičko popunjavanje putem API-ja) -->
-{{--                        <div class="mb-4">--}}
-{{--                            <label for="city" class="block text-sm font-medium text-gray-700 dark:text-gray-300">--}}
-{{--                                {{ __('City') }}--}}
-{{--                            </label>--}}
-{{--                            <select name="city" id="city" required--}}
-{{--                                    class="mt-1 block w-full rounded-md border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 focus:border-blue-500 focus:ring-blue-500">--}}
-{{--                                <option value="">{{ __('Select City') }}</option>--}}
-{{--                            </select>--}}
-{{--                        </div>--}}
+                        <!-- City Field sa pretragom -->
+                        <div class="mb-4 relative">
+                            <label for="city" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                {{ __('City') }}
+                            </label>
+                            <input type="text" id="city" name="city" placeholder="{{ __('Type at least 3 letters') }}"
+                                   class="mt-1 block w-full rounded-md border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 focus:border-blue-500 focus:ring-blue-500" autocomplete="off">
+                            <!-- Kontejner za sugestije -->
+                            <ul id="city-suggestions" class="absolute z-10 w-full bg-white dark:bg-gray-700 border border-gray-300 rounded-md mt-1 hidden"></ul>
+                        </div>
 
                         <!-- Submit i Cancel dugmad -->
                         <div class="flex gap-4">
@@ -118,29 +132,67 @@
         </div>
     </div>
 
-    <!-- JavaScript za popunjavanje gradova putem API-ja -->
+    <!-- JavaScript za pretragu gradova -->
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            fetchCities();
+            const cityInput = document.getElementById('city');
+            const suggestionsList = document.getElementById('city-suggestions');
+
+            let searchTimeout = null;
+
+            cityInput.addEventListener('input', function () {
+                const query = cityInput.value.trim();
+                clearTimeout(searchTimeout);
+
+                if (query.length < 3) {
+                    suggestionsList.classList.add('hidden');
+                    suggestionsList.innerHTML = '';
+                    return;
+                }
+
+                // Delay pretrage radi optimizacije
+                searchTimeout = setTimeout(() => {
+                    fetch(`/api/cities/search?query=${encodeURIComponent(query)}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            suggestionsList.innerHTML = '';
+
+                            if (data.cities && data.cities.length > 0) {
+                                data.cities.forEach(city => {
+                                    const li = document.createElement('li');
+                                    li.textContent = city.name;
+                                    li.classList.add('cursor-pointer', 'px-4', 'py-2', 'hover:bg-gray-200', 'dark:hover:bg-gray-600', 'border-b', 'last:border-none');
+                                    li.addEventListener('click', function () {
+                                        cityInput.value = city.name;
+                                        suggestionsList.innerHTML = '';
+                                        suggestionsList.classList.add('hidden');
+                                    });
+                                    suggestionsList.appendChild(li);
+                                });
+
+                                // Osiguraj da se predlozi ispravno prikazuju
+                                suggestionsList.style.left = `${cityInput.offsetLeft}px`;
+                                suggestionsList.style.top = `${cityInput.offsetTop + cityInput.offsetHeight}px`;
+                                suggestionsList.classList.remove('hidden');
+                            } else {
+                                suggestionsList.classList.add('hidden');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error searching cities:', error);
+                        });
+                }, 200); // 200ms delay
+            });
+
+            // Sakrivanje liste kada korisnik klikne van nje
+            document.addEventListener('click', function (e) {
+                if (!cityInput.contains(e.target) && !suggestionsList.contains(e.target)) {
+                    suggestionsList.classList.add('hidden');
+                }
+            });
         });
 
-        function fetchCities() {
-            // Promenite URL ispod na stvarni endpoint koji vraća gradove u Srbiji
-            fetch('/api/cities')
-                .then(response => response.json())
-                .then(data => {
-                    const citySelect = document.getElementById('city');
-                    // Očekuje se da API vraća niz objekata sa poljima 'id' i 'name'
-                    data.forEach(city => {
-                        const option = document.createElement('option');
-                        option.value = city.id;
-                        option.textContent = city.name;
-                        citySelect.appendChild(option);
-                    });
-                })
-                .catch(error => {
-                    console.error('Error fetching cities:', error);
-                });
-        }
     </script>
+
+
 </x-app-layout>

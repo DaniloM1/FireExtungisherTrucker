@@ -17,13 +17,13 @@ return new class extends Migration
             $table->string('address');
             $table->string('contact_email');
             $table->string('contact_phone');
-            $table->string('pib');
-            $table->string('maticni_broj');
+            $table->string('city'); // Dodata kolona za grad
+            $table->string('pib')->unique(); // Poreski identifikacioni broj (jedinstven)
+            $table->string('maticni_broj')->unique(); // Matični broj kompanije (jedinstven)
             $table->string('website')->nullable();
             $table->timestamps();
         });
     }
-
 
     /**
      * Reverse the migrations.

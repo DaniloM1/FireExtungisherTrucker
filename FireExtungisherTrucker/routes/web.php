@@ -80,6 +80,13 @@ use App\Http\Controllers\UserManagementController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\DeviceController;
 use App\Http\Controllers\GroupController;
+use App\Http\Controllers\CityController;
+
+
+
+Route::get('/api/cities', [CityController::class, 'index']);
+Route::get('/api/cities/search', [CityController::class, 'search']);
+
 
 /*
 |--------------------------------------------------------------------------
@@ -89,6 +96,7 @@ use App\Http\Controllers\GroupController;
 Route::get('/', function () {
     return view('welcome');
 });
+
 
 /*
 |--------------------------------------------------------------------------
