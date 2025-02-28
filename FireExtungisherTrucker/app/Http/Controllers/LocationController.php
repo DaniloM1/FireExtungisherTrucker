@@ -25,7 +25,20 @@ class LocationController extends Controller
 
 
     }
+    public function api($companyId)
+    {
 
+        // Dohvati kompaniju po ID-u
+        $company = Company::findOrFail($companyId);
+
+        // Dohvati sve lokacije povezane sa kompanijom
+        $locations = $company->locations()->paginate(10);
+
+        // Vrati pogled sa lokacijama
+        return $locations;
+
+
+    }
     /**
      * Show the form for creating a new location for a company.
      */

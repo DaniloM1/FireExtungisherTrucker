@@ -1,28 +1,47 @@
 
 <x-app-layout>
     <x-slot name="header">
-        <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg  mb-6 flex items-center">
-            <i class="fas fa-fire-extinguisher text-4xl  mr-4 text-black dark:text-white "></i>
-            <div>
-                <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-2">
-                    {{ $location->company->name }}
-                </h3>
-                <h4 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-2">
-                    {{ $location->name }}
-                </h4>
-                <p class="text-gray-600 dark:text-gray-400">
-                    {{ $location->address }}
-                </p>
-                <p class="text-ellipsis">
-                    Next Service:                   {{ optional($location->serviceEvents->first())->next_service_date ? optional($location->serviceEvents->first())->next_service_date->format('d-m-Y') : 'Nema dostupnog datuma' }}
-
-
-                </p>
-
-
+        <div class="bg-white dark:bg-gray-800 shadow-sm sm:rounded-lg mb-6 p-6">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center">
+                <!-- Left side: Icon, Company, Location, Address -->
+                <div class="flex items-center w-full md:w-auto">
+                    <i class="fas fa-fire-extinguisher text-4xl mr-4 text-black dark:text-white"></i>
+                    <div>
+                        <h2 class="text-3xl font-bold text-gray-800 dark:text-gray-200">
+                            {{ $location->company->name }}
+                        </h2>
+                        <h3 class="text-xl font-semibold text-gray-700 dark:text-gray-300">
+                            {{ $location->name }}
+                        </h3>
+                        <p class="text-gray-600 dark:text-gray-400">
+                            {{ $location->address }}
+                        </p>
+                    </div>
+                </div>
+                <!-- Right side: Next Service and Create Service Link -->
+                <div class="mt-4 md:mt-0 text-right w-full md:w-auto">
+                    <p class="text-gray-600 dark:text-gray-400 mb-2">
+                        Next Service:
+                        {{ optional($location->serviceEvents->first())->next_service_date
+                            ? optional($location->serviceEvents->first())->next_service_date->format('d-m-Y')
+                            : 'Nema dostupnog datuma' }}
+                    </p>
+                    <a href="" class="flex items-center justify-end text-lg text-blue-600 dark:text-blue-400 hover:underline">
+                        <i class="fas fa-plus mr-2"></i> {{ __('Create Service') }}
+                    </a>
+                </div>
+            </div>
+            <!-- Breadcrumb -->
+            <div class="mt-4">
+                <nav class="text-sm text-gray-500">
+                    Company <span class="mx-2">&rarr;</span> Location <span class="mx-2">&rarr;</span> Devices
+                </nav>
             </div>
         </div>
     </x-slot>
+
+
+
 
 
     <!-- Poruke o uspjehu i greškama -->

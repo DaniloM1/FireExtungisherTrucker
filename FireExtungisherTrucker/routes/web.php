@@ -81,7 +81,7 @@ use App\Http\Controllers\LocationController;
 use App\Http\Controllers\DeviceController;
 use App\Http\Controllers\GroupController;
 use App\Http\Controllers\CityController;
-
+use App\Http\Controllers\ServiceEventController;
 
 
 Route::get('/api/cities', [CityController::class, 'index']);
@@ -193,5 +193,9 @@ Route::middleware('auth')->group(function () {
     Route::put('devices/{device}', [DeviceController::class, 'update'])->name('devices.update');
     Route::delete('devices/{device}', [DeviceController::class, 'destroy'])->name('devices.destroy');
 });
+Route::get('api/companies/{company}/locations', [\App\Http\Controllers\LocationController::class, 'api']);
+
+
+Route::resource('service-events', ServiceEventController::class);
 
 require __DIR__ . '/auth.php';
