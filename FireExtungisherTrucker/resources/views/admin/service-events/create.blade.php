@@ -11,8 +11,8 @@
                 <form method="POST" action="{{ route('service-events.store') }}">
                     @csrf
 
+                    <!-- Service Event Basic Fields -->
                     <div class="grid grid-cols-1 gap-4">
-                        <!-- Ostala polja (Category, Service Date, Next Service Date, Evid Number, User ID, Description, Cost) -->
                         <div>
                             <label for="category" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
                                 Category
@@ -36,7 +36,7 @@
                             <label for="next_service_date" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
                                 Next Service Date
                             </label>
-                            <input type="date" name="next_service_date" id="next_service_date" required
+                            <input type="date" name="next_service_date" id="next_service_date"  readonly
                                    class="mt-1 block w-full rounded-md border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 focus:border-blue-500 focus:ring-blue-500">
                         </div>
 
@@ -49,11 +49,9 @@
                         </div>
 
                         <div>
-                            <label for="user_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                User ID
-                            </label>
-                            <input type="number" name="user_id" id="user_id" required
-                                   class="mt-1 block w-full rounded-md border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 focus:border-blue-500 focus:ring-blue-500">
+                            <input type="hidden" name="user_id" id="user_id" required value="{{auth()->id()}}">
+
+
                         </div>
 
                         <div>
@@ -71,35 +69,28 @@
                             <input type="number" step="0.01" name="cost" id="cost" required
                                    class="mt-1 block w-full rounded-md border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 focus:border-blue-500 focus:ring-blue-500">
                         </div>
+                    </div>
 
-                        <!-- Odabir kompanije -->
-                        <div>
-                            <label for="company" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                Select Company
-                            </label>
-                            <select id="company" name="company_id" required
-                                    class="mt-1 block w-full rounded-md border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 focus:border-blue-500 focus:ring-blue-500">
+                    <!-- Companies & Locations Section -->
+                    <div class="mt-6">
+                        <h3 class="text-lg font-medium text-gray-800 dark:text-gray-200 mb-2">Select Companies & Locations</h3>
+                        <div class="flex items-center space-x-2">
+                            <select id="company-selector" class="block w-full rounded-md border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200">
                                 <option value="">{{ __('Select a Company') }}</option>
                                 @foreach($companies as $company)
-                                    <option value="{{ $company->id }}">{{ $company->name }}</option>
+                                    <option value="{{ $company->id }}">{{ $company->name }} ({{ $company->city }})</option>
                                 @endforeach
                             </select>
+                            <button type="button" id="add-company" class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">
+                                Add Company
+                            </button>
                         </div>
-
-                        <!-- Dinamičko učitavanje lokacija za odabranu kompaniju -->
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                Select Locations
-                            </label>
-                            <div id="locations-container" class="mt-2 space-y-2">
-                                <!-- Ovde će se dinamički učitavati checkboksevi za lokacije -->
-                                <p class="text-sm text-gray-500 dark:text-gray-400">
-                                    Please select a company to load locations.
-                                </p>
-                            </div>
+                        <div id="companies-container" class="mt-4 space-y-4">
+                            <!-- Dinamički dodati blokovi kompanija će se prikazivati ovde -->
                         </div>
                     </div>
 
+                    <!-- Form Submit -->
                     <div class="mt-6 flex justify-end space-x-4">
                         <a href="{{ route('service-events.index') }}"
                            class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded">
@@ -115,52 +106,88 @@
         </div>
     </div>
 
-    <!-- JavaScript za dinamičko učitavanje lokacija -->
-    <script>
-        document.getElementById('company').addEventListener('change', function () {
-            let companyId = this.value;
-            let container = document.getElementById('locations-container');
-            container.innerHTML = '';
+    <!-- JavaScript za dinamičko učitavanje i upravljanje kompanijama i lokacijama -->
+    <!-- Ostali deo koda ostaje nepromenjen -->
 
+    <!-- Postavi listener odmah nakon učitavanja stranice -->
+    <script>
+        // Listener za promenu service_date
+        document.getElementById('service_date').addEventListener('change', function () {
+            let serviceDate = new Date(this.value);
+            if (!isNaN(serviceDate.getTime())) { // Provera da li je validan datum
+                serviceDate.setMonth(serviceDate.getMonth() + 6); // Dodaj 6 meseci
+                document.getElementById('next_service_date').value = serviceDate.toISOString().split('T')[0]; // Format u yyyy-mm-dd
+            }
+        });
+
+        // Listener za dugme "Add Companyf"
+        document.getElementById('add-company').addEventListener('click', function () {
+            let companySelector = document.getElementById('company-selector');
+            let companyId = companySelector.value;
+            let companyName = companySelector.options[companySelector.selectedIndex].text;
             if (!companyId) {
-                container.innerHTML = '<p class="text-sm text-gray-500 dark:text-gray-400">Please select a company to load locations.</p>';
+                alert("Please select a company");
                 return;
             }
 
-            // Pozivamo API endpoint da dobijemo lokacije za odabranu kompaniju
-            fetch('http://localhost:8000/api/companies/' + companyId + '/locations')
+            // Proveri da li je kompanija već dodata
+            if (document.getElementById('company-block-' + companyId)) {
+                alert("This company is already added");
+                return;
+            }
+
+            let container = document.getElementById('companies-container');
+            let companyBlock = document.createElement('div');
+            companyBlock.id = 'company-block-' + companyId;
+            companyBlock.className = 'border p-4 rounded-md bg-gray-50 dark:bg-gray-700';
+            companyBlock.innerHTML = `
+            <div class="flex justify-between items-center mb-2">
+                <h4 class="text-lg font-semibold text-gray-800 dark:text-gray-200">${companyName}</h4>
+                <button type="button" class="text-red-600 dark:text-red-400 hover:underline remove-company" data-company-id="${companyId}">
+                    Remove
+                </button>
+            </div>
+            <div class="locations-container">
+                <p class="text-sm text-gray-500 dark:text-gray-400">Loading locations...</p>
+            </div>
+        `;
+            container.appendChild(companyBlock);
+
+            // Učitaj lokacije za odabranu kompaniju putem AJAX-a
+            fetch('/api/companies/' + companyId + '/locations')
                 .then(response => response.json())
                 .then(data => {
-                    console.log(data);
-                    if (data.length === 0) {
-                        container.innerHTML = '<p class="text-sm text-gray-500 dark:text-gray-400">No locations found for this company.</p>';
+                    let locations = data.data ? data.data : data;
+                    let locationsContainer = companyBlock.querySelector('.locations-container');
+                    if (locations.length === 0) {
+                        locationsContainer.innerHTML = '<p class="text-sm text-gray-500 dark:text-gray-400">No locations found for this company.</p>';
                         return;
                     }
-
-                    data.data.forEach(function(location) {
-                        // Kreiramo checkbox i label za svaku lokaciju
-                        let label = document.createElement('label');
-                        label.className = "flex items-center space-x-2";
-
-                        let checkbox = document.createElement('input');
-                        checkbox.type = "checkbox";
-                        checkbox.name = "locations[]";
-                        checkbox.value = location.id;
-                        checkbox.className = "form-checkbox h-4 w-4 text-blue-600";
-
-                        let span = document.createElement('span');
-                        span.className = "text-sm text-gray-700 dark:text-gray-300";
-                        span.textContent = location.name + " - " + location.city;
-
-                        label.appendChild(checkbox);
-                        label.appendChild(span);
-                        container.appendChild(label);
+                    let html = '';
+                    locations.forEach(function(location) {
+                        html += `
+                        <label class="flex items-center space-x-2">
+                            <input type="checkbox" name="locations[]" value="${location.id}" class="form-checkbox h-4 w-4 text-blue-600">
+                            <span class="text-sm text-gray-700 dark:text-gray-300">${location.name} - ${location.city}</span>
+                        </label>
+                    `;
                     });
+                    locationsContainer.innerHTML = html;
                 })
                 .catch(error => {
                     console.error('Error fetching locations:', error);
-                    container.innerHTML = '<p class="text-sm text-red-500">Error loading locations.</p>';
+                    companyBlock.querySelector('.locations-container').innerHTML = '<p class="text-sm text-red-500">Error loading locations.</p>';
                 });
         });
+
+        // Uklanjanje bloka kompanije
+        document.getElementById('companies-container').addEventListener('click', function (e) {
+            if (e.target && e.target.classList.contains('remove-company')) {
+                let companyId = e.target.getAttribute('data-company-id');
+                let block = document.getElementById('company-block-' + companyId);
+                if (block) block.remove();
+            }
+        });
     </script>
+
 </x-app-layout>

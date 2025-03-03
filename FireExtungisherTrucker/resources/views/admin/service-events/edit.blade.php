@@ -6,14 +6,14 @@
     </x-slot>
 
     <div class="py-6 bg-gray-100 dark:bg-gray-900">
-        <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
+        <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 shadow sm:rounded-lg p-6">
                 <form method="POST" action="{{ route('service-events.update', $serviceEvent->id) }}">
                     @csrf
                     @method('PUT')
 
-                    <div class="grid grid-cols-1 gap-4">
-                        <!-- Category -->
+                    <!-- Basic Service Event Fields -->
+                    <div class="grid grid-cols-1 gap-6">
                         <div>
                             <label for="category" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
                                 Category
@@ -25,7 +25,6 @@
                             </select>
                         </div>
 
-                        <!-- Service Date -->
                         <div>
                             <label for="service_date" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
                                 Service Date
@@ -36,7 +35,6 @@
                                    class="mt-1 block w-full rounded-md border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 focus:border-blue-500 focus:ring-blue-500">
                         </div>
 
-                        <!-- Next Service Date -->
                         <div>
                             <label for="next_service_date" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
                                 Next Service Date
@@ -47,7 +45,6 @@
                                    class="mt-1 block w-full rounded-md border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 focus:border-blue-500 focus:ring-blue-500">
                         </div>
 
-                        <!-- Evid Number -->
                         <div>
                             <label for="evid_number" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
                                 Evid Number
@@ -58,19 +55,11 @@
                                    class="mt-1 block w-full rounded-md border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 focus:border-blue-500 focus:ring-blue-500">
                         </div>
 
-                        <!-- User ID -->
                         <div>
-                            <label for="user_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                User ID
-                            </label>
-                            <input type="number" name="user_id" id="user_id"
-                                   value="{{ $serviceEvent->user_id }}"
-                                   required
-                                   class="mt-1 block w-full rounded-md border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 focus:border-blue-500 focus:ring-blue-500">
-                        </div>
+                            <input type="hidden" name="user_id" id="user_id" required value="{{auth()->id()}}">
 
-                        <!-- Description -->
-                        <div>
+
+                            <div>
                             <label for="description" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
                                 Description
                             </label>
@@ -78,7 +67,6 @@
                                       class="mt-1 block w-full rounded-md border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 focus:border-blue-500 focus:ring-blue-500">{{ $serviceEvent->description }}</textarea>
                         </div>
 
-                        <!-- Cost -->
                         <div>
                             <label for="cost" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
                                 Cost
@@ -88,30 +76,64 @@
                                    required
                                    class="mt-1 block w-full rounded-md border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 focus:border-blue-500 focus:ring-blue-500">
                         </div>
+                    </div>
 
-                        <!-- Locations -->
-                        <div>
-                            <label for="locations" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                Select Locations
-                            </label>
-                            <select name="locations[]" id="locations" multiple required
-                                    class="mt-1 block w-full rounded-md border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 focus:border-blue-500 focus:ring-blue-500">
-                                @foreach($locations as $location)
-                                    <option value="{{ $location->id }}"
-                                        {{ $serviceEvent->locations->pluck('id')->contains($location->id) ? 'selected' : '' }}>
-                                        {{ $location->name }} - {{ $location->city }}
-                                    </option>
+                    <!-- Companies & Locations Section -->
+                    <div class="mt-6">
+                        <h3 class="text-lg font-medium text-gray-800 dark:text-gray-200 mb-2">Select Companies & Locations</h3>
+                        <!-- Dropdown za dodavanje nove kompanije -->
+                        <div class="flex items-center space-x-2">
+                            <select id="company-selector" class="block w-full rounded-md border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200">
+                                <option value="">{{ __('Select a Company') }}</option>
+                                @foreach($companies as $company)
+                                    <option value="{{ $company->id }}">{{ $company->name }} ({{ $company->city }})</option>
                                 @endforeach
                             </select>
+                            <button type="button" id="add-company" class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">
+                                Add Company
+                            </button>
+                        </div>
+                        <!-- Kontejner za dinamički dodate blokove kompanija -->
+                        <div id="companies-container" class="mt-4 space-y-4">
+                            @php
+                                // Grupisanje postojećih lokacija po kompaniji
+                                $existingCompanies = $serviceEvent->locations->groupBy('company_id');
+                            @endphp
+                            @foreach($existingCompanies as $companyId => $locations)
+                                @php
+                                    $company = $locations->first()->company;
+                                @endphp
+                                <div id="company-block-{{ $companyId }}" class="border p-4 rounded-md bg-gray-50 dark:bg-gray-700">
+                                    <div class="flex justify-between items-center mb-2">
+                                        <h4 class="text-lg font-semibold text-gray-800 dark:text-gray-200">
+                                            {{ $company->name }} ({{ $company->city }})
+                                        </h4>
+                                        <button type="button" class="text-red-600 dark:text-red-400 hover:underline remove-company" data-company-id="{{ $companyId }}">
+                                            Remove
+                                        </button>
+                                    </div>
+                                    <div class="locations-container">
+                                        @foreach($locations as $location)
+                                            <label class="flex items-center space-x-2">
+                                                <input type="checkbox" name="locations[]" value="{{ $location->id }}"
+                                                class="form-checkbox h-4 w-4 text-blue-600" checked>
+                                                <span class="text-sm text-gray-700 dark:text-gray-300">{{ $location->name }} - {{ $location->city }}</span>
+                                            </label>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            @endforeach
                         </div>
                     </div>
 
+                    <!-- Form Action Buttons -->
                     <div class="mt-6 flex justify-end space-x-4">
                         <a href="{{ route('service-events.index') }}"
                            class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded">
                             Cancel
                         </a>
-                        <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded">
+                        <button type="submit"
+                                class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded">
                             Update Service Event
                         </button>
                     </div>
@@ -119,4 +141,75 @@
             </div>
         </div>
     </div>
+
+    <!-- JavaScript za dinamičko upravljanje kompanijama i lokacijama -->
+    <script>
+        // Dodavanje nove kompanije
+        document.getElementById('add-company').addEventListener('click', function () {
+            let companySelector = document.getElementById('company-selector');
+            let companyId = companySelector.value;
+            let companyName = companySelector.options[companySelector.selectedIndex].text;
+            if (!companyId) {
+                alert("Please select a company");
+                return;
+            }
+            // Provera da li je kompanija već dodata
+            if (document.getElementById('company-block-' + companyId)) {
+                alert("This company is already added");
+                return;
+            }
+            let container = document.getElementById('companies-container');
+            let companyBlock = document.createElement('div');
+            companyBlock.id = 'company-block-' + companyId;
+            companyBlock.className = 'border p-4 rounded-md bg-gray-50 dark:bg-gray-700';
+            companyBlock.innerHTML = `
+                <div class="flex justify-between items-center mb-2">
+                    <h4 class="text-lg font-semibold text-gray-800 dark:text-gray-200">${companyName}</h4>
+                    <button type="button" class="text-red-600 dark:text-red-400 hover:underline remove-company" data-company-id="${companyId}">
+                        Remove
+                    </button>
+                </div>
+                <div class="locations-container">
+                    <p class="text-sm text-gray-500 dark:text-gray-400">Loading locations...</p>
+                </div>
+            `;
+            container.appendChild(companyBlock);
+
+            // Učitavanje lokacija za odabranu kompaniju putem AJAX-a
+            fetch('/api/companies/' + companyId + '/locations')
+                .then(response => response.json())
+                .then(data => {
+                    let locations = data.data ? data.data : data;
+                    let locationsContainer = companyBlock.querySelector('.locations-container');
+                    if (locations.length === 0) {
+                        locationsContainer.innerHTML = '<p class="text-sm text-gray-500 dark:text-gray-400">No locations found for this company.</p>';
+                        return;
+                    }
+                    let html = '';
+                    locations.forEach(function (location) {
+                        html += `
+                    <label class="flex items-center space-x-2">
+                        <input type="checkbox" name="locations[]" value="${location.id}" class="form-checkbox h-4 w-4 text-blue-600">
+                        <span class="text-sm text-gray-700 dark:text-gray-300">${location.name} - ${location.city}</span>
+                    </label>
+                `;
+
+                    });
+                    locationsContainer.innerHTML = html;
+                })
+                .catch(error => {
+                    console.error('Error fetching locations:', error);
+                    companyBlock.querySelector('.locations-container').innerHTML = '<p class="text-sm text-red-500">Error loading locations.</p>';
+                });
+        });
+
+        // Uklanjanje kompanijskog bloka
+        document.getElementById('companies-container').addEventListener('click', function (e) {
+            if (e.target && e.target.classList.contains('remove-company')) {
+                let companyId = e.target.getAttribute('data-company-id');
+                let block = document.getElementById('company-block-' + companyId);
+                if (block) block.remove();
+            }
+        });
+    </script>
 </x-app-layout>

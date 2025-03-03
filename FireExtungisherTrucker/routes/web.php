@@ -88,6 +88,7 @@ Route::get('/api/cities', [CityController::class, 'index']);
 Route::get('/api/cities/search', [CityController::class, 'search']);
 
 
+
 /*
 |--------------------------------------------------------------------------
 | Public Routes
