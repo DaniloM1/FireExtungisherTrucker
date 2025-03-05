@@ -9,6 +9,11 @@
                     {{ $company->address }}
                 </p>
             </div>
+            <div class="mt-4">
+                <nav class="text-sm text-gray-500">
+                    Company <span class="mx-2">&rarr;</span> Locations
+                </nav>
+            </div>
 
     </x-slot>
 

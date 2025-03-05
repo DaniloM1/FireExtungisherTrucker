@@ -118,7 +118,7 @@ class ServiceEventController extends Controller
      */
     public function update(Request $request, ServiceEvent $serviceEvent)
     {
-dd($request);
+// dd($request);
         $data = $request->validate([
             'category'           => 'required|in:pp_device,hydrant',
             'service_date'       => 'required|date',
@@ -133,7 +133,7 @@ dd($request);
         $serviceEvent->update($data);
         $serviceEvent->locations()->sync($data['locations']);
 
-        return redirect()->route('admin.service-events.index')
+        return redirect()->route('service-events.index')
             ->with('success', 'Service event updated successfully.');
     }
 

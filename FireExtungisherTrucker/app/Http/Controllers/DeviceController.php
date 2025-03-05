@@ -88,6 +88,18 @@ class DeviceController extends Controller
         return redirect()->route('locations.devices.index', $location->id)
             ->with('success', 'Device created successfully.');
     }
+    
+    public function updateStatus(Request $request, Device $device)
+    {
+        $validated = $request->validate([
+            'status' => 'required|in:active,inactive,needs_service',
+        ]);
+
+        $device->update($validated);
+
+        return response()->json(['success' => true]);
+    }
+
 
     /**
      * Prikaz detalja o uređaju.

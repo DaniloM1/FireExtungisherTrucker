@@ -17,9 +17,8 @@
             <!-- Create New Service Event Button -->
             <div class="flex justify-end mb-6">
                 <a href="{{ route('service-events.create') }}"
-                   class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none">
-                    Create New Service Event
-                </a>
+                class= "hover:underline">
+                <i class="fas fa-plus"></i> {{ __('Create New Servis') }}
             </div>
 
             <!-- Group by Company -->

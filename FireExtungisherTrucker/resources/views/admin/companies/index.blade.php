@@ -5,6 +5,7 @@
             {{ __('Companies') }}
         </h2>
     </x-slot>
+    
 
     <!-- Success/Error Poruke (opcionalno) -->
     <div class="max-w-7xl mx-auto mt-4">
@@ -58,7 +59,7 @@
                     <div class="flex justify-between items-center mb-6">
                         <h3 class="text-lg font-semibold">{{ __('Company List') }}</h3>
                         <a href="{{ route('companies.create') }}"
-                           class= hover:underline">
+                           class= "hover:underline">
                             <i class="fas fa-plus"></i> {{ __('Add Company') }}
                         </a>
                     </div>
@@ -76,6 +77,9 @@
                                     {{ __('Email') }}
                                 </th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                    {{ __('City') }}
+                                </th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                                     {{ __('Phone') }}
                                 </th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
@@ -88,6 +92,7 @@
                                 <tr>
                                     <td class="px-6 py-4 whitespace-nowrap">{{ $company->name }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap">{{ $company->contact_email }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">{{ $company->city }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap">{{ $company->contact_phone }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <div class="flex items-center space-x-4">
