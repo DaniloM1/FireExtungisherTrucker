@@ -44,6 +44,14 @@
                         <path fill-rule="evenodd" d="M12.9 14.32a8 8 0 111.414-1.414l5.386 5.387a1 1 0 01-1.414 1.414l-5.386-5.387zM14 8a6 6 0 11-12 0 6 6 0 0112 0z" clip-rule="evenodd" />
                     </svg>
                 </button>
+             
+                   
+                        <a href="{{ route('companies.index') }}" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-full flex items-center gap-2 transition">
+                            <i class="fa-solid fa-filter-circle-xmark"></i>
+                            
+                        </a>
+                   
+               
             </form>
         </div>
     </div>
@@ -130,7 +138,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="4" class="px-6 py-4 text-center text-gray-500 dark:text-gray-300">
+                                    <td colspan="5" class="px-6 py-4 text-center text-gray-500 dark:text-gray-300">
                                         {{ __('No companies found.') }}
                                     </td>
                                 </tr>

@@ -32,4 +32,5 @@ class ServiceEvent extends Model
     {
         return $this->belongsToMany(Location::class, 'service_event_locations');
     }
+    
 }

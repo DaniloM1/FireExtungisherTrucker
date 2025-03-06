@@ -49,6 +49,7 @@ class Location extends Model
     {
         return $this->belongsToMany(LocationGroup::class, 'location_group_members');
     }
+    
     public function serviceEvents()
     {
         return $this->belongsToMany(ServiceEvent::class, 'service_event_locations')->orderBy('next_service_date', 'asc');

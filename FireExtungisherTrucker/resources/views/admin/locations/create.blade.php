@@ -61,7 +61,13 @@
                             <input type="text" name="address" id="address" value="{{ old('address') }}" autocomplete="off" required
                                    class="mt-1 block w-full rounded-md border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 focus:border-blue-500 focus:ring-blue-500">
                         </div>
-
+                        <div class="mb-4">
+                            <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                {{ __('City') }}
+                            </label>
+                            <input type="text" name="city" id="city" value="{{ old('city') }}" autocomplete="off" required
+                                   class="mt-1 block w-full rounded-md border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 focus:border-blue-500 focus:ring-blue-500">
+                        </div>
                         <!-- Latitude Field -->
                         <div class="mb-4">
                             <label for="latitude" class="block text-sm font-medium text-gray-700 dark:text-gray-300">

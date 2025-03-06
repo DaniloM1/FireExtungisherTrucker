@@ -57,6 +57,7 @@ class LocationController extends Controller
             'address' => 'required|string|max:255',
             'latitude' => 'nullable|numeric',
             'longitude' => 'nullable|numeric',
+            'city' => 'required|string|max:255',    
         ]);
 
         $company->locations()->create($validated);
