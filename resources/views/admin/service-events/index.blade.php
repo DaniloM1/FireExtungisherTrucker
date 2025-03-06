@@ -36,11 +36,9 @@
                         </div>
                     </div>
 
-                    <!-- Toggle Advanced Filter & Reset Buttons -->
-
-
-                    <!-- Advanced Filter Fields (hidden by default) -->
-                    <div id="advanced-fields" class="hidden">
+                    <!-- Advanced Filter Fields -->
+                    <!-- Ako URL sadrži napredne parametre, ovi polja neće imati klasu hidden -->
+                    <div id="advanced-fields" class="{{ (request()->has('year') || request()->has('month') || request('category') || request('next_service_date') || request('company') || request('location')) ? '' : 'hidden' }}">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                             <div>
                                 <label for="category" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
@@ -84,10 +82,49 @@
                                     <!-- Lokacije će se učitavati AJAX-om kad se izabere kompanija -->
                                 </select>
                             </div>
-                        </div>
+                            <div>
+                                <label for="year" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                    Year
+                                </label>
+                                <select name="year" id="year" class="mt-1 block w-full rounded-md border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200">
+                                    <option value="">{{ __('Select Year') }}</option>
+                                    <option value="2024" {{ request('year') == '2024' ? 'selected' : '' }}>{{ __('2024') }}</option>
+                                    <option value="2025" {{ request('year') == '2025' ? 'selected' : '' }}>{{ __('2025') }}</option>
+                                    <option value="2026" {{ request('year') == '2026' ? 'selected' : '' }}>{{ __('2026') }}</option>
+                                </select>
+                                
+                            </div>
+                            <div>
+                                <label for="month" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                    Month
+                        <select name="month" id="month" class="mt-1 block w-full rounded-md border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200">
+                            <option value="">{{ __('Select Month') }}</option>
+                            <option value="1" {{ request('month') == '1' ? 'selected' : '' }}>{{ __('January') }}</option>
+                            <option value="2" {{ request('month') == '2' ? 'selected' : '' }}>{{ __('February') }}</option>
+                            <option value="3" {{ request('month') == '3' ? 'selected' : '' }}>{{ __('March') }}</option>
+                            <option value="4" {{ request('month') == '4' ? 'selected' : '' }}>{{ __('April') }}</option>
+                            <option value="5" {{ request('month') == '5' ? 'selected' : '' }}>{{ __('May') }}</option>
+                            <option value="6" {{ request('month') == '6' ? 'selected' : '' }}>{{ __('June') }}</option>
+                            <option value="7" {{ request('month') == '7' ? 'selected' : '' }}>{{ __('July') }}</option>
+                            <option value="8" {{ request('month') == '8' ? 'selected' : '' }}>{{ __('August') }}</option>
+                            <option value="9" {{ request('month') == '9' ? 'selected' : '' }}>{{ __('September') }}</option>
+                            <option value="10" {{ request('month') == '10' ? 'selected' : '' }}>{{ __('October') }}</option>
+                            <option value="11" {{ request('month') == '11' ? 'selected' : '' }}>{{ __('November') }}</option>
+                            <option value="12" {{ request('month') == '12' ? 'selected' : '' }}>{{ __('December') }}</option>
+                        </select>
+                    </div>
+                </div>
+                        
+                        <!-- Hidden inputs za year i month -->
+                        @if(request()->has('year'))
+                            <input type="hidden" name="year" value="{{ request('year') }}">
+                        @endif
+                        @if(request()->has('month'))
+                            <input type="hidden" name="month" value="{{ request('month') }}">
+                        @endif
                     </div>
 
-                    <!-- Single Search Button for Entire Form -->
+                    <!-- Dugmad za Advanced Filters i Reset -->
                     <div class="flex justify-between mt-4">
                         <div class="flex space-x-2">
                             <button type="button" id="toggle-advanced-fields" class="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 focus:outline-none">
@@ -97,13 +134,10 @@
                                 <i class="fa-solid fa-filter-circle-xmark"></i>
                             </button>
                         </div>
-
                         <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
-
-                            <i class="fa fa-search"></i>Search
+                            <i class="fa fa-search"></i> Search
                         </button>
                     </div>
-
                 </form>
             </div>
 
@@ -119,20 +153,17 @@
             advancedFields.classList.toggle('hidden');
         });
 
-        // Reset filters: redirect to base route without query parameters
+        // Reset filters: redirect to base route (bez query parametara)
         document.getElementById('reset-filters').addEventListener('click', function() {
             window.location.href = "{{ route('service-events.index') }}";
         });
 
-        // AJAX: When company is selected in the advanced filter, load its locations
+        // AJAX: Učitavanje lokacija kada se promeni kompanija
         document.getElementById('company').addEventListener('change', function () {
             var companyId = this.value;
             var locationSelect = document.getElementById('location');
-            locationSelect.innerHTML = '<option value="">{{ __("All Locations") }}</option>'; // reset
-
-            if (!companyId) return; // No company selected
-
-            // Adjust the URL below to your API endpoint
+            locationSelect.innerHTML = '<option value="">{{ __("All Locations") }}</option>';
+            if (!companyId) return;
             fetch('/api/companies/' + companyId + '/locations')
                 .then(response => response.json())
                 .then(data => {
@@ -147,6 +178,20 @@
                 .catch(error => {
                     console.error('Error fetching locations:', error);
                 });
+        });
+
+        // Automatski otvori advanced fields ako URL sadrži napredne filter parametre
+        document.addEventListener("DOMContentLoaded", function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            console.log("Detected query parameters:", Array.from(urlParams.entries())); // Debug ispis
+            var advancedFields = document.getElementById('advanced-fields');
+            if (!advancedFields) {
+                console.error("Element with id 'advanced-fields' not found!");
+                return;
+            }
+            if(urlParams.has('year') || urlParams.has('month') || urlParams.has('category') || urlParams.has('next_service_date') || urlParams.has('company') || urlParams.has('location')) {
+                advancedFields.classList.remove('hidden');
+            }
         });
     </script>
 </x-app-layout>

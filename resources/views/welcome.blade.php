@@ -109,7 +109,7 @@
                 <!-- Desktop Menu -->
                 <div class="hidden md:flex space-x-8 ml-10">
                     <a href="#" class="text-gray-700 hover:text-red-600 font-medium"
-                    >Početna</a
+                    >Početnaaa</a
                     >
                     <a href="#" class="text-gray-700 hover:text-red-600 font-medium"
                     >Usluge</a

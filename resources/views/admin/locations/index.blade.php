@@ -63,10 +63,14 @@
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                                     {{ __('Address') }}
                                 </th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                    {{ __('Next Service') }}
+                                </th>
 
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                                     {{ __('Actions') }}
                                 </th>
+                                
                             </tr>
                             </thead>
                             <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
@@ -74,6 +78,15 @@
                                 <tr>
                                     <td class="px-6 py-4 whitespace-nowrap">{{ $location->name }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap">{{ $location->address }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        @if($location->next_service_date)
+                                            <a href="{{ route('service-events.show', $location->serviceEvents->first()->id) }}" class="text-white-500 underline">
+                                                {{ \Carbon\Carbon::parse($location->next_service_date)->format('d.m.Y') }}
+                                            </a>
+                                        @else
+                                            N/A
+                                        @endif
+                                    </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <div class="flex items-center space-x-4">
                                             <!-- Ikonice za Category -->
@@ -123,6 +136,16 @@
                                 <div class="bg-gray-100 dark:bg-gray-700 rounded-lg p-4 mb-4">
                                     <div class="text-lg font-semibold">{{ $location->name }}</div>
                                     <div class="text-sm text-gray-600 dark:text-gray-300">{{ $location->address }}</div>
+                                    <div class="mt-2 text-sm text-gray-600 dark:text-gray-300">
+                                        @if($location->next_service_date)
+                                            Sledeći servis:
+                                            <a href="{{ route('service-events.show', $location->serviceEvents->first()->id) }}" class="text-blue-500 hover:underline">
+                                                {{ \Carbon\Carbon::parse($location->next_service_date)->format('d.m.Y') }}
+                                            </a>
+                                        @else
+                                            Sledeći servis: N/A
+                                        @endif
+                                    </div>
                                     <div class="mt-2">
 
                                     </div>

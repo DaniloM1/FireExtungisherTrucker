@@ -92,18 +92,21 @@
         </div>
     
         <ul class="list-disc pl-5 mt-2 text-gray-700 dark:text-gray-300">
-            
             @foreach($locations as $location)
                 <li>
-                    {{-- {{dd($location)}} --}}
                     <span class="font-semibold">{{ $location->name }}</span>
-                    <span class="font-semibold">{{ $location->next_service_date }}</span>
+                    @if(isset($location->computed_next_service_date))
+                        - <span class="text-sm">Sledeći servis: {{ \Carbon\Carbon::parse($location->computed_next_service_date)->format('d.m.Y') }}</span>
+                    @else
+                        - <span class="text-sm">Sledeći servis: N/A</span>
+                    @endif
                     @if($location->company)
                         - <span class="text-sm">{{ $location->company->name }}</span>
                     @endif
                 </li>
             @endforeach
         </ul>
+        
     </div>
 @endforeach
 
@@ -123,6 +126,7 @@
                                     <div class="flex items-center justify-between">
                                         <h3 class="text-lg font-bold text-gray-900 dark:text-gray-200">
                                             #{{ $event->id }} - {{ ucfirst($event->category) }}
+                                            <i class="fa fa-forward"></i>  {{ \Carbon\Carbon::parse($event->next_service_date)->format('d.m.Y') }}
                                         </h3>
                                         <div class="flex space-x-3">
                                             <a href="{{ route('service-events.edit', $event->id) }}" class="text-gray-600 dark:text-gray-300 hover:text-gray-900">
@@ -156,8 +160,8 @@
                     
                                     <!-- Informacije o servis događaju -->
                                     <div class="mt-3 text-sm text-gray-700 dark:text-gray-300">
-                                        <p><strong>Date:</strong> {{ \Carbon\Carbon::parse($event->service_date)->format('Y-m-d') }}</p>
-                                        <p><strong>Next:</strong> {{ \Carbon\Carbon::parse($event->next_service_date)->format('Y-m-d') }}</p>
+                                        <p><strong>Date:</strong> {{ \Carbon\Carbon::parse($event->service_date)->format('d.m.Y') }}</p>
+                                        {{-- <p><strong>Next:</strong> {{ \Carbon\Carbon::parse($event->next_service_date)->format('d.m.Y') }}</p> --}}
                                         @if($event->cost)
                                             <p><strong>Cost:</strong> ${{ number_format($event->cost, 2) }}</p>
                                         @endif
@@ -327,7 +331,7 @@
                     </h3>
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                         @forelse ($companiesNeedingService as $company)
-                            <a href="{{ route('companies.show', $company->id) }}" 
+                            <a href="{{ route('companies.locations', $company->id) }}" 
                                class="block bg-white dark:bg-gray-800 shadow rounded-lg p-4 hover:bg-gray-50 dark:hover:bg-gray-700">
                                 <div class="text-lg font-bold text-gray-900 dark:text-gray-100">
                                     {{ $company->name }}
@@ -335,6 +339,14 @@
                                 <div class="mt-1 text-sm text-gray-600 dark:text-gray-300">
                                     {{ $company->city }}<br>
                                     PIB: {{ $company->pib }}
+                                </div>
+                                <div class="mt-1 text-sm text-gray-600 dark:text-gray-300">
+                                    Sledeći servis: 
+                                    @if($company->next_service_date)
+                                        {{ \Carbon\Carbon::parse($company->next_service_date)->format('d.m.Y') }}
+                                    @else
+                                        N/A
+                                    @endif
                                 </div>
                             </a>
                         @empty
@@ -344,6 +356,7 @@
                         @endforelse
                     </div>
                 </div>
+                
             </div>
         </div>
     </div>

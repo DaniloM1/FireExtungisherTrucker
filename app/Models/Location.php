@@ -37,10 +37,13 @@ class Location extends Model
     /**
      * Veza: Lokacija ima više uređaja.
      */
-    public function devices()
-    {
+    public function devices() {
         return $this->hasMany(Device::class);
     }
+    public function hydrants() {
+        return $this->hasMany(Hydrant::class);
+    }
+    
 
     /**
      * Veza: Lokacija može biti deo više location grupa.
@@ -54,6 +57,12 @@ class Location extends Model
     {
         return $this->belongsToMany(ServiceEvent::class, 'service_event_locations')->orderBy('next_service_date', 'asc');
     }
+    
+    public function getNextServiceDateAttribute()
+    {
+        return $this->serviceEvents->first() ? $this->serviceEvents->first()->next_service_date : null;
+    }
+
 
 
 }

@@ -13,17 +13,14 @@ class LocationController extends Controller
      */
     public function index($companyId)
     {
-
         // Dohvati kompaniju po ID-u
         $company = Company::findOrFail($companyId);
-
-        // Dohvati sve lokacije povezane sa kompanijom
-        $locations = $company->locations()->paginate(10);
-
+    
+        // Dohvati sve lokacije povezane sa kompanijom sa eager loading-om za serviceEvents
+        $locations = $company->locations()->with('serviceEvents')->paginate(10);
+       
         // Vrati pogled sa lokacijama
         return view('admin.locations.index', compact('company', 'locations'));
-
-
     }
     public function api($companyId)
     {

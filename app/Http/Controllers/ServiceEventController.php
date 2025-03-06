@@ -42,6 +42,16 @@ class ServiceEventController extends Controller
             });
 
         }
+        if ($request->filled('year') && $request->filled('month')) {
+            $year = $request->year;
+            $month = $request->month;
+            $firstDay = \Carbon\Carbon::create($year, $month, 1)->toDateString();
+            $lastDay = \Carbon\Carbon::create($year, $month, 1)->endOfMonth()->toDateString();
+            $query->whereBetween('next_service_date', [$firstDay, $lastDay]);
+        } elseif ($request->filled('next_service_date')) {
+            // Ako je prosleđen samo konkretan datum, filtriramo po tom datumu
+            $query->whereDate('next_service_date', $request->next_service_date);
+        }
 
         // Filter po lokaciji (po location id)
         if ($request->filled('location')) {
@@ -76,6 +86,13 @@ class ServiceEventController extends Controller
         $locations = Location::all();
         $companies  = Company::all();
         return view('admin.service-events.create', compact('locations', 'companies'));
+    }
+    public function show(ServiceEvent $serviceEvent)
+    {
+        // Učitaj povezane lokacije i kompanije
+        $serviceEvent->load('locations.company', 'locations.devices', 'locations.hydrants');
+
+        return view('admin.service-events.show', compact('serviceEvent'));
     }
 
     /**

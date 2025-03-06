@@ -22,11 +22,13 @@ class DashboardController extends Controller
 
         // Nadolazeći servis događaji (narednih 15 dana)
         $serviceEvents = ServiceEvent::with(['locations.company'])
-            ->whereBetween('next_service_date', [$now->toDateString(), $fifteenDays->toDateString()])
-            ->get()
-            ->each(function ($event) {
-                $this->calculateActiveDevices($event);
-            });
+        ->whereBetween('next_service_date', [$now->toDateString(), $fifteenDays->toDateString()])
+        ->orderBy('next_service_date', 'asc')
+        ->get()
+        ->each(function ($event) {
+            $this->calculateActiveDevices($event);
+        });
+
 
         // Nadolazeće električne inspekcije
         $electricalInspections = ElectricalInspection::with('location.company')
@@ -34,9 +36,25 @@ class DashboardController extends Controller
             ->get();
 
         // Kompanije koje zahtevaju servis
-        $companiesNeedingService = Company::whereHas('locations.serviceEvents', function ($query) use ($now, $fifteenDays) {
-            $query->whereBetween('next_service_date', [$now->toDateString(), $fifteenDays->toDateString()]);
-        })->get();
+      // Uvoz DB facade ako već nije:
+// use Illuminate\Support\Facades\DB;
+
+        $companiesNeedingService = DB::table('companies')
+        ->join('locations', 'companies.id', '=', 'locations.company_id')
+        ->join('service_event_locations', 'locations.id', '=', 'service_event_locations.location_id')
+        ->join('service_events', 'service_event_locations.service_event_id', '=', 'service_events.id')
+        ->select(
+            'companies.id',
+            'companies.name',
+            'companies.city',
+            'companies.pib',
+            DB::raw('MIN(service_events.next_service_date) as next_service_date')
+        )
+        ->whereBetween('service_events.next_service_date', [$now->toDateString(), $fifteenDays->toDateString()])
+        ->groupBy('companies.id', 'companies.name', 'companies.city', 'companies.pib')
+        ->orderBy('next_service_date', 'asc')
+        ->get();
+
 
         // Grupisanje po gradovima
         [$cities, $citySummaries] = $this->groupByCities($serviceEvents);
@@ -74,31 +92,56 @@ class DashboardController extends Controller
     }
 
     private function groupByCities($serviceEvents)
-    {
-        $cities = [];
-        $citySummaries = [];
+{
+    $cities = [];
+    $citySummaries = [];
 
-        foreach ($serviceEvents as $event) {
-            foreach ($event->locations as $location) {
-                $city = $location->city;
-                
-                // Grupisanje lokacija
-                if (!isset($cities[$city])) {
-                    $cities[$city] = collect();
-                }
-                if (!$cities[$city]->contains('id', $location->id)) {
+    foreach ($serviceEvents as $event) {
+        foreach ($event->locations as $location) {
+            $city = $location->city;
+            $currentEventDate = Carbon::parse($event->next_service_date);
+            $currentEventId = $event->id;
+
+            if (!isset($cities[$city])) {
+                // Prvi put dodajemo lokaciju i beležimo datum i ID događaja
+                $location->computed_next_service_date = $event->next_service_date;
+                $location->service_event_id = $currentEventId;
+                $cities[$city] = collect([$location]);
+            } else {
+                $existing = $cities[$city]->firstWhere('id', $location->id);
+                if ($existing) {
+                    // Ako postoji, ažuriramo samo ako je novi datum raniji
+                    if ($currentEventDate->lessThan(Carbon::parse($existing->computed_next_service_date))) {
+                        $existing->computed_next_service_date = $event->next_service_date;
+                        $existing->service_event_id = $currentEventId;
+                    }
+                } else {
+                    // Ako lokacija nije još dodata, dodajemo je
+                    $location->computed_next_service_date = $event->next_service_date;
+                    $location->service_event_id = $currentEventId;
                     $cities[$city]->push($location);
                 }
-
-                // Sažetak po gradu
-                $this->updateCitySummary($citySummaries, $city, $event);
             }
+
+            // Ažuriramo sažetak po gradu
+            $this->updateCitySummary($citySummaries, $city, $event);
         }
-        uasort($citySummaries, function($a, $b) {
-            return $a['next_service_date']->timestamp <=> $b['next_service_date']->timestamp;
-        });
-        return [$cities, $citySummaries];
     }
+
+    // Sortiramo lokacije unutar svakog grada po computed_next_service_date (rastuce)
+    foreach ($cities as $city => $collection) {
+        $cities[$city] = $collection->sortBy(function ($loc) {
+            return Carbon::parse($loc->computed_next_service_date);
+        });
+    }
+
+    uasort($citySummaries, function ($a, $b) {
+        return $a['next_service_date']->timestamp <=> $b['next_service_date']->timestamp;
+    });
+
+    return [$cities, $citySummaries];
+}
+
 
     private function updateCitySummary(&$summaries, $city, $event)
     {
