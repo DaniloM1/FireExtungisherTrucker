@@ -15,6 +15,17 @@ use App\Http\Controllers\ServiceEventController;
 Route::get('/api/cities', [CityController::class, 'index']);
 Route::get('/api/cities/search', [CityController::class, 'search']);
 
+Route::get('/migrate', function() {
+    \Artisan::call('migrate', ['--force' => true]);
+    return 'Migracije su pokrenute!';
+});
+Route::get('/seed-roles', function() {
+    \Artisan::call('db:seed', [
+        '--class' => 'RolePermissionSeeder',
+        '--force' => true
+    ]);
+    return 'RolePermissionSeeder je pokrenut!';
+});
 
 
 /*

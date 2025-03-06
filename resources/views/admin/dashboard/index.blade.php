@@ -7,8 +7,9 @@
                 {{ __('Dashboard') }}
             </h2>
         </x-slot>
-        <div class="mt-4 border-b border-gray-200 dark:border-gray-700">
-            <nav class="-mb-px flex justify-center space-x-4">
+        <div class="mt-4 border-b border-gray-200 dark:border-gray-700 overflow-x-auto">
+            <nav class="-mb-px flex justify-center md:justify-center space-x-4 whitespace-nowrap">
+        
                 <button @click="tab = 'overview'" 
                     :class="tab === 'overview' ? 'border-blue-500 text-blue-500' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'" 
                     class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
@@ -77,18 +78,19 @@
         $locations = $cities[$city] ?? collect();
     @endphp
     <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-4">
-        <div class="flex justify-between items-center">
+        <div class="flex flex-col md:flex-row md:justify-between md:items-center space-y-2 md:space-y-0">
             <h4 class="text-xl font-bold text-gray-900 dark:text-gray-100">
                 {{ $city }}
             </h4>
             <div class="text-sm text-gray-600 dark:text-gray-300">
-                <span class="font-semibold">{{ $summary['event_count'] }}</span> događaja,
-                Najbliži servis:
+                <span class="font-semibold">{{ $summary['event_count'] }}</span> događaja<br class="md:hidden">
+                <span class="hidden md:inline">•</span> Najbliži servis:
                 <span class="font-semibold">
                     {{ $summary['next_service_date'] ? $summary['next_service_date']->format('d.m.Y') : 'N/A' }}
                 </span>
             </div>
         </div>
+    
         <ul class="list-disc pl-5 mt-2 text-gray-700 dark:text-gray-300">
             
             @foreach($locations as $location)
@@ -207,7 +209,7 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         @forelse ($electricalInspections as $inspection)
                             <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700" 
-                                 onclick="window.location='{{ route('electrical-inspections.show', $inspection->id) }}'">
+                                 onclick="">
                                 <div class="flex items-center justify-between">
                                     <span class="text-lg font-bold text-gray-900 dark:text-gray-100">
                                         ID: {{ $inspection->id }}
