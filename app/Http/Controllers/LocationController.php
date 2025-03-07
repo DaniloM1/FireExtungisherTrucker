@@ -13,25 +13,16 @@ class LocationController extends Controller
      */
     public function index($companyId)
     {
-        // Dohvati kompaniju po ID-u
         $company = Company::findOrFail($companyId);
-    
-        // Dohvati sve lokacije povezane sa kompanijom sa eager loading-om za serviceEvents
         $locations = $company->locations()->with('serviceEvents')->paginate(10);
-       
-        // Vrati pogled sa lokacijama
+
         return view('admin.locations.index', compact('company', 'locations'));
     }
     public function api($companyId)
     {
-
-        // Dohvati kompaniju po ID-u
         $company = Company::findOrFail($companyId);
+        $locations = $company->locations()->paginate(200);
 
-        // Dohvati sve lokacije povezane sa kompanijom
-        $locations = $company->locations()->paginate(10);
-
-        // Vrati pogled sa lokacijama
         return $locations;
 
 
@@ -50,11 +41,11 @@ class LocationController extends Controller
     public function store(Request $request, Company $company)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'address' => 'required|string|max:255',
-            'latitude' => 'nullable|numeric',
+            'name'      => 'required|string|max:255',
+            'address'   => 'required|string|max:255',
+            'latitude'  => 'nullable|numeric',
             'longitude' => 'nullable|numeric',
-            'city' => 'required|string|max:255',    
+            'city'      => 'required|string|max:255',    
         ]);
 
         $company->locations()->create($validated);
@@ -69,6 +60,52 @@ class LocationController extends Controller
     {
         return view('admin.locations.edit', compact('location'));
     }
+   
+  
+   public function test(Request $request)
+   {
+       $query = Location::query();
+       
+       // Učitaj relacije
+       $query->with(['company', 'serviceEvents', 'devices']);
+
+       // Filter po nazivu lokacije
+       if ($request->filled('name')) {
+           $query->where('name', 'like', '%' . $request->name . '%');
+       }
+       
+       // Filter po adresi
+       if ($request->filled('address')) {
+           $query->where('address', 'like', '%' . $request->address . '%');
+       }
+       
+       // Filter po gradu
+       if ($request->filled('city')) {
+           $query->where('city', 'like', '%' . $request->city . '%');
+       }
+       
+       // Filter po kompaniji (koristi se select dropdown s ID-jevom)
+       if ($request->filled('company') && $request->company != '') {
+           $query->where('company_id', $request->company);
+       }
+       
+       // Filter po datumu servisa – traži se barem jedan servisni događaj s tim datumom
+       if ($request->filled('next_service_date')) {
+           $query->whereHas('serviceEvents', function ($q) use ($request) {
+               $q->whereDate('next_service_date', $request->next_service_date);
+           });
+       }
+       
+       $locations = $query->paginate(9);
+       
+       // Dohvati sve kompanije za select filter
+       $companies = Company::all();
+       
+       return view('admin.locations.test', compact('locations', 'companies'));
+   }
+   
+   // Vaša test metoda, ako je potrebna:
+  
 
     /**
      * Update the specified location in storage.

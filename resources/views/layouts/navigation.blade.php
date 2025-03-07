@@ -41,6 +41,12 @@ class="bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700">
                 <x-nav-link :href="route('service-events.index')" :active="request()->routeIs('service-events.*')">
                     {{ __('Servis') }}
                 </x-nav-link>
+                <x-nav-link :href="route('locations.test')" :active="request()->routeIs('locations.test')">
+                    {{ __('Locations') }}
+                </x-nav-link>
+                <x-nav-link :href="route('location-groups.index')" :active="request()->routeIs('location-groups*')">
+                    {{ __('Locations Groups') }}
+                </x-nav-link>
             </div>
         </div>
 
@@ -122,8 +128,24 @@ class="bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700">
         </x-responsive-nav-link>
     </div>
     <div class="pt-2 pb-3 space-y-1">
+        <x-responsive-nav-link :href="route('users.index')" :active="request()->routeIs('users.*')">
+            {{ __('Users') }}
+        </x-responsive-nav-link>
+    </div>
+
+    <div class="pt-2 pb-3 space-y-1">
         <x-responsive-nav-link :href="route('service-events.index')" :active="request()->routeIs('service-events.*')">
             {{ __('Servis') }}
+        </x-responsive-nav-link>
+    </div>
+    <div class="pt-2 pb-3 space-y-1">
+        <x-responsive-nav-link :href="route('locations.test')" :active="request()->routeIs('locations.test')">
+            {{ __('Locations') }}
+        </x-responsive-nav-link>
+    </div>
+    <div class="pt-2 pb-3 space-y-1">
+        <x-responsive-nav-link :href="route('location-groups.index')" :active="request()->routeIs('location-groups.*')">
+            {{ __('Locations Groups') }}
         </x-responsive-nav-link>
     </div>
 

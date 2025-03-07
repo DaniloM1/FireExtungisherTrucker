@@ -92,13 +92,14 @@ class CompanyController extends Controller
     public function update(Request $request, Company $company)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'address' => 'required|string|max:255',
+            'name'          => 'required|string|max:255',
+            'address'       => 'required|string|max:255',
             'contact_email' => 'required|email|unique:companies,contact_email,' . $company->id,
             'contact_phone' => 'required|string|max:20',
-            'pib' => 'required|string|max:20|unique:companies,pib,' . $company->id,
-            'maticni_broj' => 'required|string|max:20|unique:companies,maticni_broj,' . $company->id,
-            'website' => 'nullable|url',
+            'city'          => 'required|string|max:255',
+            'pib'           => 'required|string|max:20|unique:companies,pib,' . $company->id,
+            'maticni_broj'  => 'required|string|max:20|unique:companies,maticni_broj,' . $company->id,
+            'website'       => 'nullable|url',
         ]);
 
         $company->update($validated);

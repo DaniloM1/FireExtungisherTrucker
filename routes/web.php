@@ -10,6 +10,7 @@ use App\Http\Controllers\GroupController;
 use App\Http\Controllers\CityController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ServiceEventController;
+use App\Http\Controllers\LocationGroupController;
 
 
 Route::get('/api/cities', [CityController::class, 'index']);
@@ -65,6 +66,7 @@ Route::middleware('auth')->group(function () {
 | Rute za upravljanje korisnicima (koriste se u okviru auth middleware-a)
 */
 Route::resource('users', UserManagementController::class)->middleware('auth');
+Route::resource('location-groups', LocationGroupController::class);
 
 /*
 |--------------------------------------------------------------------------
@@ -75,7 +77,7 @@ Route::resource('users', UserManagementController::class)->middleware('auth');
 Route::middleware(['auth', 'role:super_admin'])->group(function () {
     // Kompanije
     Route::resource('companies', CompanyController::class);
-
+    Route::get('/locations', [LocationController::class, 'test'])->name('locations.test');
     // Lokacije unutar kompanije
     Route::get('companies/{company}/locations', [LocationController::class, 'index'])->name('companies.locations');
     Route::get('companies/{company}/locations/create', [LocationController::class, 'create'])->name('locations.create');

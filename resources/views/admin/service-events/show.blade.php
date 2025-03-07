@@ -55,7 +55,7 @@
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Name</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Address</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">City</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Next Service Date</th>
+                            {{-- <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Next Service Date</th> --}}
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                                 @if($serviceEvent->category == 'pp_device')
                                     Devices
@@ -69,24 +69,24 @@
                     <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                         @forelse($serviceEvent->locations as $location)
                             <tr>
-                                <td class="px-6 py-4 whitespace-nowrap">{{ $location->name }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap">{{ $location->address }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap">{{ $location->city }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap">
+                                <td class="px-6 py-4 whitespace-nowrap text-gray-500 dark:text-gray-300">{{ $location->name }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-gray-500 dark:text-gray-300">{{ $location->address }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-gray-500 dark:text-gray-300">{{ $location->city }}</td>
+                                {{-- <td class="px-6 py-4 whitespace-nowrap text-gray-500 dark:text-gray-300">
                                     @if($location->serviceEvents->isNotEmpty())
                                         {{ \Carbon\Carbon::parse($location->serviceEvents->first()->next_service_date)->format('d.m.Y') }}
                                     @else
                                         N/A
                                     @endif
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
+                                </td> --}}
+                                <td class="px-6 py-4 whitespace-nowrap text-gray-500 dark:text-gray-300">
                                     @if($serviceEvent->category == 'pp_device')
                                         {{ $location->devices->count() ?? 0 }}
                                     @elseif($serviceEvent->category == 'hydrant')
                                         {{ $location->hydrants->count() ?? 0 }}
                                     @endif
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
+                                <td class="px-6 py-4 whitespace-nowrap text-gray-500 dark:text-gray-300">
                                     @if($location->company)
                                         {{ $location->company->name }}
                                     @else
@@ -112,7 +112,7 @@
                             <h5 class="text-lg font-bold text-gray-800 dark:text-gray-100">{{ $location->name }}</h5>
                             <p class="text-sm text-gray-600 dark:text-gray-300">{{ $location->address }}</p>
                             <p class="text-sm text-gray-600 dark:text-gray-300">City: {{ $location->city }}</p>
-                            <p class="text-sm text-gray-600 dark:text-gray-300">
+                            {{-- <p class="text-sm text-gray-600 dark:text-gray-300">
                                 Next Service Date: 
                                 @if($location->serviceEvents->isNotEmpty())
                                     <a href="{{ route('service-events.show', $location->serviceEvents->first()->id) }}" class="text-blue-500 hover:underline">
@@ -121,7 +121,7 @@
                                 @else
                                     N/A
                                 @endif
-                            </p>
+                            </p> --}}
                             <p class="text-sm text-gray-600 dark:text-gray-300">
                                 @if($serviceEvent->category == 'pp_device')
                                     Devices: {{ $location->devices->count() ?? 0 }}

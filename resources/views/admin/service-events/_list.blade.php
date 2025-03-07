@@ -1,16 +1,16 @@
 <div class="py-6 bg-gray-100 dark:bg-gray-900">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        <!-- Success Message -->
+        {{-- <!-- Success Message -->
         @if(session('success'))
             <div class="bg-green-600 text-white p-4 rounded mb-4">
                 {{ session('success') }}
             </div>
-        @endif
+        @endif --}}
 
         <!-- Button for Creating New Service Event -->
         <div class="flex justify-end mb-6">
-            <a href="{{ route('service-events.create') }}" class="text-blue-600 dark:text-blue-400 hover:underline">
+            <a href="{{ route('service-events.create') }}" class="text-lg font-bold text-gray-900 dark:text-gray-200">
                 <i class="fas fa-plus"></i> {{ __('Create New Service') }}
             </a>
         </div>
@@ -21,9 +21,11 @@
                 <div class="bg-white dark:bg-gray-800 shadow-lg rounded-lg p-4">
                     <!-- Service Event Header -->
                     <div class="flex items-center justify-between">
+                        <a href="{{ route('service-events.show', $event->id)}}">
                         <h3 class="text-lg font-bold text-gray-900 dark:text-gray-200">
                             #{{ $event->id }} - {{ ucfirst($event->category) }}
                         </h3>
+                    </a>
                         <div class="flex space-x-3">
                             <a href="{{ route('service-events.edit', $event->id) }}" class="text-gray-600 dark:text-gray-300 hover:text-gray-900">
                                 <i class="fas fa-edit"></i>
@@ -49,9 +51,9 @@
                             ];
                             $statusClass = $statusClasses[strtolower($event->status)] ?? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300';
                         @endphp
-                        <span class="px-3 py-1 rounded-full text-xs font-semibold zavrseno">
+                        {{-- <span class="px-3 py-1 rounded-full text-xs font-semibold zavrseno">
                             test
-                        </span>
+                        </span> --}}
                     </div>
 
                     <!-- Service Event Info (Compact) -->
