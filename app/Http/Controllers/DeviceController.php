@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Device;
+use App\Models\Group;
+
 use App\Models\Location;
 use Illuminate\Http\Request;
 

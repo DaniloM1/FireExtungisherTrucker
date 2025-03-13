@@ -17,6 +17,7 @@ class Company extends Model
         'contact_email',
         'contact_phone',
         'pib',
+        'city',
         'maticni_broj',
         'website',
     ];

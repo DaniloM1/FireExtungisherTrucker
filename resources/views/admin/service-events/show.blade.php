@@ -152,6 +152,7 @@
 
             <!-- Back Button -->
             <div class="mt-6">
+                
                 <a href="{{ route('service-events.index') }}" class="text-blue-600 dark:text-blue-400 hover:underline">
                     &larr; Back to Service Events List
                 </a>

@@ -58,6 +58,7 @@ class CompanyController extends Controller
             'contact_email' => 'required|email|unique:companies',
             'contact_phone' => 'required|string|max:20',
             'pib' => 'required|string|max:20|unique:companies',
+            'city' => 'required|string|max:255',
             'maticni_broj' => 'required|string|max:20|unique:companies',
             'website' => 'nullable|url',
         ]);
