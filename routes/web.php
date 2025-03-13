@@ -11,6 +11,7 @@ use App\Http\Controllers\CityController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ServiceEventController;
 use App\Http\Controllers\LocationGroupController;
+use App\Http\Controllers\FrontController;
 
 
 Route::get('/api/cities', [CityController::class, 'index']);
@@ -34,10 +35,9 @@ Route::get('/api/cities/search', [CityController::class, 'search']);
 | Public Routes
 |--------------------------------------------------------------------------
 */
-Route::get('/', function () {
-    return view('welcome');
-});
 
+
+Route::get('/', [FrontController::class, 'index'])->name('home');
 
 /*
 |--------------------------------------------------------------------------
