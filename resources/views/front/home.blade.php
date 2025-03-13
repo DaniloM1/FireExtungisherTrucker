@@ -51,9 +51,6 @@
 
     </style>
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
-
     <section id="hero" class="relative h-[80vh] flex items-center overflow-hidden">
         <!-- Animirana pozadina -->
         <div class="bg-lava"></div>
