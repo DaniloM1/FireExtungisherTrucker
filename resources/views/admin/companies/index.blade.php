@@ -5,7 +5,7 @@
             {{ __('Companies') }}
         </h2>
     </x-slot>
-    
+
 
     <!-- Success/Error Poruke (opcionalno) -->
     <div class="max-w-7xl mx-auto mt-4">
@@ -44,14 +44,14 @@
                         <path fill-rule="evenodd" d="M12.9 14.32a8 8 0 111.414-1.414l5.386 5.387a1 1 0 01-1.414 1.414l-5.386-5.387zM14 8a6 6 0 11-12 0 6 6 0 0112 0z" clip-rule="evenodd" />
                     </svg>
                 </button>
-             
-                   
+
+
                         <a href="{{ route('companies.index') }}" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-full flex items-center gap-2 transition">
                             <i class="fa-solid fa-filter-circle-xmark"></i>
-                            
+
                         </a>
-                   
-               
+
+
             </form>
         </div>
     </div>
@@ -105,7 +105,7 @@
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <div class="flex items-center space-x-4">
                                             <!-- View Locations -->
-                                            <a href="{{ route('companies.locations', $company->id) }}"
+                                            <a href="{{ route('companies.locations.index', $company->id) }}"
                                                class="text-black dark:text-white hover:underline"
                                                title="{{ __('View Locations') }}">
                                                 <i class="fas fa-map-marker-alt"></i>
@@ -154,7 +154,7 @@
                                     <div class="text-sm text-gray-600 dark:text-gray-300">{{ $company->contact_email }}</div>
                                     <div class="text-sm text-gray-600 dark:text-gray-300">{{ $company->contact_phone }}</div>
                                     <div class="mt-4 flex items-center space-x-4">
-                                        <a href="{{ route('companies.locations', $company->id) }}"
+                                        <a href="{{ route('companies.locations.index', $company->id) }}"
                                            class="text-black dark:text-white hover:underline"
                                            title="{{ __('View Locations') }}">
                                             <i class="fas fa-map-marker-alt"></i>

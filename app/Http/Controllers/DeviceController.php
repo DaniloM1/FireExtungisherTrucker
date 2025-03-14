@@ -10,14 +10,10 @@ use Illuminate\Http\Request;
 
 class DeviceController extends Controller
 {
-    /**
-     * Prikaz liste uređaja za zadanu lokaciju.
-     */
     public function index(Location $location, Request $request)
     {
         $query = $location->devices();
 
-        // Pretraga – tražimo u serial_number, model i manufacturer
         if ($request->filled('search')) {
             $search = $request->input('search');
             $query->where(function($q) use ($search) {
@@ -27,7 +23,6 @@ class DeviceController extends Controller
             });
         }
 
-        // Sortiranje po next_service_date
         if ($request->filled('sort')) {
             $sort = $request->input('sort');
             if ($sort === 'next_service_date_asc') {
@@ -36,30 +31,18 @@ class DeviceController extends Controller
                 $query->orderBy('next_service_date', 'desc');
             }
         } else {
-            // Redoslijed po defaultu – primjerice rastuće
             $query->orderBy('next_service_date', 'asc');
         }
-
         $devices = $query->paginate(10)->appends($request->query());
 
         return view('admin.devices.index', compact('location', 'devices'));
     }
 
-
-    /**
-     * Prikaz forme za kreiranje novog uređaja unutar lokacije.
-     */
     public function create(Location $location)
     {
-        // Za odabir grupe unutar lokacije, ako postoji potreba:
         $groups = $location->groups()->get();
         return view('admin.devices.create', compact('location', 'groups'));
     }
-
-    /**
-     * Sprema novi uređaj u bazu.
-     */
-// U app/Http/Controllers/DeviceController.php
 
     public function store(Request $request, Location $location)
     {
@@ -74,7 +57,6 @@ class DeviceController extends Controller
             'group_id'          => 'nullable|exists:groups,id',
         ]);
 
-        // Ako je odabrana grupa, provjeravamo da grupa pripada istoj lokaciji
         if (!empty($validated['group_id'])) {
             $group = \App\Models\Group::find($validated['group_id']);
             if (!$group || $group->location_id != $location->id) {
@@ -90,7 +72,7 @@ class DeviceController extends Controller
         return redirect()->route('locations.devices.index', $location->id)
             ->with('success', 'Device created successfully.');
     }
-    
+
     public function updateStatus(Request $request, Device $device)
     {
         $validated = $request->validate([
@@ -102,10 +84,6 @@ class DeviceController extends Controller
         return response()->json(['success' => true]);
     }
 
-
-    /**
-     * Prikaz detalja o uređaju.
-     */
     public function show(Group $group)
     {
         // Učitaj i povezan uređaje (ako nisi postavio eager loading u modelu)
@@ -113,9 +91,6 @@ class DeviceController extends Controller
         return view('admin.groups.show', compact('group'));
     }
 
-    /**
-     * Prikaz forme za uređivanje uređaja.
-     */
     public function edit(Device $device)
     {
         $location = $device->location;
@@ -123,9 +98,6 @@ class DeviceController extends Controller
         return view('admin.devices.edit', compact('device', 'groups'));
     }
 
-    /**
-     * Sprema izmjene uređaja.
-     */
     public function update(Request $request, Device $device)
     {
         $validated = $request->validate([
@@ -145,9 +117,6 @@ class DeviceController extends Controller
             ->with('success', 'Device updated successfully.');
     }
 
-    /**
-     * Briše uređaj.
-     */
     public function destroy(Device $device)
     {
         $locationId = $device->location_id;

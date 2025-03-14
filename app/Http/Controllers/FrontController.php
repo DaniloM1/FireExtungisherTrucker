@@ -8,7 +8,12 @@ class FrontController extends Controller
 {
     public function index()
     {
-        // Možeš poslati dodatne podatke u view ako je potrebno
         return view('front.home');
     }
+
+    public function services()
+    {
+        return view('front.services');
+    }
+
 }

@@ -45,7 +45,7 @@
                     <!-- Header s naslovom i linkom za dodavanje nove lokacije -->
                     <div class="flex justify-between items-center mb-6">
                         <h3 class="text-lg font-semibold">{{ __('Location List') }}</h3>
-                        <a href="{{ route('locations.create', $company->id) }}"
+                        <a href="{{ route('companies.locations.create', $company->id) }}"
                            class=" hover:underline">
                             <i class="fas fa-plus"></i> {{ __('Add Location') }}
                         </a>
@@ -70,7 +70,7 @@
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                                     {{ __('Actions') }}
                                 </th>
-                                
+
                             </tr>
                             </thead>
                             <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
@@ -95,7 +95,7 @@
                                                title="Fire Extinguisher">
                                                 <i class="fas fa-fire-extinguisher"></i>
                                             </a>
-                                            <a href="{{ route('locationsx.groups.index', $location->id) }}"
+                                            <a href="{{ route('locations.groups.index', $location->id) }}"
                                                class="text-black dark:text-white hover:underline"
                                                title="Groups">
                                                 <i class="fa-solid fa-layer-group"></i>
@@ -157,7 +157,7 @@
                                         </a>
                                         {{--                                        href="{{ route('locations.fireExtinguisher', $location->id) }}"--}}
                                         {{--                                        href="{{ route('locations.objectGroups', $location->id) }}"--}}
-                                    <a href="{{ route('locationsx.groups.index', $location->id) }}"
+                                    <a href="{{ route('locations.groups.index', $location->id) }}"
 
                                        class="ml-2 text-black dark:text-white hover:underline"
                                             title="Object Groups">

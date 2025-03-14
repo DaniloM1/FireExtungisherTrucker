@@ -44,7 +44,7 @@
                 </button>
             </nav>
         </div>
-        
+
         <!-- Glavni sadržaj -->
         <div class="py-6">
             <div class="max-w-7xl mx-auto sm:px-4 lg:px-6">
@@ -97,7 +97,7 @@
                 </span>
             </div>
         </div>
-    
+
         <ul class="list-disc pl-5 mt-2 text-gray-700 dark:text-gray-300">
             @foreach($locations as $location)
                 <li>
@@ -113,7 +113,7 @@
                 </li>
             @endforeach
         </ul>
-        
+
     </div>
 @endforeach
 
@@ -148,7 +148,7 @@
                                             </form>
                                         </div>
                                     </div>
-                    
+
                                     <!-- Status servis događaja -->
                                     <div class="mt-2">
                                         @php
@@ -164,7 +164,7 @@
                                             {{ ucfirst($event->status) }}
                                         </span>
                                     </div>
-                    
+
                                     <!-- Informacije o servis događaju -->
                                     <div class="mt-3 text-sm text-gray-700 dark:text-gray-300">
                                         <p><strong>Date:</strong> {{ \Carbon\Carbon::parse($event->service_date)->format('d.m.Y') }}</p>
@@ -176,12 +176,12 @@
                                             <p class="truncate"><strong>Note:</strong> {{ Str::limit($event->description, 50, '...') }}</p>
                                         @endif
                                     </div>
-                    
+
                                     <!-- Accordion za lokacije -->
                                     @php
                                         $groupedLocations = $event->locations->groupBy('company_id');
                                     @endphp
-                    
+
                                     @if($groupedLocations->isNotEmpty())
                                         <div class="mt-4">
                                             <button onclick="toggleAccordion({{ $event->id }})" class="w-full text-left font-medium text-blue-600 dark:text-blue-300">
@@ -219,7 +219,7 @@
                     </h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         @forelse ($electricalInspections as $inspection)
-                            <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700" 
+                            <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700"
                                  onclick="">
                                 <div class="flex items-center justify-between">
                                     <span class="text-lg font-bold text-gray-900 dark:text-gray-100">
@@ -264,7 +264,7 @@
     <h3 class="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-4">
         Service Trends (naredna 3 meseca)
     </h3>
-   
+
     <div class="flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0">
         <!-- Grafikoni -->
         <div class="w-full md:w-1/2 bg-white dark:bg-gray-800 p-4 rounded-lg shadow">
@@ -328,7 +328,7 @@
         </table>
     </div>
 
-    
+
 </div>
 
                 <!-- Kompanije -->
@@ -338,7 +338,7 @@
                     </h3>
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                         @forelse ($companiesNeedingService as $company)
-                            <a href="{{ route('companies.locations', $company->id) }}" 
+                            <a href="{{ route('companies.locations.index', $company->id) }}"
                                class="block bg-white dark:bg-gray-800 shadow rounded-lg p-4 hover:bg-gray-50 dark:hover:bg-gray-700">
                                 <div class="text-lg font-bold text-gray-900 dark:text-gray-100">
                                     {{ $company->name }}
@@ -348,7 +348,7 @@
                                     PIB: {{ $company->pib }}
                                 </div>
                                 <div class="mt-1 text-sm text-gray-600 dark:text-gray-300">
-                                    Sledeći servis: 
+                                    Sledeći servis:
                                     @if($company->next_service_date)
                                         {{ \Carbon\Carbon::parse($company->next_service_date)->format('d.m.Y') }}
                                     @else
@@ -363,7 +363,7 @@
                         @endforelse
                     </div>
                 </div>
-                
+
             </div>
         </div>
     </div>
@@ -390,7 +390,7 @@
 
             function initializeCharts() {
                 const ctx = document.getElementById('combinedChart').getContext('2d');
-                
+
                 // Podaci iz kontrolera
                 const serviceData = {!! json_encode($serviceTrends->toArray()) !!};
                 const deviceData = {!! json_encode($deviceTrends) !!};

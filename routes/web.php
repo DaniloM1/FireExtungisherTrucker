@@ -1,5 +1,4 @@
 <?php
-
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CompanyController;
@@ -13,130 +12,111 @@ use App\Http\Controllers\ServiceEventController;
 use App\Http\Controllers\LocationGroupController;
 use App\Http\Controllers\FrontController;
 
-
-Route::get('/api/cities', [CityController::class, 'index']);
-Route::get('/api/cities/search', [CityController::class, 'search']);
-
-// Route::get('/migrate', function() {
-//     \Artisan::call('migrate', ['--force' => true]);
-//     return 'Migracije su pokrenute!';
-// });
-// Route::get('/seed-roles', function() {
-//     \Artisan::call('db:seed', [
-//         '--class' => 'RolePermissionSeeder',
-//         '--force' => true
-//     ]);
-//     return 'RolePermissionSeeder je pokrenut!';
-// });
-
-
 /*
 |--------------------------------------------------------------------------
 | Public Routes
 |--------------------------------------------------------------------------
 */
-
-
-Route::get('/', [FrontController::class, 'index'])->name('home');
-
-/*
-|--------------------------------------------------------------------------
-| Dashboard
-|--------------------------------------------------------------------------
-| Ova ruta zahteva autentifikaciju i verifikaciju korisnika.
-*/
-Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
-
-/*
-|--------------------------------------------------------------------------
-| Profile Routes
-|--------------------------------------------------------------------------
-| Rute za upravljanje profilom (samo za prijavljenog korisnika)
-*/
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+Route::controller(FrontController::class)->group(function () {
+    Route::get('/', 'index')->name('home');
+    Route::get('/usluge', 'services')->name('services');
 });
 
+Route::get('/api/cities', [CityController::class, 'index']);
+Route::get('/api/cities/search', [CityController::class, 'search']);
+// Dashboard
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 /*
 |--------------------------------------------------------------------------
-| User Management Routes
+| Authenticated Routes
 |--------------------------------------------------------------------------
-| Rute za upravljanje korisnicima (koriste se u okviru auth middleware-a)
 */
-Route::resource('users', UserManagementController::class)->middleware('auth');
-Route::resource('location-groups', LocationGroupController::class);
 
-/*
-|--------------------------------------------------------------------------
-| Company & Location Routes
-|--------------------------------------------------------------------------
-| Ove rute su dostupne samo korisnicima sa ulogom "super_admin"
-*/
-Route::middleware(['auth', 'role:super_admin'])->group(function () {
-    // Kompanije
-    Route::resource('companies', CompanyController::class);
-    Route::get('/locations', [LocationController::class, 'test'])->name('locations.test');
-    // Lokacije unutar kompanije
-    Route::get('companies/{company}/locations', [LocationController::class, 'index'])->name('companies.locations');
-    Route::get('companies/{company}/locations/create', [LocationController::class, 'create'])->name('locations.create');
-    Route::post('companies/{company}/locations', [LocationController::class, 'store'])->name('locations.store');
+Route::middleware(['auth'])->group(function () {
 
-    // Uređivanje i brisanje lokacija
-    Route::get('locations/{location}/edit', [LocationController::class, 'edit'])->name('locations.edit');
-    Route::put('locations/{location}', [LocationController::class, 'update'])->name('locations.update');
-    Route::delete('locations/{location}', [LocationController::class, 'destroy'])->name('locations.destroy');
 
+    // Profile
+    Route::prefix('profile')->group(function () {
+        Route::get('/', [ProfileController::class, 'edit'])->name('profile.edit');
+        Route::patch('/', [ProfileController::class, 'update'])->name('profile.update');
+        Route::delete('/', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    });
+
+    // User Management
+    Route::resource('users', UserManagementController::class);
+
+    // Service Events
+    Route::resource('service-events', ServiceEventController::class);
+
+    // Location Groups
+    Route::resource('location-groups', LocationGroupController::class);
+
+    /*
+    |--------------------------------------------------------------------------
+    | Super Admin Routes
+    |--------------------------------------------------------------------------
+    */
+    Route::middleware('role:super_admin')->group(function () {
+        // Companies
+        Route::resource('companies', CompanyController::class);
+
+        // Company Locations
+        Route::prefix('companies/{company}')->group(function () {
+            Route::get('/locations', [LocationController::class, 'index'])->name('companies.locations.index');
+            Route::get('/locations/create', [LocationController::class, 'create'])->name('companies.locations.create');
+            Route::post('/locations', [LocationController::class, 'store'])->name('companies.locations.store');
+        });
+
+        // Locations
+        Route::controller(LocationController::class)->prefix('locations')->group(function () {
+            Route::get('/', 'test')->name('locations.test');
+            Route::get('/{location}/edit', 'edit')->name('locations.edit');
+            Route::put('/{location}', 'update')->name('locations.update');
+            Route::delete('/{location}', 'destroy')->name('locations.destroy');
+        });
+    });
+
+    /*
+    |--------------------------------------------------------------------------
+    | Device & Group Routes
+    |--------------------------------------------------------------------------
+    */
+    Route::prefix('locations/{location}')->group(function () {
+        // Locations Devices
+        Route::prefix('devices')->controller(DeviceController::class)->group(function () {
+            Route::get('/', 'index')->name('locations.devices.index');
+            Route::get('/create', 'create')->name('locations.devices.create');
+            Route::post('/', 'store')->name('locations.devices.store');
+        });
+
+        // Groups
+        Route::prefix('groups')->controller(GroupController::class)->group(function () {
+            Route::get('/', 'index')->name('locations.groups.index');
+            Route::get('/create', 'create')->name('locations.groups.create');
+            Route::post('/', 'store')->name('locations.groups.store');
+        });
+    });
+
+    // Devices
+    Route::controller(DeviceController::class)->prefix('devices')->group(function () {
+        Route::patch('/{device}/update-status', 'updateStatus')->name('devices.updateStatus');
+        Route::get('/{device}/edit', 'edit')->name('devices.edit');
+        Route::put('/{device}', 'update')->name('devices.update');
+        Route::delete('/{device}', 'destroy')->name('devices.destroy');
+    });
+
+    // Groups
+    Route::controller(GroupController::class)->prefix('groups')->group(function () {
+        Route::get('/{group}', 'show')->name('groups.show');
+        Route::get('/{group}/edit', 'edit')->name('groups.edit');
+        Route::put('/{group}', 'update')->name('groups.update');
+        Route::delete('/{group}', 'destroy')->name('groups.destroy');
+        Route::get('/{group}/add-device', 'addDevice')->name('groups.add-device');
+        Route::post('/{group}/add-device', 'storeDevice')->name('groups.store-device');
+    });
+
+    // API Routes
+    Route::get('api/companies/{company}/locations', [LocationController::class, 'api']);
 });
-
-/*
-|--------------------------------------------------------------------------
-| Group Routes
-|--------------------------------------------------------------------------
-| Rute za grupe, uključujući prikaz, kreiranje i uređivanje.
-| Dostupne su korisnicima koji su prijavljeni.
-*/
-Route::middleware('auth')->group(function () {
-    // Grupe unutar određene lokacije
-    Route::get('locations/{location}/groups', [GroupController::class, 'index'])->name('locations.groups.index');
-    Route::get('locations/{location}/groups/create', [GroupController::class, 'create'])->name('locations.groups.create');
-    Route::post('locations/{location}/groups', [GroupController::class, 'store'])->name('locations.groups.store');
-    Route::get('locations/{location}/groups', [GroupController::class, 'index'])->name('locationsx.groups.index');
-    // Detalji grupe i operacije nad grupom
-    Route::get('groups/{group}', [GroupController::class, 'show'])->name('groups.show');
-    Route::get('groups/{group}/edit', [GroupController::class, 'edit'])->name('groups.edit');
-    Route::put('groups/{group}', [GroupController::class, 'update'])->name('groups.update');
-    Route::delete('groups/{group}', [GroupController::class, 'destroy'])->name('groups.destroy');
-
-    // Dodavanje uređaja u grupu
-    Route::get('groups/{group}/add-device', [GroupController::class, 'addDevice'])->name('groups.add-device');
-    Route::post('groups/{group}/add-device', [GroupController::class, 'storeDevice'])->name('groups.store-device');
-});
-
-
-/*
-|--------------------------------------------------------------------------
-| Device Routes
-|--------------------------------------------------------------------------
-| Rute za uređaje unutar lokacije i operacije nad pojedinačnim uređajima.
-| Dostupne su korisnicima koji su prijavljeni.
-*/
-Route::middleware('auth')->group(function () {
-    // Uređaji unutar određene lokacije
-    Route::patch('/devices/{device}/update-status', [DeviceController::class, 'updateStatus'])->name('devices.updateStatus');
-    Route::get('locations/{location}/devices', [DeviceController::class, 'index'])->name('locations.devices.index');
-    Route::get('locations/{location}/devices/create', [DeviceController::class, 'create'])->name('locations.devices.create');
-    Route::post('locations/{location}/devices', [DeviceController::class, 'store'])->name('locations.devices.store');
-
-    // Uređivanje i brisanje pojedinačnog uređaja
-    Route::get('devices/{device}/edit', [DeviceController::class, 'edit'])->name('devices.edit');
-    Route::put('devices/{device}', [DeviceController::class, 'update'])->name('devices.update');
-    Route::delete('devices/{device}', [DeviceController::class, 'destroy'])->name('devices.destroy');
-});
-Route::get('api/companies/{company}/locations', [\App\Http\Controllers\LocationController::class, 'api']);
-
-
-Route::resource('service-events', ServiceEventController::class);
 
 require __DIR__ . '/auth.php';

@@ -14,90 +14,65 @@ class ServiceEventController extends Controller
      */
     public function index(Request $request)
     {
-        $query = ServiceEvent::with('locations');
+        $query = ServiceEvent::with('locations.company');
 
-        // Filter po kategoriji (npr. "pp_device" ili "hydrant")
+
         if ($request->filled('category')) {
             $query->where('category', $request->category);
         }
-
-        // Filter po datumu servisa (možeš proširiti na opseg datuma ako je potrebno)
         if ($request->filled('service_date')) {
             $query->whereDate('service_date', $request->service_date);
         }
         if ($request->filled('next_service_date')) {
             $query->whereDate('next_service_date', $request->next_service_date);
         }
-
-        // Filter po evid broju (koristi LIKE za delimično podudaranje)
         if ($request->filled('evid_number')) {
             $query->where('evid_number', 'like', '%' . $request->evid_number . '%');
         }
-
-        // Filter po kompaniji: pretraga se vrši preko povezanih lokacija koje imaju dati company_id
         if ($request->filled('company')) {
-            $companyId = $request->company;
-            $query->whereHas('locations', function ($q) use ($companyId) {
-                $q->where('company_id', $companyId);
+            $query->whereHas('locations', function ($q) use ($request) {
+                $q->where('company_id', $request->company);
             });
-
         }
         if ($request->filled('year') && $request->filled('month')) {
-            $year = $request->year;
-            $month = $request->month;
-            $firstDay = \Carbon\Carbon::create($year, $month, 1)->toDateString();
-            $lastDay = \Carbon\Carbon::create($year, $month, 1)->endOfMonth()->toDateString();
+            $firstDay = \Carbon\Carbon::create($request->year, $request->month, 1)->toDateString();
+            $lastDay  = \Carbon\Carbon::create($request->year, $request->month, 1)->endOfMonth()->toDateString();
             $query->whereBetween('next_service_date', [$firstDay, $lastDay]);
         } elseif ($request->filled('next_service_date')) {
-            // Ako je prosleđen samo konkretan datum, filtriramo po tom datumu
             $query->whereDate('next_service_date', $request->next_service_date);
         }
-
-        // Filter po lokaciji (po location id)
         if ($request->filled('location')) {
-            $locationId = $request->location;
-            $query->whereHas('locations', function ($q) use ($locationId) {
-                $q->where('locations.id', $locationId);
+            $query->whereHas('locations', function ($q) use ($request) {
+                $q->where('id', $request->location);
             });
         }
-        $companies = Company::orderBy('name')->get();
-        $locations = Location::orderBy('name')->get();
 
+        $serviceEvents = $query->orderBy('service_date', 'desc')
+            ->paginate(10)
+            ->appends($request->query());
 
-        // Finalno, sortiranje i paginacija (dodajemo appends() da se query parametri sačuvaju pri paginaciji)
-        $serviceEvents = $query->orderBy('service_date', 'desc')->paginate(10)->appends($request->query());
+        $allEvents = (clone $query)->get();
+        $locationIds = $allEvents->pluck('locations')->flatten()->pluck('id')->unique();
+        $companies = Company::whereIn('id', function ($q) use ($locationIds) {
+            $q->select('company_id')->from('locations')->whereIn('id', $locationIds);
+        })->orderBy('name')->get();
+        $locations = Location::whereIn('id', $locationIds)->orderBy('name')->get();
 
         return view('admin.service-events.index', compact('serviceEvents', 'companies', 'locations'));
     }
 
-//    public function test()
-//    {
-//        $serviceEvents = ServiceEvent::with('locations')->orderBy('service_date', 'desc')->get();
-//        $companies = Company::all();
-//        return view('admin.service-events.test', compact('serviceEvents', 'companies'));
-//    }
-
-    /**
-     * Prikazuje formu za kreiranje novog servisnog događaja.
-     */
     public function create()
     {
-        // Dohvatamo sve lokacije radi mogućeg odabira
         $locations = Location::all();
         $companies  = Company::all();
         return view('admin.service-events.create', compact('locations', 'companies'));
     }
     public function show(ServiceEvent $serviceEvent)
     {
-        // Učitaj povezane lokacije i kompanije
         $serviceEvent->load('locations.company', 'locations.devices', 'locations.hydrants');
-
         return view('admin.service-events.show', compact('serviceEvent'));
     }
 
-    /**
-     * Čuva novi servisni događaj u bazi.
-     */
     public function store(Request $request)
     {
 //        dd($request);
@@ -109,30 +84,24 @@ class ServiceEventController extends Controller
             'user_id'            => 'required|integer',
             'description'        => 'nullable|string',
             'cost'               => 'required|numeric',
-            'locations'          => 'required|array', // niz ID-jeva lokacija
+            'locations'          => 'required|array',
         ]);
 
         $serviceEvent = ServiceEvent::create($data);
-        // Povezivanje servisnog događaja sa odabranim lokacijama
+
         $serviceEvent->locations()->attach($data['locations']);
 
         return redirect()->route('service-events.index')
             ->with('success', 'Service event created successfully.');
     }
 
-    /**
-     * Prikazuje formu za uređivanje servisnog događaja.
-     */
     public function edit(ServiceEvent $serviceEvent)
     {
-        $locations = Location::all();
         $companies = Company::all();
-        return view('admin.service-events.edit', compact('serviceEvent', 'locations', 'companies'));
+        return view('admin.service-events.edit', compact('serviceEvent', 'companies'));
     }
 
-    /**
-     * Ažurira servisni događaj.
-     */
+
     public function update(Request $request, ServiceEvent $serviceEvent)
     {
 // dd($request);
@@ -154,9 +123,6 @@ class ServiceEventController extends Controller
             ->with('success', 'Service event updated successfully.');
     }
 
-    /**
-     * Briše servisni događaj.
-     */
     public function destroy(ServiceEvent $serviceEvent)
     {
         $serviceEvent->delete();

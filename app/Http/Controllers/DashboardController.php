@@ -20,7 +20,6 @@ class DashboardController extends Controller
         $fifteenDays = $now->copy()->addDays(15);
         $threeMonths = $now->copy()->addMonths(3);
 
-        // Nadolazeći servis događaji (narednih 15 dana)
         $serviceEvents = ServiceEvent::with(['locations.company'])
         ->whereBetween('next_service_date', [$now->toDateString(), $fifteenDays->toDateString()])
         ->orderBy('next_service_date', 'asc')
@@ -30,14 +29,9 @@ class DashboardController extends Controller
         });
 
 
-        // Nadolazeće električne inspekcije
         $electricalInspections = ElectricalInspection::with('location.company')
             ->whereBetween('next_inspection_date', [$now->toDateString(), $fifteenDays->toDateString()])
             ->get();
-
-        // Kompanije koje zahtevaju servis
-      // Uvoz DB facade ako već nije:
-// use Illuminate\Support\Facades\DB;
 
         $companiesNeedingService = DB::table('companies')
         ->join('locations', 'companies.id', '=', 'locations.company_id')
@@ -55,11 +49,8 @@ class DashboardController extends Controller
         ->orderBy('next_service_date', 'asc')
         ->get();
 
-
-        // Grupisanje po gradovima
         [$cities, $citySummaries] = $this->groupByCities($serviceEvents);
 
-        // Trendovi za servise
         $serviceTrends = $this->getServiceTrends($now, $threeMonths);
         $deviceTrends = $this->getDeviceTrends($now, $threeMonths);
         // dd($citySummaries);
@@ -103,32 +94,27 @@ class DashboardController extends Controller
             $currentEventId = $event->id;
 
             if (!isset($cities[$city])) {
-                // Prvi put dodajemo lokaciju i beležimo datum i ID događaja
                 $location->computed_next_service_date = $event->next_service_date;
                 $location->service_event_id = $currentEventId;
                 $cities[$city] = collect([$location]);
             } else {
                 $existing = $cities[$city]->firstWhere('id', $location->id);
                 if ($existing) {
-                    // Ako postoji, ažuriramo samo ako je novi datum raniji
                     if ($currentEventDate->lessThan(Carbon::parse($existing->computed_next_service_date))) {
                         $existing->computed_next_service_date = $event->next_service_date;
                         $existing->service_event_id = $currentEventId;
                     }
                 } else {
-                    // Ako lokacija nije još dodata, dodajemo je
                     $location->computed_next_service_date = $event->next_service_date;
                     $location->service_event_id = $currentEventId;
                     $cities[$city]->push($location);
                 }
             }
 
-            // Ažuriramo sažetak po gradu
             $this->updateCitySummary($citySummaries, $city, $event);
         }
     }
 
-    // Sortiramo lokacije unutar svakog grada po computed_next_service_date (rastuce)
     foreach ($cities as $city => $collection) {
         $cities[$city] = $collection->sortBy(function ($loc) {
             return Carbon::parse($loc->computed_next_service_date);
@@ -187,7 +173,7 @@ class DashboardController extends Controller
     foreach ($events as $event) {
         $date = Carbon::parse($event->next_service_date);
         $key = $date->format('Y-m');
-        
+
         if (!isset($trends[$key])) {
             $trends[$key] = [
                 'year' => $date->year,
@@ -195,7 +181,7 @@ class DashboardController extends Controller
                 'total_devices' => 0
             ];
         }
-        
+
         $trends[$key]['total_devices'] += $event->activeDevices;
     }
 

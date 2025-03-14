@@ -30,7 +30,7 @@
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-200">
                     <h3 class="text-lg font-semibold mb-4">{{ __('New Location Form') }}</h3>
-                    <form method="POST" action="{{ route('locations.store', ['company' => $company->id]) }}">
+                    <form method="POST" action="{{ route('companies.locations.store', ['company' => $company->id]) }}">
                         @csrf
 
                         <!-- Prikaz kompanije (read-only) -->
@@ -91,7 +91,7 @@
                             <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                                 {{ __('Create Location') }}
                             </button>
-                            <a href="{{ route('companies.locations', ['company' => $company->id]) }}" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
+                            <a href="{{ route('companies.locations.index', ['company' => $company->id]) }}" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
                                 {{ __('Cancel') }}
                             </a>
                         </div>

@@ -5,51 +5,6 @@
 @section('meta_keywords', 'požarna sigurnost, protivpožarne usluge, zaštita, sigurnost')
 
 @section('content')
-    <style>
-        .bg-lava {
-            /* Osnovne (desktop) dimenzije i stil */
-            background: url('/images/hero-background.jpg') center/cover no-repeat;
-            position: absolute;
-            width: 120%;
-            height: 120%;
-            top: -10%;
-            left: -5%;
-            animation: lavaMove 17s ease-in-out infinite;
-        }
-
-        /* Keyframes animacije */
-        @keyframes lavaMove {
-            0% {
-                transform: translate(0,0) scale(1) rotate(0deg);
-            }
-            25% {
-                transform: translate(-2%, -1%) scale(1.03) rotate(-1deg);
-            }
-            50% {
-                transform: translate(-3%, -3%) scale(1.05) rotate(1deg);
-            }
-            75% {
-                transform: translate(-2%, -2%) scale(1.04) rotate(-2deg);
-            }
-            100% {
-                transform: translate(0,0) scale(1) rotate(0deg);
-            }
-        }
-
-        /* Za mobilne telefone (max-width: 640px ili 768px) -
-           biraj breakpoint u zavisnosti od projekta */
-        @media (max-width: 640px) {
-            .bg-lava {
-                /* Povećaj dimenzije i pomeri još malo */
-                width: 150%;
-                height: 140%;
-                top: -15%;
-                left: -10%;
-            }
-        }
-
-
-    </style>
 
     <section id="hero" class="relative h-[80vh] flex items-center overflow-hidden">
         <!-- Animirana pozadina -->
