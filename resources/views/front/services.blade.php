@@ -46,8 +46,8 @@
                             </li>
                         </ul>
                         <div class="mt-6">
-                            <a href="#kontakt" class="text-red-600 hover:text-red-700 font-semibold">
-                                Zakažite pregled →
+                            <a href="{{route('services.inspection')}}" class="text-red-600 hover:text-red-700 font-semibold">
+                                Opširnije →
                             </a>
                         </div>
                     </div>
@@ -75,8 +75,8 @@
                             </li>
                         </ul>
                         <div class="mt-6">
-                            <a href="#kontakt" class="text-red-600 hover:text-red-700 font-semibold">
-                                Zatražite ponudu →
+                            <a href="{{route('services.protection')}}" class="text-red-600 hover:text-red-700 font-semibold">
+                                Opširnije →
                             </a>
                         </div>
                     </div>
@@ -104,13 +104,96 @@
                             </li>
                         </ul>
                         <div class="mt-6">
-                            <a href="#kontakt" class="text-red-600 hover:text-red-700 font-semibold">
-                                Konsultujte stručnjake →
+                            <a href="{{route("services.evacuation")}}" class="text-red-600 hover:text-red-700 font-semibold">
+                                Opširnije →
                             </a>
                         </div>
                     </div>
                 </div>
+                <div class="bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
+                    <div class="p-8">
+                        <div class="w-16 h-16 bg-red-100 rounded-lg flex items-center justify-center mb-6">
+                            <i class="fas fa-tools text-red-600 text-2xl"></i>
 
+                        </div>
+                        <h3 class="text-2xl font-bold text-gray-900 mb-4">Ugradnja i Servis</h3>
+                        <ul class="space-y-3 text-gray-600">
+                            <li class="flex items-center">
+                                <i class="fas fa-check-circle text-red-500 mr-2"></i>
+                                Ugradnja PP aparata
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-check-circle text-red-500 mr-2"></i>
+                                Periodican servis
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-check-circle text-red-500 mr-2"></i>
+                                Dopuna i remont aparata
+                            </li>
+                        </ul>
+                        <div class="mt-6">
+                            <a href="{{route("services.installation")}}" class="text-red-600 hover:text-red-700 font-semibold">
+                                Opširnije →
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
+                    <div class="p-8">
+                        <div class="w-16 h-16 bg-red-100 rounded-lg flex items-center justify-center mb-6">
+                            <i class="fas fa-graduation-cap text-red-600 text-2xl"></i>
+
+                        </div>
+                        <h3 class="text-2xl font-bold text-gray-900 mb-4">Polaganje Stručnog ispita</h3>
+                        <ul class="space-y-3 text-gray-600">
+                            <li class="flex items-center">
+                                <i class="fas fa-check-circle text-red-500 mr-2"></i>
+                                Live predavanja
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-check-circle text-red-500 mr-2"></i>
+                                Konsultacije
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-check-circle text-red-500 mr-2"></i>
+                                Grupni popust
+                            </li>
+                        </ul>
+                        <div class="mt-6">
+                            <a href="{{route("services.exam")}}" class="text-red-600 hover:text-red-700 font-semibold">
+                                Opširnije →
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
+                    <div class="p-8">
+                        <div class="w-16 h-16 bg-red-100 rounded-lg flex items-center justify-center mb-6">
+                            <i class="fas  fa-bullhorn text-red-600 text-2xl"></i>
+
+                        </div>
+                        <h3 class="text-2xl font-bold text-gray-900 mb-4">Obuke i Edukacija</h3>
+                        <ul class="space-y-3 text-gray-600">
+                            <li class="flex items-center">
+                                <i class="fas fa-check-circle text-red-500 mr-2"></i>
+                                Obuke o koricenju PP opreme
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-check-circle text-red-500 mr-2"></i>
+                                Edukacija
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-check-circle text-red-500 mr-2"></i>
+                                Obuka
+                            </li>
+                        </ul>
+                        <div class="mt-6">
+                            <a href="{{route("services.training")}}" class="text-red-600 hover:text-red-700 font-semibold">
+                                Opširnije →
+                            </a>
+                        </div>
+                    </div>
+                </div>
                 <!-- Ostatak usluga (slična struktura) -->
 
             </div>

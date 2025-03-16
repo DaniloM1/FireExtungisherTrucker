@@ -20,7 +20,19 @@ use App\Http\Controllers\FrontController;
 Route::controller(FrontController::class)->group(function () {
     Route::get('/', 'index')->name('home');
     Route::get('/usluge', 'services')->name('services');
+
+    // Pojedinačne usluge
+    Route::get('/usluge/inspekcija-aparata', 'inspection')->name('services.inspection');
+    Route::get('/usluge/protivpozarni-sistemi', 'protection')->name('services.protection');
+    Route::get('/usluge/evakuacijski-planovi', 'evacuation')->name('services.evacuation');
+    Route::get('/usluge/ugradnja-servis', 'installation')->name('services.installation');
+    Route::get('/usluge/polaganje-ispita', 'exam')->name('services.exam');
+    Route::get('/usluge/obuke-edukacija', 'training')->name('services.training');
+
+    Route::get('/o-nama', 'aboutUs')->name('aboutUs');
+    Route::get('/kontakt', 'contact')->name('contact');
 });
+
 
 Route::get('/api/cities', [CityController::class, 'index']);
 Route::get('/api/cities/search', [CityController::class, 'search']);

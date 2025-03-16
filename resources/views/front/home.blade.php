@@ -1,12 +1,12 @@
 @extends('layouts-front.main')
 
-@section('title', 'Početna - Požarna Sigurnost')
+@section('title', 'Početna - Požarna Sigurnost - Inženjer Tim')
 @section('meta_description', 'Dobrodošli na Požarnu Sigurnost, vašeg partnera za protivpožarne usluge.')
-@section('meta_keywords', 'požarna sigurnost, protivpožarne usluge, zaštita, sigurnost')
+@section('meta_keywords', 'požarna sigurnost, protivpožarne usluge, zaštita, sigurnost, overa pp aparata')
 
 @section('content')
 
-    <section id="hero" class="relative h-[80vh] flex items-center overflow-hidden">
+    <section id="hero" class="relative h-[70vh] flex items-center overflow-hidden">
         <!-- Animirana pozadina -->
         <div class="bg-lava"></div>
 
@@ -19,16 +19,16 @@
                 <!-- LEVA STRANA: Naslov i tekst -->
                 <div class="md:w-1/2 flex flex-col justify-center text-center md:text-left mb-8 md:mb-0">
                     <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 transition duration-500 ease-in-out transform hover:scale-105">
-                        Ne dozvolite da vam posao postane  <span class="text-red-500">pepeo</span>
+                        Ne dozvolite da vam <span class="text-red-500">posao</span>  postane  <span class="text-red-500">pepeo</span>
                     </h1>
                     <p class="text-base md:text-lg lg:text-xl text-gray-200 mb-8">
                         Proizvodna i uslužna radnja za bezbednost i zdravlje na radu.
                     </p>
-                    <div class="space-y-4 md:space-y-0 md:space-x-4 flex flex-col md:flex-row justify-center md:justify-start">
-                        <a href="#usluge" class="bg-red-600 text-white px-6 py-3 rounded-full hover:bg-red-700 transition duration-300 inline-block">
+                    <div class="space-y-4 md:space-y-0 md:space-x-4  md:flex-row justify-center md:justify-start">
+                        <a href="{{route('services')}}" class="bg-red-600 text-white px-6 py-3 rounded-full hover:bg-red-700 transition duration-300 inline-block">
                             <i class="fas fa-fire"></i> Naše Usluge
                         </a>
-                        <a href="#kontakt" class="bg-white text-red-600 px-6 py-3 rounded-full hover:bg-gray-200 transition duration-300 inline-block">
+                        <a href="{{route('contact')}}" class="bg-white text-red-600 px-6 py-3 rounded-full hover:bg-gray-200 transition duration-300 inline-block">
                             <i class="fas fa-phone"></i> Kontakt
                         </a>
                     </div>
@@ -38,9 +38,9 @@
                     <!-- Ilustracija -->
                     <img src="/images/logo-white.svg"
                          alt="Ilustracija protupožarne zaštite"
-                         class="w-3/4 md:w-full max-w-sm object-contain hidden md:block">
+                         class="w-3/4 md:w-4/12 max-w-sm object-contain hidden md:block">
                     <!-- Tekst ispod slike -->
-                    <h1 class="hidden md:block text-4xl md:text-3xl lg:text-4xl text-gray-200 mt-4 font-bold">
+                    <h1 class="hidden md:block text-2xl md:text-2xl lg:text-4xl text-gray-200 mt-4 font-bold">
                         INŽENJER <span class="text-red-500">TIM</span>
                     </h1>
                 </div>
@@ -67,12 +67,11 @@
                         Far far away, behind the word mountains, daleko od zemalja Vokalia i Consonantia,
                         nalaze se tekstovi koji će obogatiti Vaš projekat...
                     </p>
-                    <a
-                        href="#vise"
-                        class="inline-block bg-red-600 text-white px-4 py-2 md:px-6 md:py-2 rounded-full hover:bg-red-700 transition duration-300 text-sm md:text-lg"
-                    >
-                        Saznaj Više
+                    <a href="{{ route('services') }}"
+                       class="inline-flex items-center bg-red-600 text-white px-4 py-2 md:px-6 md:py-2 rounded-full hover:bg-red-700 transition duration-300 text-sm md:text-lg">
+                        Saznaj Više <i class="fa fa-long-arrow-right ml-2"></i>
                     </a>
+
                 </div>
 
                 <!-- Desna kolona: zauzima 2 kolone na desktopu, unutra grid za usluge -->
@@ -151,7 +150,7 @@
     </section>
 
     <!-- Naši Partneri Sekcija -->
-    <section id="partneri" class="py-10 md:py-20 bg-gray-200">
+    <section id="partneri" class="py-10 md:py-20 bg-gray-100">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <!-- Grid: Na mobilu jedna kolona, na desktopu dve kolone -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
@@ -197,17 +196,43 @@
         </div>
     </section>
 
+    <section id="expertiza" class="py-20 bg-gray-100">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-4xl font-bold text-gray-800 mb-4">Naša Ekspertiza</h2>
+            <p class="text-lg text-gray-600 mb-12">
+                Više od 10 godina iskustva i saradnja sa preko 100 kompanija
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center items-center gap-12">
+                <!-- Kartica za kompanije -->
+                <div class="w-64 h-40 bg-gray-200 rounded-lg shadow p-6 flex flex-col justify-center items-center"
+                     x-data="{ count: 0 }"
+                     x-init="const end = 100; const duration = 2000; const stepTime = Math.floor(duration / end); const timer = setInterval(() => { if(count < end){ count++; } else { clearInterval(timer); } }, stepTime)">
+                    <div class="text-gray-800 text-5xl font-bold" x-text="count + '+'"></div>
+                    <p class="mt-4 text-xl font-medium text-gray-700">Kompanija</p>
+                </div>
+                <!-- Kartica za godine iskustva -->
+                <div class="w-64 h-40 bg-gray-200 rounded-lg shadow p-6 flex flex-col justify-center items-center"
+                     x-data="{ count: 0 }"
+                     x-init="const end = 10; const duration = 2000; const stepTime = Math.floor(duration / end); const timer = setInterval(() => { if(count < end){ count++; } else { clearInterval(timer); } }, stepTime)">
+                    <div class="text-gray-800 text-5xl font-bold" x-text="count + '+'"></div>
+                    <p class="mt-4 text-xl font-medium text-gray-700">Godina iskustva</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
 
 
 
     <!-- Kontakt Sekcija -->
-    <section id="kontakt" class="py-16 bg-white">
-        <div class="container mx-auto text-center">
+    <section id="kontakt" class="md:py-20 bg-gray-200 ">
+        <div class="container mx-auto text-center ">
             <h2 class="text-4xl font-bold text-red-600 mb-4">Spremni za saradnju?</h2>
             <p class="text-gray-700 mb-8 max-w-xl mx-auto">
                 Kontaktirajte nas danas i zajedno osigurajmo sigurnost vašeg prostora.
             </p>
-            <a href="/kontakt" class="bg-red-600 text-white px-8 py-3 rounded-full hover:bg-red-700 transition duration-300">
+            <a href="/kontakt" class="bg-red-600 text-white px-8 py-3 mb-6 rounded-full hover:bg-red-700 transition duration-300">
                 <i class="fas fa-envelope"></i> Kontaktirajte Nas
             </a>
         </div>

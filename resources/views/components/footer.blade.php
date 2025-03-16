@@ -16,10 +16,10 @@
             <div>
                 <h5 class="text-white font-semibold mb-4">Navigacija</h5>
                 <ul class="space-y-2 text-sm">
-                    <li><a href="#" class="hover:text-white">Početna</a></li>
-                    <li><a href="#" class="hover:text-white">O nama</a></li>
-                    <li><a href="#" class="hover:text-white">Usluge</a></li>
-                    <li><a href="#" class="hover:text-white">Kontakt</a></li>
+                    <li><a href="{{route('home')}}" class="hover:text-white">Početna</a></li>
+                    <li><a href="{{route('aboutUs')}}" class="hover:text-white">O nama</a></li>
+                    <li><a href="{{route('services')}}" class="hover:text-white">Usluge</a></li>
+                    <li><a href="{{route('contact')}}" class="hover:text-white">Kontakt</a></li>
                 </ul>
             </div>
             <!-- Kolona 3: Resursi -->

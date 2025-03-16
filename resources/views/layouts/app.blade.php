@@ -6,8 +6,9 @@
         <meta name="csrf-token" content="{{ csrf_token() }}">
         <meta name="robots" content="noindex, nofollow">
 
-        <title>{{ config('app.name', 'Laravel') }}</title>
-
+        <title>Inženjer Tim</title>
+        <link rel="icon" href="{{ asset('images/logo-white.svg') }}" type="image/x-icon">
+        <link rel="shortcut icon" href="{{ asset('images/logo-white.svg') }}" type="image/x-icon">
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
@@ -34,7 +35,7 @@
             <main>
                 {{ $slot }}
             </main>
-          
+
         </div>
     </body>
 </html>

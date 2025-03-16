@@ -1,7 +1,8 @@
+<script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+
 <nav id="main-nav" class="fixed w-full z-50 bg-transparent backdrop-blur-sm transition-colors duration-300">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center h-16">
-            <!-- Logo -->
             <div class="flex items-center">
                 <a href="{{ route('home') }}">
                     <img id="logo-white" src="{{ asset('images/logo-white.svg') }}" alt="Logo" class="h-10 w-auto block">
@@ -9,7 +10,6 @@
                 </a>
             </div>
 
-            <!-- Desktop Menu -->
             <div class="hidden md:flex space-x-8">
                 <a href="{{ route('home') }}"
                    class="nav-link toggle-color relative transition-colors duration-300 text-white hover:text-red-400 border-b-2 border-transparent {{ request()->routeIs('home') ? 'text-red-400 border-red-400' : '' }}">
@@ -19,34 +19,41 @@
                     @endif
                 </a>
 
-                <!-- Usluge sa podmenijima -->
                 <div class="relative group">
                     <a href="{{ route('services') }}"
-                       class="nav-link toggle-color relative transition-colors duration-300 text-white hover:text-red-400 border-b-2 border-transparent {{ request()->routeIs('services') ? 'text-red-400 border-red-400' : '' }}">
+                       class="nav-link toggle-color relative transition-colors duration-300 text-white hover:text-red-400 border-b-2 border-transparent {{ request()->routeIs('services') || request()->routeIs('services.*') ? 'text-red-400 border-red-400' : '' }}">
                         Usluge
-                        @if(request()->routeIs('services'))
+                        @if(request()->routeIs('services') || request()->routeIs('services.*'))
                             <span class="absolute left-0 -bottom-1 w-full h-0.5 bg-red-400"></span>
                         @endif
                     </a>
-                    <!-- Dropdown podmeni -->
-                    <div class="absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-50">
-                        <a href="/service1" class="block px-4 py-2 text-gray-800 hover:bg-gray-200">Service 1</a>
-                        <a href="/service2" class="block px-4 py-2 text-gray-800 hover:bg-gray-200">Service 2</a>
-                        <a href="/service3" class="block px-4 py-2 text-gray-800 hover:bg-gray-200">Service 3</a>
+
+                    <div class="absolute left-0 mt-2 w-64 bg-white rounded-md shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-50">
+                        <a href="{{ route('services.inspection') }}" class="block px-4 py-2 text-gray-800 hover:bg-gray-200 {{ request()->routeIs('services.inspection') ? 'bg-gray-200 font-bold' : '' }}">Inspekcija Aparata</a>
+                        <a href="{{ route('services.protection') }}" class="block px-4 py-2 text-gray-800 hover:bg-gray-200 {{ request()->routeIs('services.protection') ? 'bg-gray-200 font-bold' : '' }}">Protivpožarni Sistemi</a>
+                        <a href="{{ route('services.evacuation') }}" class="block px-4 py-2 text-gray-800 hover:bg-gray-200 {{ request()->routeIs('services.evacuation') ? 'bg-gray-200 font-bold' : '' }}">Evakuacijski Planovi</a>
+                        <a href="{{ route('services.installation') }}" class="block px-4 py-2 text-gray-800 hover:bg-gray-200 {{ request()->routeIs('services.installation') ? 'bg-gray-200 font-bold' : '' }}">Ugradnja i Servis</a>
+                        <a href="{{ route('services.exam') }}" class="block px-4 py-2 text-gray-800 hover:bg-gray-200 {{ request()->routeIs('services.exam') ? 'bg-gray-200 font-bold' : '' }}">Polaganje Ispita</a>
+                        <a href="{{ route('services.training') }}" class="block px-4 py-2 text-gray-800 hover:bg-gray-200 {{ request()->routeIs('services.training') ? 'bg-gray-200 font-bold' : '' }}">Obuke i Edukacija</a>
                     </div>
                 </div>
 
-                <a href="#o-nama"
-                   class="nav-link toggle-color relative transition-colors duration-300 text-white hover:text-red-400 border-b-2 border-transparent {{ request()->is('#o-nama') ? 'text-red-400 border-red-400' : '' }}">
+                <a href="{{ route('aboutUs') }}"
+                   class="nav-link toggle-color relative transition-colors duration-300 text-white hover:text-red-400 border-b-2 border-transparent {{ request()->routeIs('aboutUs') ? 'text-red-400 border-red-400' : '' }}">
                     O nama
+                    @if(request()->routeIs('aboutUs'))
+                        <span class="absolute left-0 -bottom-1 w-full h-0.5 bg-red-400"></span>
+                    @endif
                 </a>
-                <a href="#kontakt"
-                   class="nav-link toggle-color relative transition-colors duration-300 text-white hover:text-red-400 border-b-2 border-transparent {{ request()->is('#kontakt') ? 'text-red-400 border-red-400' : '' }}">
-                    Kontakt
+                <a href="{{ route('contact') }}"
+                   class="nav-link toggle-color relative transition-colors duration-300 text-white hover:text-red-400 border-b-2 border-transparent {{ request()->routeIs('contact') ? 'text-red-400 border-red-400' : '' }}">
+                  Kontakt
+                    @if(request()->routeIs('contact'))
+                        <span class="absolute left-0 -bottom-1 w-full h-0.5 bg-red-400"></span>
+                    @endif
                 </a>
             </div>
 
-            <!-- Akcije i Mobile Toggle -->
             <div class="flex items-center space-x-4">
                 @if (Route::has('login'))
                     @auth
@@ -76,37 +83,71 @@
         </div>
     </div>
 
-    <!-- Mobile Menu -->
     <div id="mobile-menu" class="md:hidden hidden transition-all duration-300">
         <div class="px-4 pt-4 pb-4 space-y-2 bg-black/70 backdrop-blur-md shadow-lg">
             <a href="{{ route('home') }}"
-               class="block toggle-color relative transition-colors duration-300 text-white hover:text-red-400 {{ request()->routeIs('home') ? 'text-red-400' : '' }}">
+               class="block  relative transition-colors duration-300 text-white hover:text-red-400 {{ request()->routeIs('home') ? 'text-red-400' : '' }}">
                 Početna
                 @if(request()->routeIs('home'))
                     <span class="absolute left-0 -bottom-1 w-full h-0.5 bg-red-400"></span>
                 @endif
             </a>
 
-            <div class="relative">
-                <a href="{{ route('services') }}"
-                   class="block toggle-color relative transition-colors duration-300 text-white hover:text-red-400 {{ request()->routeIs('services') ? 'text-red-400' : '' }}">
-                    Usluge
-                    @if(request()->routeIs('services'))
-                        <span class="absolute left-0 -bottom-1 w-full h-0.5 bg-red-400"></span>
-                    @endif
-                </a>
-                <div class="ml-4 mt-2 space-y-2">
-                    <a href="/service1" class="block text-gray-300 hover:text-red-400">Service 1</a>
-                    <a href="/service2" class="block text-gray-300 hover:text-red-400">Service 2</a>
-                    <a href="/service3" class="block text-gray-300 hover:text-red-400">Service 3</a>
+
+
+            <div x-data="{ openServices: {{ request()->routeIs('services.*') ? 'true' : 'false' }} }" class="relative">
+                <button @click="openServices = !openServices" class="flex items-center focus:outline-none w-full">
+                    <a href="{{ route('services') }}"
+                       class="block relative transition-colors duration-300 text-white hover:text-red-400 {{ (request()->routeIs('services') || request()->routeIs('services.*')) ? 'text-red-400 border-b-2 border-red-400' : '' }}">
+                        Usluge
+                    </a>
+                    <i class="fas fa-chevron-down text-white transition-transform duration-300 transform ml-1"
+                       :class="{ 'rotate-180': openServices }"></i>
+                </button>
+                <div x-show="openServices" x-cloak x-transition class="mt-2 ml-4 space-y-2">
+                    <a href="{{ route('services.inspection') }}"
+                       class="block transition-colors duration-300 text-gray-300 hover:text-red-400 {{ request()->routeIs('services.inspection') ? 'font-bold text-red-400' : '' }}">
+                        Inspekcija Aparata
+                    </a>
+                    <a href="{{ route('services.protection') }}"
+                       class="block transition-colors duration-300 text-gray-300 hover:text-red-400 {{ request()->routeIs('services.protection') ? 'font-bold text-red-400' : '' }}">
+                        Protivpožarni Sistemi
+                    </a>
+                    <a href="{{ route('services.evacuation') }}"
+                       class="block transition-colors duration-300 text-gray-300 hover:text-red-400 {{ request()->routeIs('services.evacuation') ? 'font-bold text-red-400' : '' }}">
+                        Evakuacijski Planovi
+                    </a>
+                    <a href="{{ route('services.installation') }}"
+                       class="block transition-colors duration-300 text-gray-300 hover:text-red-400 {{ request()->routeIs('services.installation') ? 'font-bold text-red-400' : '' }}">
+                        Ugradnja i Servis
+                    </a>
+                    <a href="{{ route('services.exam') }}"
+                       class="block transition-colors duration-300 text-gray-300 hover:text-red-400 {{ request()->routeIs('services.exam') ? 'font-bold text-red-400' : '' }}">
+                        Polaganje Ispita
+                    </a>
+                    <a href="{{ route('services.training') }}"
+                       class="block transition-colors duration-300 text-gray-300 hover:text-red-400 {{ request()->routeIs('services.training') ? 'font-bold text-red-400' : '' }}">
+                        Obuke i Edukacija
+                    </a>
                 </div>
             </div>
 
-            <a href="#o-nama" class="block transition-colors duration-300 text-white hover:text-red-400">
+
+
+
+            <a href="{{ route('aboutUs') }}"
+               class="block  relative transition-colors duration-300 text-white hover:text-red-400 {{ request()->routeIs('aboutUs') ? 'text-red-400' : '' }}">
                 O nama
+                @if(request()->routeIs('aboutUs'))
+                    <span class="absolute left-0 -bottom-1 w-full h-0.5 bg-red-400"></span>
+                @endif
             </a>
-            <a href="#kontakt" class="block transition-colors duration-300 text-white hover:text-red-400">
+            <a href="{{ route('contact') }}"
+               class="block  relative transition-colors duration-300 text-white hover:text-red-400 {{ request()->routeIs('contact') ? 'text-red-400' : '' }}">
                 Kontakt
+                @if(request()->routeIs('contact'))
+                    <span class="absolute left-0 -bottom-1 w-full h-0.5 bg-red-400"></span>
+                @endif
             </a>
 
             <div class="mt-4">
@@ -130,47 +171,5 @@
 </nav>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const nav = document.getElementById('main-nav');
-        const hero = document.getElementById('hero');
-        const toggleElements = document.querySelectorAll('.toggle-color');
-        const menuButton = document.getElementById('mobile-menu-button');
-        const mobileMenu = document.getElementById('mobile-menu');
-        const hamburgerIcon = document.getElementById('hamburger-icon');
-        const closeIcon = document.getElementById('close-icon');
-        const logoWhite = document.getElementById('logo-white');
-        const logoBlack = document.getElementById('logo-black');
 
-        // Mobile menu toggle
-        menuButton.addEventListener('click', function () {
-            const isOpen = mobileMenu.classList.toggle('hidden');
-            hamburgerIcon.classList.toggle('hidden', !isOpen);
-            closeIcon.classList.toggle('hidden', isOpen);
-        });
-
-        // Nav color change on scroll
-        function updateNavColor() {
-            const shouldChangeColor = window.scrollY > hero.offsetHeight - nav.offsetHeight;
-
-            logoWhite.classList.toggle('hidden', shouldChangeColor);
-            logoBlack.classList.toggle('hidden', !shouldChangeColor);
-
-            toggleElements.forEach(el => {
-                el.classList.toggle('text-white', !shouldChangeColor);
-                el.classList.toggle('text-black', shouldChangeColor);
-            });
-        }
-
-        window.addEventListener('scroll', updateNavColor);
-        updateNavColor();
-
-        // Close mobile menu when clicking outside
-        document.addEventListener('click', function(event) {
-            if (!menuButton.contains(event.target) && !mobileMenu.contains(event.target)) {
-                mobileMenu.classList.add('hidden');
-                hamburgerIcon.classList.remove('hidden');
-                closeIcon.classList.add('hidden');
-            }
-        });
-    });
 </script>

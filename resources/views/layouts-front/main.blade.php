@@ -8,6 +8,8 @@
         $pageDescription = trim($__env->yieldContent('meta_description')) ?: 'Default meta description';
         $pageKeywords = trim($__env->yieldContent('meta_keywords')) ?: 'default, keywords';
     @endphp
+    <link rel="icon" href="{{ asset('images/logo-white.svg') }}" type="image/x-icon">
+    <link rel="shortcut icon" href="{{ asset('images/logo-white.svg') }}" type="image/x-icon">
 
     <x-seo-meta
         title="{{ $pageTitle }}"
@@ -19,51 +21,7 @@
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<style>
-    .bg-lava {
-        /* Osnovne (desktop) dimenzije i stil */
-        background: url('/images/hero-background.jpg') center/cover no-repeat;
-        position: absolute;
-        width: 120%;
-        height: 120%;
-        top: -10%;
-        left: -5%;
-        animation: lavaMove 15s ease-in-out infinite;
-    }
 
-    /* Keyframes animacije */
-    @keyframes lavaMove {
-        0% {
-            transform: translate(0,0) scale(1) rotate(0deg);
-        }
-        25% {
-            transform: translate(-2%, -1%) scale(1.03) rotate(-1deg);
-        }
-        50% {
-            transform: translate(-3%, -3%) scale(1.05) rotate(1deg);
-        }
-        75% {
-            transform: translate(-2%, -2%) scale(1.04) rotate(-2deg);
-        }
-        100% {
-            transform: translate(0,0) scale(1) rotate(0deg);
-        }
-    }
-
-    /* Za mobilne telefone (max-width: 640px ili 768px) -
-       biraj breakpoint u zavisnosti od projekta */
-    @media (max-width: 640px) {
-        .bg-lava {
-            /* Povećaj dimenzije i pomeri još malo */
-            width: 160%;
-            height: 140%;
-            top: -15%;
-            left: -10%;
-        }
-    }
-
-
-</style>
 <body class="antialiased dark:bg-black dark:text-white/50">
 @include('components.navigation')
 
