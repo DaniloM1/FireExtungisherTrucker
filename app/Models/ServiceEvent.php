@@ -17,6 +17,7 @@ class ServiceEvent extends Model
         'user_id',
         'description',
         'cost',
+        'status',
     ];
 
     // Automatsko kastovanje datuma
@@ -30,7 +31,10 @@ class ServiceEvent extends Model
      */
     public function locations()
     {
-        return $this->belongsToMany(Location::class, 'service_event_locations');
+        return $this->belongsToMany(Location::class, 'service_event_locations')
+            ->withPivot('description', 'status')
+            ->withTimestamps();
     }
     
+
 }

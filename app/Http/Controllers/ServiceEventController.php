@@ -75,7 +75,6 @@ class ServiceEventController extends Controller
 
     public function store(Request $request)
     {
-//        dd($request);
         $data = $request->validate([
             'category'           => 'required|in:pp_device,hydrant',
             'service_date'       => 'required|date',
@@ -84,12 +83,38 @@ class ServiceEventController extends Controller
             'user_id'            => 'required|integer',
             'description'        => 'nullable|string',
             'cost'               => 'required|numeric',
+            // Pretpostavljamo da lokacije dolaze kao niz ID-jeva
             'locations'          => 'required|array',
         ]);
 
+        $newLocationIds = collect($data['locations'])->map(function ($id) {
+            return (int) $id;
+        });
+        $activeServiceEvents = ServiceEvent::where('status', 'active')
+            ->where('category', $data['category'])
+            ->with('locations')
+            ->get();
+
+        foreach ($activeServiceEvents as $activeEvent) {
+            $activeLocationIds = $activeEvent->locations->pluck('id')->map(function ($id) {
+                return (int) $id;
+            });
+            if ($activeLocationIds->diff($newLocationIds)->isEmpty() && $activeLocationIds->isNotEmpty()) {
+                $activeEvent->update(['status' => 'inactive']);
+                foreach ($activeEvent->locations as $location) {
+                    $activeEvent->locations()->updateExistingPivot($location->id, ['status' => 'inactive']);
+                }
+            }
+        }
+
+        $data['status'] = 'active';
         $serviceEvent = ServiceEvent::create($data);
 
-        $serviceEvent->locations()->attach($data['locations']);
+        foreach ($newLocationIds as $locationId) {
+            $serviceEvent->locations()->attach($locationId, [
+                'status' => 'active',
+            ]);
+        }
 
         return redirect()->route('service-events.index')
             ->with('success', 'Service event created successfully.');
@@ -113,6 +138,7 @@ class ServiceEventController extends Controller
             'user_id'            => 'required|integer',
             'description'        => 'nullable|string',
             'cost'               => 'required|numeric',
+            'status'             => 'required|in:active,inactive',
             'locations'          => 'required|array',
         ]);
 

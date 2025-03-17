@@ -80,6 +80,7 @@
             Servis po gradovima
         </h3>
         <div class="space-y-4">
+
             @foreach($citySummaries as $city => $summary)
     @php
         $locations = $cities[$city] ?? collect();
@@ -99,13 +100,17 @@
         </div>
 
         <ul class="list-disc pl-5 mt-2 text-gray-700 dark:text-gray-300">
+
             @foreach($locations as $location)
                 <li>
                     <span class="font-semibold">{{ $location->name }}</span>
                     @if(isset($location->computed_next_service_date))
                         - <span class="text-sm">Sledeći servis: {{ \Carbon\Carbon::parse($location->computed_next_service_date)->format('d.m.Y') }}</span>
                     @else
-                        - <span class="text-sm">Sledeći servis: N/A</span>
+                        <!-- Ovde možete staviti neki alternativni sadržaj ili ostaviti prazno -->
+
+
+                    - <span class="text-sm">Sledeći servis: N/A</span>
                     @endif
                     @if($location->company)
                         - <span class="text-sm">{{ $location->company->name }}</span>
@@ -128,7 +133,7 @@
                         <!-- Grid servis događaja -->
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             @foreach($serviceEvents as $event)
-                                <div class="bg-white dark:bg-gray-800 shadow-lg rounded-lg p-4">
+                                <div class="bg-white dark:bg-gray-800 shadow-lg rounded-lg p-4 {{ strtolower($event->status) === 'inactive' ? 'opacity-50' : '' }}">
                                     <!-- Zaglavlje servis događaja -->
                                     <div class="flex items-center justify-between">
                                         <h3 class="text-lg font-bold text-gray-900 dark:text-gray-200">
@@ -157,18 +162,19 @@
                                                 'zavrseno'  => 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300',
                                                 'na cekanju'=> 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300',
                                                 'otkazan'   => 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300',
+                                                'inactive'  => 'bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-400',
                                             ];
-                                            $statusClass = $statusClasses[strtolower($event->status)] ?? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300';
+                                            $statusKey = strtolower($event->status);
+                                            $statusClass = $statusClasses[$statusKey] ?? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300';
                                         @endphp
                                         <span class="px-3 py-1 rounded-full text-xs font-semibold {{ $statusClass }}">
-                                            {{ ucfirst($event->status) }}
-                                        </span>
+                            {{ ucfirst($event->status) }}
+                        </span>
                                     </div>
 
                                     <!-- Informacije o servis događaju -->
                                     <div class="mt-3 text-sm text-gray-700 dark:text-gray-300">
                                         <p><strong>Date:</strong> {{ \Carbon\Carbon::parse($event->service_date)->format('d.m.Y') }}</p>
-                                        {{-- <p><strong>Next:</strong> {{ \Carbon\Carbon::parse($event->next_service_date)->format('d.m.Y') }}</p> --}}
                                         @if($event->cost)
                                             <p><strong>Cost:</strong> ${{ number_format($event->cost, 2) }}</p>
                                         @endif
@@ -198,7 +204,18 @@
                                                         </h5>
                                                         <ul class="list-disc pl-5 mt-1 text-xs text-gray-700 dark:text-gray-300">
                                                             @foreach($locations as $location)
-                                                                <li>{{ $location->name }} - {{ $location->city }}</li>
+                                                                @php
+                                                                    // Provera pivot podataka – ako je lokacija inactive, dodajemo sivu boju i oznaku
+                                                                    $locClasses = 'text-gray-700 dark:text-gray-300';
+                                                                    $inactiveLabel = '';
+                                                                    if(isset($location->pivot) && $location->pivot->status !== 'active'){
+                                                                        $locClasses = 'text-gray-500 dark:text-gray-500';
+                                                                        $inactiveLabel = ' <span class="text-xs">(inactive)</span>';
+                                                                    }
+                                                                @endphp
+                                                                <li class="{{ $locClasses }}">
+                                                                    {{ $location->name }} - {{ $location->city }}{!! $inactiveLabel !!}
+                                                                </li>
                                                             @endforeach
                                                         </ul>
                                                     </div>
@@ -210,7 +227,8 @@
                             @endforeach
                         </div>
                     </div>
-                </div>  <!-- Kraj "Servisi" bloka -->
+                </div>
+                <!-- Kraj "Servisi" bloka -->
 
                 <!-- Inspekcije -->
                 <div x-show="tab === 'inspections'" class="mt-6 space-y-6">

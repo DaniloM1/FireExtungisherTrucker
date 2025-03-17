@@ -23,7 +23,7 @@ class Location extends Model
      */
     public function company()
     {
-        return $this->belongsTo(Company::class);
+        return $this->belongsTo(Company::class)->withTrashed();
     }
 
     /**
@@ -43,7 +43,7 @@ class Location extends Model
     public function hydrants() {
         return $this->hasMany(Hydrant::class);
     }
-    
+
 
     /**
      * Veza: Lokacija može biti deo više location grupa.
@@ -52,12 +52,12 @@ class Location extends Model
     {
         return $this->belongsToMany(LocationGroup::class, 'location_group_members');
     }
-    
+
     public function serviceEvents()
     {
         return $this->belongsToMany(ServiceEvent::class, 'service_event_locations')->orderBy('next_service_date', 'asc');
     }
-    
+
     public function getNextServiceDateAttribute()
     {
         return $this->serviceEvents->first() ? $this->serviceEvents->first()->next_service_date : null;

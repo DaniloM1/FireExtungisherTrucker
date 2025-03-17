@@ -21,6 +21,7 @@ class CreateServiceEventsTable extends Migration
             $table->unsignedBigInteger('user_id');
             $table->text('description')->nullable();
             $table->decimal('cost', 10, 2)->default(0);
+            $table->string('status')->default('active');
             $table->timestamps();
 
             // Ako koristiš user model, možeš kasnije dodati i foreign key:

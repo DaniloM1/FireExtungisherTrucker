@@ -1,6 +1,6 @@
 <div class="py-6 bg-gray-100 dark:bg-gray-900">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
+
         {{-- <!-- Success Message -->
         @if(session('success'))
             <div class="bg-green-600 text-white p-4 rounded mb-4">
@@ -44,16 +44,15 @@
                     <div class="mt-2">
                         @php
                             $statusClasses = [
-                                'aktivan' => 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300',
-                                'zavrseno' => 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300',
-                                'na cekanju' => 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300',
-                                'otkazan' => 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300',
+                                'active' => 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300',
+                                'inactive' => 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300',
                             ];
-                            $statusClass = $statusClasses[strtolower($event->status)] ?? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300';
+                            $statusKey = strtolower($event->status);
+                            $statusClass = $statusClasses[$statusKey] ?? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300';
                         @endphp
-                        {{-- <span class="px-3 py-1 rounded-full text-xs font-semibold zavrseno">
-                            test
-                        </span> --}}
+                        <span class="px-3 py-1 rounded-full text-xs font-semibold {{ $statusClass }}">
+        {{ ucfirst($event->status) }}
+    </span>
                     </div>
 
                     <!-- Service Event Info (Compact) -->
@@ -73,25 +72,56 @@
 
                     @if($groupedLocations->isNotEmpty())
                         <div class="mt-4">
-                            <button onclick="toggleAccordion({{ $event->id }})" class="w-full text-left font-medium text-blue-600 dark:text-blue-300">
+                            @php
+                                $buttonClasses = 'w-full text-left font-medium';
+                                // Dugme se boji po statusu servis događaja
+                                $buttonClasses .= ($event->status == 'inactive')
+                                    ? ' text-gray-500 dark:text-gray-500'
+                                    : ' text-blue-600 dark:text-blue-300';
+                            @endphp
+                            <button onclick="toggleAccordion({{ $event->id }})" class="{{ $buttonClasses }}">
                                 <i class="fas fa-map-marker-alt"></i> Locations ({{ $event->locations->count() }})
                             </button>
-                            <div id="accordion-{{ $event->id }}" class="hidden mt-2">
+
+                            @php
+                                // Ako je servis događaj inactive, posivi celokupni akordeon sadržaj.
+                                $accordionClasses = 'hidden mt-2';
+                                if ($event->status == 'inactive') {
+                                    $accordionClasses .= ' opacity-50';
+                                }
+                            @endphp
+                            <div id="accordion-{{ $event->id }}" class="{{ $accordionClasses }}">
                                 @foreach($groupedLocations as $companyId => $locations)
                                     @php
                                         $company = $locations->first()->company;
                                     @endphp
                                     <div class="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg mt-2">
                                         <h5 class="font-medium text-gray-700 dark:text-gray-300">
-                                            {{ $company->name }} <span class="text-sm text-gray-500 dark:text-gray-400">({{ $company->city }})</span>
+                                            @if($company)
+                                                {{ $company->name }} <span class="text-sm text-gray-500 dark:text-gray-400">({{ $company->city }})</span>
+                                            @else
+                                                <em>Company deleted</em>
+                                            @endif
                                         </h5>
                                         <ul class="list-disc pl-5 mt-1 text-xs text-gray-700 dark:text-gray-300">
                                             @foreach($locations as $location)
-                                                <li>{{ $location->name }} - {{ $location->city }}</li>
+                                                @php
+                                                    // Provera pivot podataka – ako je lokacija inactive, dodajemo sivu boju i oznaku
+                                                    $locClasses = 'text-gray-700 dark:text-gray-300';
+                                                    $inactiveLabel = '';
+                                                    if(isset($location->pivot) && $location->pivot->status !== 'active'){
+                                                        $locClasses = 'text-gray-500 dark:text-gray-500';
+                                                        $inactiveLabel = ' <span class="text-xs">(inactive)</span>';
+                                                    }
+                                                @endphp
+                                                <li class="{{ $locClasses }}">
+                                                    {{ $location->name }} - {{ $location->city }}{!! $inactiveLabel !!}
+                                                </li>
                                             @endforeach
                                         </ul>
                                     </div>
                                 @endforeach
+
                             </div>
                         </div>
                     @endif

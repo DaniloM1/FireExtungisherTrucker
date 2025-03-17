@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('maticni_broj')->unique(); // Matični broj kompanije (jedinstven)
             $table->string('website')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
