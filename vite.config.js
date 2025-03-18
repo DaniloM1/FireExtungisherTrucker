@@ -9,4 +9,8 @@ export default defineConfig({
         }),
 
     ],
+    build: {
+        minify: 'esbuild', // uključi minifikaciju
+        cssCodeSplit: true, // dodatno optimizuje CSS
+    },
 });

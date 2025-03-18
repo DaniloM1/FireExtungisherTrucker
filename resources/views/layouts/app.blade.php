@@ -35,7 +35,9 @@
             <main>
                 {{ $slot }}
             </main>
+            <button id="back-to-top" class="hidden fixed bottom-8 right-8 bg-red-600 text-white p-3 rounded-xl shadow-lg hover:bg-red-700 transition duration-300">
 
+            </button>
         </div>
     </body>
 </html>

@@ -2,8 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 .bg-lava {
+    will-change: transform;
     /* Osnovne (desktop) dimenzije i stil */
-    background: url('../../public/images/hero-background.jpg') center/cover no-repeat;
+    background: var(--bg-lava) center/cover no-repeat;
     position: absolute;
     width: 120%;
     height: 120%;

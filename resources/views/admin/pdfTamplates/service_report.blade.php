@@ -117,23 +117,27 @@
                     <table>
                         <thead>
                         <tr>
-                            <th>Serijski broj</th>
-                            <th>Model</th>
-                            <th>Proizvođač</th>
-                            <th>Datum proizvodnje</th>
-                            <th>Datum narednog servisa</th>
+                            <th>Br</th>
+                            <th>Tip</th>
+                            <th style="width: 150px;">Proizvođač</th>
+
+                            <th>Fab broj</th>
+                            <th>Proizveden</th>
+                            <th>HVP</th>
                             <th>Pozicija</th>
                             <th>Status</th>
                         </tr>
                         </thead>
                         <tbody>
+
                         @foreach($location->devices as $device)
                             <tr>
-                                <td>{{ $device->serial_number }}</td>
+                                <td>{{ $loop->iteration }}</td>
                                 <td>{{ $device->model }}</td>
                                 <td>{{ $device->manufacturer }}</td>
-                                <td>{{ \Carbon\Carbon::parse($device->manufacture_date)->format('d.m.Y.') }}</td>
-                                <td>{{ \Carbon\Carbon::parse($device->next_service_date)->format('d.m.Y.') }}</td>
+                                <td>{{ $device->serial_number }}</td>
+                                <td>{{ \Carbon\Carbon::parse($device->manufacture_date)->format('m/Y') }}</td>
+                                <td>{{ \Carbon\Carbon::parse($device->hvp)->format('m/Y') }}</td>
                                 <td>{{ $device->position }}</td>
                                 <td>{{ ucfirst($device->status) }}</td>
                             </tr>

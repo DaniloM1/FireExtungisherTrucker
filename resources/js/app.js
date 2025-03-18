@@ -3,6 +3,8 @@ import './bootstrap';
 import Alpine from 'alpinejs';
 
 window.Alpine = Alpine;
+import './backToTop.js';
+import './preloadHero.js';
 
 
 Alpine.start();

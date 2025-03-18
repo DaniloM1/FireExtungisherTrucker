@@ -16,8 +16,13 @@
         meta_description="{{ $pageDescription }}"
         meta_keywords="{{ $pageKeywords }}"
     />
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+          media="print"
+          onload="this.media='all'">
+    <noscript>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    </noscript>
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
@@ -35,20 +40,5 @@
 </button>
 @include('components.footer')
 <!-- Skripta za prikaz dugmeta i glatko skrolovanje -->
-<script>
-    const backToTopButton = document.getElementById('back-to-top');
-
-    window.addEventListener('scroll', () => {
-        if (window.pageYOffset > 300) {
-            backToTopButton.classList.remove('hidden');
-        } else {
-            backToTopButton.classList.add('hidden');
-        }
-    });
-
-    backToTopButton.addEventListener('click', () => {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
-</script>
 </body>
 </html>
