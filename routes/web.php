@@ -13,6 +13,11 @@ use App\Http\Controllers\LocationGroupController;
 use App\Http\Controllers\FrontController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\BlogController;
+use App\Http\Controllers\PDFController;
+
+Route::get('/service-report/{serviceEventId}', [PDFController::class, 'generateServiceReport']);
+
+
 
 /*
 |--------------------------------------------------------------------------
