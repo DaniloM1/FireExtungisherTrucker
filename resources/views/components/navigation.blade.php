@@ -45,6 +45,13 @@
                         <span class="absolute left-0 -bottom-1 w-full h-0.5 bg-red-400"></span>
                     @endif
                 </a>
+                <a href="{{ route('blog.index') }}"
+                   class="nav-link toggle-color relative transition-colors duration-300 text-white hover:text-red-400 border-b-2 border-transparent {{ request()->routeIs('blog.*') ? 'text-red-400 border-red-400' : '' }}">
+                    Blog
+                    @if(request()->routeIs('blog.*'))
+                        <span class="absolute left-0 -bottom-1 w-full h-0.5 bg-red-400"></span>
+                    @endif
+                </a>
                 <a href="{{ route('contact') }}"
                    class="nav-link toggle-color relative transition-colors duration-300 text-white hover:text-red-400 border-b-2 border-transparent {{ request()->routeIs('contact') ? 'text-red-400 border-red-400' : '' }}">
                   Kontakt

@@ -57,6 +57,9 @@ class="bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700">
                 <x-nav-link :href="route('location-groups.index')" :active="request()->routeIs('location-groups*')">
                     {{ __('Locations Groups') }}
                 </x-nav-link>
+                <x-nav-link :href="route('posts.index')" :active="request()->routeIs('posts.*')">
+                    {{ __('Blog') }}
+                </x-nav-link>
             </div>
         </div>
 

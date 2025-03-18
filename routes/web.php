@@ -11,12 +11,18 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ServiceEventController;
 use App\Http\Controllers\LocationGroupController;
 use App\Http\Controllers\FrontController;
+use App\Http\Controllers\PostController;
+use App\Http\Controllers\BlogController;
 
 /*
 |--------------------------------------------------------------------------
 | Public Routes
 |--------------------------------------------------------------------------
 */
+
+Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
+Route::get('/blog/{post:slug}', [BlogController::class, 'show'])->name('blog.show');
+
 Route::controller(FrontController::class)->group(function () {
     Route::get('/', 'index')->name('home');
     Route::get('/usluge', 'services')->name('services');
@@ -45,7 +51,16 @@ Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard
 */
 
 Route::middleware(['auth'])->group(function () {
-
+    //Blog admin controll
+    Route::controller(PostController::class)->prefix('posts')->group(function () {
+        Route::get('/', 'index')->name('posts.index');
+        Route::get('/create', 'create')->name('posts.create');
+        Route::post('/', 'store')->name('posts.store');
+        Route::get('/{post}', 'show')->name('posts.show');
+        Route::get('/{post}/edit', 'edit')->name('posts.edit');
+        Route::patch('/{post}', 'update')->name('posts.update');
+        Route::delete('/{post}', 'destroy')->name('posts.destroy');
+    });
 
     // Profile
     Route::prefix('profile')->group(function () {
