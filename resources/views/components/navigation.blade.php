@@ -18,7 +18,7 @@
                     @endif
                 </a>
 
-                <div class="relative group">
+                <div class="relative group" x-data="{ open: false }" @mouseenter="open = true" @mouseleave="open = false" @click.away="open = false">
                     <a href="{{ route('services') }}"
                        class="nav-link toggle-color relative transition-colors duration-300 text-white hover:text-red-400 border-b-2 border-transparent {{ request()->routeIs('services') || request()->routeIs('services.*') ? 'text-red-400 border-red-400' : '' }}">
                         Usluge
@@ -27,7 +27,14 @@
                         @endif
                     </a>
 
-                    <div class="absolute left-0 mt-2 w-64 bg-white rounded-md shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-50">
+                    <div x-show="open"
+                         x-transition:enter="transition ease-out duration-200"
+                         x-transition:enter-start="opacity-0"
+                         x-transition:enter-end="opacity-100"
+                         x-transition:leave="transition ease-in duration-150"
+                         x-transition:leave-start="opacity-100"
+                         x-transition:leave-end="opacity-0"
+                         class="absolute left-0 mt-2 w-64 bg-white rounded-md shadow-lg z-50">
                         <a href="{{ route('services.inspection') }}" class="block px-4 py-2 text-gray-800 hover:bg-gray-200 {{ request()->routeIs('services.inspection') ? 'bg-gray-200 font-bold' : '' }}">Inspekcija Aparata</a>
                         <a href="{{ route('services.protection') }}" class="block px-4 py-2 text-gray-800 hover:bg-gray-200 {{ request()->routeIs('services.protection') ? 'bg-gray-200 font-bold' : '' }}">Protivpožarni Sistemi</a>
                         <a href="{{ route('services.evacuation') }}" class="block px-4 py-2 text-gray-800 hover:bg-gray-200 {{ request()->routeIs('services.evacuation') ? 'bg-gray-200 font-bold' : '' }}">Evakuacijski Planovi</a>

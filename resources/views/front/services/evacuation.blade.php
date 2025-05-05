@@ -1,6 +1,6 @@
 @extends('layouts-front.main')
 
-@section('title', 'Evakuacijski Planovi - Požarna Sigurnost - Inženjer Tim')
+@section('title', 'Evakuacioni Planovi - Požarna Sigurnost - Inženjer Tim')
 @section('meta_description', 'Izrada detaljnih evakuacijskih planova za sigurnost vašeg prostora. Analiza prostora, štampanje, postavljanje planova i obuka osoblja.')
 @section('meta_keywords', 'evakuacijski planovi, analiza prostora, obuka, sigurnost, planiranje, štampanje, postavljanje')
 
@@ -22,24 +22,51 @@
         <div class="container mx-auto px-4 sm:px-6 lg:px-8">
             <div class="max-w-4xl mx-auto">
                 <h2 class="text-3xl font-bold text-gray-900 mb-6">Planiranje evakuacije, štampanje i postavljanje planova</h2>
-                <p class="text-gray-700 mb-6 leading-relaxed">
-                    Naš tim kreira precizne evakuacijske planove prilagođene vašem prostoru, osiguravajući efikasnu evakuaciju u hitnim situacijama. Pored digitalnih rešenja, nudimo i usluge profesionalnog štampanja planova na visokokvalitetnom materijalu, kao i postavljanja istih na strateškim lokacijama unutar objekta.
-                </p>
-                <p class="text-gray-700 mb-6 leading-relaxed">
-                    Na ovaj način osiguravamo da svi u prostoru imaju pristup jasnim i vidljivim uputstvima za evakuaciju, dok je obuka osoblja dodatna garancija da svi znaju kako da postupaju u vanrednim situacijama.
-                </p>
+
+                <div class="flex flex-col md:flex-row gap-6 mb-8">
+                    <!-- Tekst -->
+                    <div class="md:w-2/3">
+                        <p class="text-gray-700 mb-4 leading-relaxed">
+                            Naš tim kreira precizne evakuacijske planove prilagođene vašem prostoru, osiguravajući efikasnu evakuaciju u hitnim situacijama. Pored digitalnih rešenja, nudimo i usluge profesionalnog štampanja planova na visokokvalitetnom materijalu, kao i postavljanja istih na strateškim lokacijama unutar objekta.
+                        </p>
+                        <p class="text-gray-700 mb-4 leading-relaxed">
+                            Na ovaj način osiguravamo da svi u prostoru imaju pristup jasnim i vidljivim uputstvima za evakuaciju, dok je obuka osoblja dodatna garancija da svi znaju kako da postupaju u vanrednim situacijama.
+                        </p>
+                    </div>
+
+                    <!-- Slika za veće ekrane -->
+                    <div class="hidden lg:flex lg:w-1/3 justify-end">
+                        <img
+                            src="{{ asset('images/evacuation.png') }}"
+                            alt="Evakuacioni planovi"
+                            class="w-40 lg:w-64 drop-shadow-md rounded-md"
+                        />
+                    </div>
+                </div>
+
                 <ul class="list-disc pl-5 text-gray-700 mb-6 space-y-2">
                     <li><strong>Detaljna analiza prostora:</strong> Identifikujemo ključne zone i eventualne prepreke.</li>
                     <li><strong>Digitalni i fizički planovi:</strong> Izrađujemo precizne planove u više formata.</li>
                     <li><strong>Štampanje i postavljanje:</strong> Profesionalno štampamo planove i postavljamo ih na optimalna mesta.</li>
                     <li><strong>Obuka osoblja:</strong> Organizujemo obuke kako bi svi znali kako da reaguju u hitnim situacijama.</li>
                 </ul>
+
                 <a href="{{ route('contact') }}" class="inline-block bg-red-600 text-white px-8 py-3 rounded-full hover:bg-red-700 transition duration-300">
                     Kontaktirajte nas
                 </a>
+
+                <!-- Slika za male ekrane -->
+                <div class="flex sm:hidden w-full justify-center mt-8">
+                    <img
+                        src="{{ asset('images/evacuation.png') }}"
+                        alt="Evakuacioni planovi"
+                        class="w-60 drop-shadow-md rounded-md"
+                    />
+                </div>
             </div>
         </div>
     </section>
+
 
     <!-- FAQ Sekcija -->
     <section id="faq" class="py-16 bg-gray-100">

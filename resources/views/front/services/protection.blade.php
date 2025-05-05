@@ -17,32 +17,60 @@
         </div>
     </section>
 
-    <!-- Sadržaj usluge -->
     <section class="py-16 bg-white">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8">
             <div class="max-w-4xl mx-auto">
                 <h2 class="text-3xl font-bold text-gray-900 mb-6">Projektovanje, instalacija i monitoring sistema</h2>
-                <p class="text-gray-700 mb-6 leading-relaxed">
-                    Naša rešenja za protivpožarnu zaštitu obuhvataju kompletno projektovanje, instalaciju i održavanje sistema koji su prilagođeni specifičnostima svakog prostora. Koristimo vrhunske alarmne sisteme i napredne tehnologije za kontinuirani monitoring, čime osiguravamo da je vaš prostor uvek zaštićen od potencijalnih rizika.
-                </p>
-                <p class="text-gray-700 mb-6 leading-relaxed">
-                    Naš tim stručnjaka detaljno analizira prostor, kreira kompletna tehnička rešenja, i vrši integraciju novih sistema sa postojećom infrastrukturom. Sa sistemom 24/7 monitoringa, odmah reagujemo na sve nepravilnosti, čime se značajno povećava bezbednost i pouzdanost sistema.
-                </p>
+
+                <div class="flex flex-col md:flex-row gap-6 mb-8">
+                    <!-- Tekst -->
+                    <div class="md:w-2/3">
+                        <p class="text-gray-700 mb-4 leading-relaxed">
+                            Naša rešenja za protivpožarnu zaštitu obuhvataju kompletno projektovanje, instalaciju i održavanje sistema koji su prilagođeni specifičnostima svakog prostora. Koristimo vrhunske alarmne sisteme i napredne tehnologije za kontinuirani monitoring, čime osiguravamo da je vaš prostor uvek zaštićen od potencijalnih rizika.
+                        </p>
+                        <p class="text-gray-700 leading-relaxed">
+                            Naš tim stručnjaka detaljno analizira prostor, kreira kompletna tehnička rešenja, i vrši integraciju novih sistema sa postojećom infrastrukturom. Sa sistemom 24/7 monitoringa, odmah reagujemo na sve nepravilnosti, čime se značajno povećava bezbednost i pouzdanost sistema.
+                        </p>
+                    </div>
+
+                    <!-- Slika (samo desktop) -->
+                    <div class="hidden lg:flex lg:w-1/3 justify-end">
+                        <img
+                            src="{{ asset('images/protivpozarni-sistemi.png') }}"
+                            alt="Protivpožarni sistemi"
+                            class="w-40 lg:w-64 drop-shadow-md rounded-md"
+                        />
+                    </div>
+                </div>
+
                 <ul class="list-disc pl-5 text-gray-700 mb-6 space-y-2">
                     <li><strong>Kompletno projektovanje:</strong> Prilagođena rešenja dizajnirana prema specifičnim potrebama vašeg prostora.</li>
                     <li><strong>Instalacija i integracija:</strong> Moderni alarmni sistemi i oprema, savršeno integrisani u postojeću infrastrukturu.</li>
                     <li><strong>24/7 monitoring:</strong> Neprekidan nadzor i brza intervencija kako bi se osigurala maksimalna bezbednost.</li>
                     <li><strong>Redovno održavanje:</strong> Preventivni pregledi i ažuriranja sistema u skladu sa najnovijim standardima.</li>
                 </ul>
+
                 <p class="text-gray-700 mb-8 leading-relaxed">
                     Investiranjem u naša rešenja, obezbeđujete dugoročnu zaštitu i sigurnost, smanjujući rizik od požara i omogućavajući nesmetan rad vašeg poslovanja.
                 </p>
+
                 <a href="{{ route('contact') }}" class="inline-block bg-red-600 text-white px-8 py-3 rounded-full hover:bg-red-700 transition duration-300">
                     Kontaktirajte nas
                 </a>
+
+                <!-- Slika (samo mobile) -->
+                <div class="flex sm:hidden w-full justify-center mt-8">
+                    <img
+                        src="{{ asset('images/protivpozarni-sistemi.png') }}"
+                        alt="Protivpožarni sistemi"
+                        class="w-60 drop-shadow-md rounded-md"
+                    />
+                </div>
             </div>
         </div>
     </section>
+
+
     <section id="faq" class="py-16 bg-gray-100">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8">
             <h2 class="text-3xl font-bold text-gray-900 text-center mb-8">Često postavljana pitanja</h2>

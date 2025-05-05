@@ -23,10 +23,33 @@
     <section class="py-16 bg-white">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8">
             <div class="max-w-4xl mx-auto">
-                <h2 class="text-3xl font-bold text-gray-900 mb-6">Sveobuhvatna priprema i live predavanja</h2>
-                <p class="text-gray-700 mb-6 leading-relaxed">
-                    Naš kurs za polaganje stručnog ispita iz oblasti zaštite od požara obuhvata live predavanja, konsultacije i praktičnu obuku. Kurs traje 6 meseci i osmišljen je da kandidatima pruži temeljno znanje iz sedam ključnih predmeta:
-                </p>
+                <h2 class="text-3xl font-bold text-gray-900 mb-6">Sveobuhvatna priprema i online predavanja</h2>
+
+                <!-- Blok: Tekst + slika pored -->
+                <div class="flex flex-col md:flex-row gap-6 mb-8">
+                    <!-- Tekst -->
+                    <div class="md:w-2/3">
+
+                        <p class="text-gray-700 mb-4 leading-relaxed">
+                            Pored teorijske nastave, poseban akcenat stavljamo na praktičnu primenu znanja kroz simulacije i interaktivne vežbe. Kroz rad sa opremom i rešavanje realnih scenarija, kandidati stiču neophodne veštine za efikasno i bezbedno postupanje u hitnim situacijama, što ih priprema za uspešno polaganje ispita i buduće profesionalne izazove.
+                        </p>
+                        <p class="text-gray-700 mb-4 leading-relaxed">
+                            Naš kurs za polaganje stručnog ispita iz oblasti zaštite od požara obuhvata online predavanja, konsultacije i praktičnu obuku. Kurs traje 6 meseci i osmišljen je da kandidatima pruži temeljno znanje iz sedam ključnih predmeta:
+                        </p>
+
+                    </div>
+
+                    <!-- Slika -->
+                    <div class="hidden lg:flex lg:w-1/3 justify-end">
+                        <img
+                            src="{{ asset('images/exam.png') }}"
+                            alt="Strucni ispit zastite od pozara"
+                            class="w-40 lg:w-64 drop-shadow-md rounded-md"
+                        />
+                    </div>
+                </div>
+
+                <!-- Blok: Lista predmeta -->
                 <ul class="list-disc pl-5 text-gray-700 mb-6 space-y-2">
                     <li><strong>Normativno uređenje zaštite od požara:</strong> Zakonski propisi i standardi.</li>
                     <li><strong>Opasne materije, požar i eksplozija:</strong> Osnove hemijskih opasnosti i preventivnih mera.</li>
@@ -36,15 +59,29 @@
                     <li><strong>Vatrogasne sprave i oprema:</strong> Pregled opreme i njenih mogućnosti.</li>
                     <li><strong>Taktika gašenja požara:</strong> Praktične tehnike i operativne procedure.</li>
                 </ul>
-                <p class="text-gray-700 mb-6 leading-relaxed">
-                    Kurs je osmišljen tako da kandidati, pored teorijskog znanja, steknu i praktične veštine kroz realne simulacije i radionice. Cena kursa je vrlo povoljna, a nudimo i dodatne grupne popuste. Nakon uspešnog polaganja, dobijate priznato stručno zvanje u oblasti zaštite od požara, što vam otvara nove profesionalne mogućnosti.
+
+                <!-- Zaključak -->
+                <p class="text-gray-700 mb-8 leading-relaxed">
+                    Kurs je osmišljen tako da kandidati, pored teorijskog znanja, steknu i praktične veštine kroz realne simulacije i radionice. Cena kursa je vrlo povoljna, a nudimo i dodatne grupne popuste. Nakon uspešnog polaganja, dobijate priznato stručno zvanje u oblasti zaštite od požara.
                 </p>
+
                 <a href="{{ route('contact') }}" class="inline-block bg-red-600 text-white px-8 py-3 rounded-full hover:bg-red-700 transition duration-300">
                     Kontaktirajte nas
                 </a>
+
+                <!-- Slika za male ekrane -->
+                <div class="flex sm:hidden w-full justify-center mt-8">
+                    <img
+                        src="{{ asset('images/exam.png') }}"
+                        alt="Polaganje stručnog ispita"
+                        class="w-60 drop-shadow-md rounded-md"
+                    />
+                </div>
             </div>
         </div>
     </section>
+
+
 
     <!-- FAQ Sekcija -->
     <section id="faq" class="py-16 bg-gray-100">

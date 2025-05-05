@@ -11,6 +11,7 @@
         <div class="absolute inset-0 bg-black opacity-70"></div>
         <div class="container mx-auto relative z-10 px-4 text-center ">
             <h1 class="text-4xl md:text-6xl font-bold text-white mb-4">Inspekcija <span class="text-red-500">Aparata</span></h1>
+
             <p class="text-xl text-gray-300 max-w-2xl mx-auto">
                 Redovni pregledi i stručno održavanje za sigurnost vašeg prostora.
             </p>
@@ -22,27 +23,54 @@
         <div class="container mx-auto px-4 sm:px-6 lg:px-8">
             <div class="max-w-4xl mx-auto">
                 <h2 class="text-3xl font-bold text-gray-900 mb-6">Sveobuhvatna inspekcija i održavanje aparata</h2>
-                <p class="text-gray-700 mb-6 leading-relaxed">
-                    Naša usluga inspekcije aparata predstavlja temelj bezbednosti na radu, jer redovni pregledi svake 6 meseci osiguravaju da vaša protivpožarna oprema funkcioniše optimalno. Naši sertifikovani tehničari detaljno pregledaju sve komponente, identifikuju eventualne nepravilnosti i daju precizne preporuke za preventivno održavanje.
-                </p>
-                <p class="text-gray-700 mb-6 leading-relaxed">
-                    Time ne samo da se ispunjavaju važeći sigurnosni standardi, već se i značajno smanjuje rizik od neželjenih incidenata. Uz sveobuhvatne izveštaje i stručno savetovanje, naši klijenti imaju potpunu kontrolu i mir, znajući da je njihova oprema uvek spremna za hitne situacije.
-                </p>
+
+                <div class="flex flex-col md:flex-row gap-6 mb-8">
+                    <!-- Tekst -->
+                    <div class="md:w-2/3">
+                        <p class="text-gray-700 mb-4 leading-relaxed">
+                            Naša usluga inspekcije aparata predstavlja temelj bezbednosti na radu, jer redovni pregledi svake 6 meseci osiguravaju da vaša protivpožarna oprema funkcioniše optimalno. Naši sertifikovani tehničari detaljno pregledaju sve komponente, identifikuju eventualne nepravilnosti i daju precizne preporuke za preventivno održavanje.
+                        </p>
+                        <p class="text-gray-700 leading-relaxed">
+                            Time ne samo da se ispunjavaju važeći sigurnosni standardi, već se i značajno smanjuje rizik od neželjenih incidenata. Uz sveobuhvatne izveštaje i stručno savetovanje, naši klijenti imaju potpunu kontrolu i mir, znajući da je njihova oprema uvek spremna za hitne situacije.
+                        </p>
+                    </div>
+
+                    <!-- Slika -->
+                    <div class="hidden lg:flex lg:w-1/3 justify-end">
+                        <img
+                            src="{{ asset('images/inspekcija-aparata.png') }}"
+                            alt="Inspekcija aparata"
+                            class="w-40 lg:w-64 drop-shadow-md rounded-md"
+                        />
+                    </div>
+                </div>
+
                 <ul class="list-disc pl-5 text-gray-700 mb-6 space-y-2">
                     <li><strong>Redovni pregledi:</strong> Svakih 6 meseci, uz detaljnu proveru svih ključnih komponenti.</li>
                     <li><strong>Kompletni izveštaji:</strong> Transparentno dokumentovani rezultati sa jasnim preporukama za održavanje.</li>
                     <li><strong>Stručno savetovanje:</strong> Praktični saveti za popravke i preventivno održavanje, prilagođeni vašim potrebama.</li>
                     <li><strong>Brza intervencija:</strong> Spremni smo da reagujemo odmah u hitnim situacijama.</li>
                 </ul>
+
                 <p class="text-gray-700 mb-8 leading-relaxed">
                     Investirajte u redovnu inspekciju i osigurajte dugoročnu pouzdanost i sigurnost vaše opreme – jer kada je reč o bezbednosti, detalji su ključni.
                 </p>
+
                 <a href="{{ route('contact') }}" class="inline-block bg-red-600 text-white px-8 py-3 rounded-full hover:bg-red-700 transition duration-300">
                     Kontaktirajte nas
                 </a>
+                <div class="flex sm:hidden w-full justify-center mb-6">
+                    <img
+                        src="{{ asset('images/inspekcija-aparata.png') }}"
+                        alt="Inspekcija aparata"
+                        class="w-60 drop-shadow-md rounded-md"
+                    />
+                </div>
+
             </div>
         </div>
     </section>
+
     <section id="faq" class="py-16 bg-gray-100">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8">
             <h2 class="text-3xl font-bold text-gray-900 text-center mb-8">Često postavljana pitanja</h2>
