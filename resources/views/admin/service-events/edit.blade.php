@@ -4,7 +4,7 @@
             {{ __('Edit Service Event') }}
         </h2>
     </x-slot>
-
+{{--{{dd($serviceEvent)}}}--}}
     <div class="py-6 bg-gray-100 dark:bg-gray-900">
         <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 shadow sm:rounded-lg p-6">

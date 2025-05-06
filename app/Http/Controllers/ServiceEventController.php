@@ -122,8 +122,15 @@ class ServiceEventController extends Controller
 
     public function edit(ServiceEvent $serviceEvent)
     {
-        $companies = Company::all();
-        return view('admin.service-events.edit', compact('serviceEvent', 'companies'));
+        $serviceEvent->load('locations.company');
+
+        $companies   = Company::all();
+        $allLocations = Location::orderBy('name')->get();
+        return view('admin.service-events.edit', compact(
+            'serviceEvent',
+            'companies',
+            'allLocations'
+        ));
     }
 
 
