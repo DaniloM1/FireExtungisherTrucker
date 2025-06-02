@@ -1,4 +1,6 @@
 <?php
+
+use App\Http\Controllers\CompanyUserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CompanyController;
@@ -150,5 +152,15 @@ Route::middleware(['auth'])->group(function () {
     // API Routes
     Route::get('api/companies/{company}/locations', [LocationController::class, 'api']);
 });
+/*
+    |--------------------------------------------------------------------------
+    | Company Routes
+    |--------------------------------------------------------------------------
+    */
+    Route::middleware(['auth', 'role:company'])->prefix('company')->group(function () {
+        Route::get('/service-events', [App\Http\Controllers\CompanyUserController::class, 'index'])->name('company.service-events.index');
+        Route::get('/service-events/{service_event}', [App\Http\Controllers\CompanyUserController::class, 'show'])->name('company.service-events.show');
+    });
+
 
 require __DIR__ . '/auth.php';
