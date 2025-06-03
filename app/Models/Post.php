@@ -10,7 +10,17 @@ class Post extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title', 'slug', 'thumbnail', 'body', 'user_id', 'active', 'published_at', 'meta_title', 'meta_description'];
+    protected $fillable = [
+        'title',
+        'slug',
+        'thumbnail',
+        'body',
+        'user_id',
+        'active',
+        'published_at',
+        'meta_title',
+        'meta_description'
+    ];
 
     protected $casts = [
         'published_at' => 'datetime'
@@ -22,7 +32,6 @@ class Post extends Model
     }
     public function getThumbnailUrlAttribute(): string
     {
-        // Pretpostavljamo da je u bazi spremljen relativni path unutar storage disk-a (npr. "thumbnails/ime.jpg")
         return Storage::url($this->thumbnail);
     }
     // U app/Models/Post.php

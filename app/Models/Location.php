@@ -13,30 +13,21 @@ class Location extends Model
         'company_id',
         'name',
         'address',
-        'city',       // Dodato polje za grad
+        'city',
         'latitude',
         'longitude',
     ];
 
-    /**
-     * Veza: Lokacija pripada jednoj kompaniji.
-     */
     public function company()
     {
         return $this->belongsTo(Company::class)->withTrashed();
     }
 
-    /**
-     * Veza: Lokacija ima više grupa uređaja.
-     */
     public function groups()
     {
         return $this->hasMany(Group::class);
     }
 
-    /**
-     * Veza: Lokacija ima više uređaja.
-     */
     public function devices() {
         return $this->hasMany(Device::class);
     }
@@ -44,10 +35,6 @@ class Location extends Model
         return $this->hasMany(Hydrant::class);
     }
 
-
-    /**
-     * Veza: Lokacija može biti deo više location grupa.
-     */
     public function locationGroups()
     {
         return $this->belongsToMany(LocationGroup::class, 'location_group_members');

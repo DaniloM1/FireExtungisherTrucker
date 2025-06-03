@@ -17,15 +17,11 @@ class ElectricalInspection extends Model
         'cost',
     ];
 
-    // Automatsko kastovanje datuma
     protected $casts = [
         'inspection_date'      => 'date',
         'next_inspection_date' => 'date',
     ];
 
-    /**
-     * Veza: Elektro inspekcija pripada lokaciji.
-     */
     public function location()
     {
         return $this->belongsTo(Location::class);

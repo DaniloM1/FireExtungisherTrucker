@@ -20,21 +20,17 @@ class ServiceEvent extends Model
         'status',
     ];
 
-    // Automatsko kastovanje datuma
     protected $casts = [
         'service_date'      => 'date',
         'next_service_date' => 'date',
     ];
 
-    /**
-     * Veza: Servisni događaj može biti vezan za više lokacija.
-     */
     public function locations()
     {
         return $this->belongsToMany(Location::class, 'service_event_locations')
             ->withPivot('description', 'status')
             ->withTimestamps();
     }
-    
+
 
 }

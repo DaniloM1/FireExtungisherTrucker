@@ -10,11 +10,10 @@ class Company extends Model
 {
     use HasFactory, softDeletes;
 
-    // Definišemo koje kolone se mogu masovno dodeljivati
     protected $fillable = [
         'name',
         'address',
-        'city', // Dodato polje za grad
+        'city',
         'contact_email',
         'contact_phone',
         'pib',
@@ -23,14 +22,11 @@ class Company extends Model
         'website',
     ];
 
-    // Definisanje odnosa sa lokacijama
     public function locations()
     {
         return $this->hasMany(Location::class);
     }
 
-    // Ukoliko kasnije budeš želeo da pristupiš uređajima kroz kompaniju,
-    // možeš koristiti hasManyThrough odnos:
     // public function devices()
     // {
     //     return $this->hasManyThrough(Device::class, Location::class);

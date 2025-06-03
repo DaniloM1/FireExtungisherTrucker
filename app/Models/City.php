@@ -12,26 +12,14 @@ class City extends Model
 
     public function searchCity(Request $request)
     {
-        // Pretpostavimo da korisnikov unos dolazi kao parametar "query"
-        $searchInput = $request->input('query'); // npr. "neka kuca Ćuprija"
-
-        // Razdvoji unos na reči i ukloni eventualne praznine
+        $searchInput = $request->input('query');
         $tokens = array_filter(explode(' ', $searchInput));
 
-        // Primer 1: Pretraga gde tražimo grad ako bilo koji token sadrži ime grada
         $city = City::where(function ($query) use ($tokens) {
             foreach ($tokens as $token) {
-                // Ovo koristi LIKE pretragu – token može biti deo imena grada
                 $query->orWhere('name', 'LIKE', "%{$token}%");
             }
         })->first();
-
-        // Primer 2 (alternativa): Ako želiš tačno poklapanje, možeš pretraživati da li neki od tokena
-        // tačno odgovara imenu grada
-        /*
-        $city = City::whereIn('name', array_map('trim', $tokens))->first();
-        */
-
         if ($city) {
             return response()->json(['city' => $city]);
         } else {

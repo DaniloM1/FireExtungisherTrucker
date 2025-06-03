@@ -14,9 +14,6 @@ class LocationGroup extends Model
         'description',
     ];
 
-    /**
-     * Veza: Lokacijska grupa može sadržati više lokacija.
-     */
     public function locations()
     {
         return $this->belongsToMany(Location::class, 'location_group_members');

@@ -25,16 +25,12 @@ class Hydrant extends Model
         'status',
     ];
 
-    // Automatsko kastovanje datuma
     protected $casts = [
         'manufacture_date'   => 'date',
         'next_service_date'  => 'date',
         'hvp'                => 'date',
     ];
 
-    /**
-     * Veza: Hidranat pripada lokaciji.
-     */
     public function location()
     {
         return $this->belongsTo(Location::class);
