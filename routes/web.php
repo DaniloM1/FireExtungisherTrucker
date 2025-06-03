@@ -50,7 +50,17 @@ Route::controller(FrontController::class)->group(function () {
 Route::get('/api/cities', [CityController::class, 'index']);
 Route::get('/api/cities/search', [CityController::class, 'search']);
 // Dashboard
-Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+Route::get('/dashboard', function () {
+    $user = auth()->user();
+
+    if ($user->hasRole('company')) {
+        return redirect()->route('company.service-events.index');
+    }
+
+    // super_admin ili default
+    return app(\App\Http\Controllers\DashboardController::class)->index();
+})->middleware(['auth'])->name('dashboard');
+
 /*
 |--------------------------------------------------------------------------
 | Authenticated Routes

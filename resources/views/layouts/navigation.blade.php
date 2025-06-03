@@ -39,6 +39,7 @@ class="bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700">
 
             <!-- Navigation Links -->
             <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                @hasrole('super_admin')
                 <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                     {{ __('Dashboard') }}
                 </x-nav-link>
@@ -60,6 +61,13 @@ class="bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700">
                 <x-nav-link :href="route('posts.index')" :active="request()->routeIs('posts.*')">
                     {{ __('Blog') }}
                 </x-nav-link>
+                @endhasrole
+                @hasrole('company')
+                <!-- Kompanijski korisnik vidi samo ovo -->
+                <x-nav-link :href="route('company.service-events.index')" :active="request()->routeIs('company.service-events.index')">
+                    {{ __('Dashboard') }}
+                </x-nav-link>
+                @endhasrole
             </div>
         </div>
 
@@ -130,6 +138,7 @@ class="bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700">
 
 <!-- Responsive Navigation Menu -->
 <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
+    @hasrole('super_admin')
     <div class="pt-2 pb-3 space-y-1">
         <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
             {{ __('Dashboard') }}
@@ -161,7 +170,14 @@ class="bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700">
             {{ __('Locations Groups') }}
         </x-responsive-nav-link>
     </div>
-
+    @endhasrole
+    @hasrole('company')
+    <div class="pt-2 pb-3 space-y-1">
+        <x-responsive-nav-link :href="route('company.service-events.index')" :active="request()->routeIs('company.service-events.index')">
+            {{ __('Dashboard') }}
+        </x-responsive-nav-link>
+    </div>
+@endhasrole
     <!-- Responsive Settings Options -->
     <div class="pt-4 pb-1 border-t border-gray-200 dark:border-gray-600">
         <div class="px-4">
