@@ -105,13 +105,15 @@ class LocationController extends Controller
         $validated = $request->validate([
             'name'      => 'required|string|max:255',
             'address'   => 'required|string|max:255',
+            'city'   => 'required|string|max:255',
+
             'latitude'  => 'nullable|numeric',
             'longitude' => 'nullable|numeric',
         ]);
 
         $location->update($validated);
 
-        return redirect()->route('companies.locations', $location->company_id)->with('success', 'Location updated successfully.');
+        return redirect()->route('companies.locations.index', $location->company_id)->with('success', 'Location updated successfully.');
     }
 
     public function destroy(Location $location)

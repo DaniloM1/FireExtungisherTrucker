@@ -93,7 +93,7 @@
                             <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                                 {{ __('Update Location') }}
                             </button>
-                            <a href="{{ route('companies.locations', ['company' => $location->company_id]) }}" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
+                            <a href="{{ route('companies.locations.index', ['company' => $location->company_id]) }}" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
                                 {{ __('Cancel') }}
                             </a>
                         </div>
