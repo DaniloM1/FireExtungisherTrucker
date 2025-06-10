@@ -49,6 +49,14 @@ class Location extends Model
     {
         return $this->serviceEvents->first() ? $this->serviceEvents->first()->next_service_date : null;
     }
+    public function nextServiceDateByCategory($category)
+    {
+        return $this->serviceEvents
+            ->where('category', $category) // filtriraš po tipu/kategoriji
+            ->sortBy('next_service_date') // ručno sortiranje jer je kolekcija
+            ->first()?->next_service_date;
+    }
+
 
 
 

@@ -58,7 +58,7 @@
 
                 <div class="mb-4">
                     <label for="next_service_date" class="block text-gray-700 dark:text-gray-300 font-bold mb-2">
-                        {{ __('Next Service Date') }}
+                        {{ __('Expires at') }}
                     </label>
                     <input type="date" name="next_service_date" id="next_service_date" value="{{ old('next_service_date') }}"
                            class="w-full border-gray-300 dark:border-gray-600 rounded p-2 dark:bg-gray-700 dark:text-white">

@@ -16,7 +16,7 @@ use App\Http\Controllers\FrontController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\PDFController;
-
+use App\Http\Controllers\HydrantController;
 Route::get('/service-report/{serviceEventId}', [PDFController::class, 'generateServiceReport']);
 
 
@@ -129,6 +129,7 @@ Route::middleware(['auth'])->group(function () {
         // Locations Devices
         Route::prefix('devices')->controller(DeviceController::class)->group(function () {
             Route::get('/', 'index')->name('locations.devices.index');
+
             Route::get('/create', 'create')->name('locations.devices.create');
             Route::post('/', 'store')->name('locations.devices.store');
         });
@@ -138,6 +139,12 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/', 'index')->name('locations.groups.index');
             Route::get('/create', 'create')->name('locations.groups.create');
             Route::post('/', 'store')->name('locations.groups.store');
+        });
+
+        Route::prefix('hydrants')->controller(HydrantController::class)->group(function () {
+            Route::get('/', 'index')->name('locations.hydrants.index');
+            Route::get('/create', 'create')->name('locations.hydrants.create');
+            Route::post('/', 'store')->name('locations.hydrants.store');
         });
     });
 

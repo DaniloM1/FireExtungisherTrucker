@@ -20,12 +20,13 @@
                 </div>
                 <!-- Right side: Next Service and Create Service Link -->
                 <div class="mt-4 md:mt-0 text-right w-full md:w-auto">
-                    <p class="text-gray-600 dark:text-gray-400 mb-2">
+                    <<p class="text-gray-600 dark:text-gray-400 mb-2">
                         Next Service:
-                        {{ optional($location->serviceEvents->first())->next_service_date
-                            ? optional($location->serviceEvents->first())->next_service_date->format('d-m-Y')
+                        {{ $location->nextServiceDateByCategory('pp_device')
+                            ? $location->nextServiceDateByCategory('pp_device')->format('d-m-Y')
                             : 'Nema dostupnog datuma' }}
                     </p>
+
                     <a href="" class="flex items-center justify-end text-lg text-blue-600 dark:text-blue-400 hover:underline">
                         <i class="fas fa-plus mr-2"></i> {{ __('Create Service') }}
                     </a>
@@ -165,7 +166,7 @@
                                     <option clas="bg-white text-black dark:bg-gray-700 dark:text-white" value="needs_service" {{ $device->status == 'needs_service' ? 'selected' : '' }}>{{ __('Needs Service') }}</option>
                                 </select>
                             </td>
-                            
+
                             <td class="px-6 py-4 whitespace-nowrap text-gray-800 dark:text-gray-200">
                                 <div class="flex items-center space-x-4">
 
@@ -273,7 +274,7 @@
             dropdown.addEventListener('change', function() {
                 const deviceId = this.getAttribute('data-device-id');
                 const status = this.value;
-                
+
                 fetch(`/devices/${deviceId}/update-status`, {
                     method: 'PATCH',
                     headers: {
@@ -298,5 +299,5 @@
             });
         });
         </script>
-        
+
 </x-app-layout>

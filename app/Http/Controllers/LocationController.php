@@ -14,7 +14,14 @@ class LocationController extends Controller
     public function index($companyId)
     {
         $company = Company::findOrFail($companyId);
-        $locations = $company->locations()->with('serviceEvents')->paginate(10);
+
+        $locations = $company->locations()
+            ->with('serviceEvents')
+            ->when(request('name'), fn($q, $name) => $q->where('name', 'like', "%$name%"))
+            ->when(request('address'), fn($q, $address) => $q->where('address', 'like', "%$address%"))
+            ->when(request('city'), fn($q, $city) => $q->where('city', 'like', "%$city%"))
+            ->paginate(10)
+            ->appends(request()->query()); // da paginacija čuva filtere
 
         return view('admin.locations.index', compact('company', 'locations'));
     }
