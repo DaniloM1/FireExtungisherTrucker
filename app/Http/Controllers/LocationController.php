@@ -28,12 +28,14 @@ class LocationController extends Controller
     public function api($companyId)
     {
         $company = Company::findOrFail($companyId);
-        $locations = $company->locations()->paginate(200);
+        $locations = $company->locations()
+            ->select('id', 'name', 'city')
+            ->orderBy('name')
+            ->get();
 
-        return $locations;
-
-
+        return response()->json($locations);
     }
+
     /**
      * Show the form for creating a new location for a company.
      */
@@ -130,5 +132,26 @@ class LocationController extends Controller
 
         return redirect()->route('companies.locations', $companyId)->with('success', 'Location deleted successfully.');
     }
+    public function show(Location $location)
+    {
+        $location->load([
+            'company',
+            'devices',
+            'hydrants',
+            'serviceEvents.attachments'
+        ]);
+
+        // Generalni prilozi za lokaciju (bez servisa)
+        $generalAttachments = \App\Models\Attachment::where('location_id', $location->id)
+            ->whereNull('service_event_id')
+            ->get();
+
+        return view('admin.locations.show', compact('location', 'generalAttachments'));
+    }
+
+
+
+
+
 
 }

@@ -1,23 +1,21 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Create Company') }}
+            {{ __('Kreiraj Kompaniju') }}
         </h2>
     </x-slot>
     <style>
         #city-suggestions {
             position: absolute;
             width: 100%;
-            max-height: 200px; /* Ograničava visinu */
-            overflow-y: auto; /* Omogućava skrolovanje ako ima previše opcija */
+            max-height: 200px;
+            overflow-y: auto;
             background-color: white;
             border: 1px solid #ddd;
             border-radius: 5px;
-            z-index: 50; /* Postavlja na vrh */
+            z-index: 50;
         }
-
     </style>
-    <!-- Poruke o uspehu i greškama -->
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 mt-4">
         @if (session('success'))
             <div class="bg-green-500 text-white p-4 rounded mb-4">
@@ -36,19 +34,18 @@
         @endif
     </div>
 
-    <!-- Glavni sadržaj stranice -->
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-200">
-                    <h3 class="text-lg font-semibold mb-4">{{ __('New Company Form') }}</h3>
+                    <h3 class="text-lg font-semibold mb-4">{{ __('Kreiranje Kompanije Form') }}</h3>
                     <form method="POST" action="{{ route('companies.store') }}">
                         @csrf
 
                         <!-- Company Name Field -->
                         <div class="mb-4">
                             <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                {{ __('Company Name') }}
+                                {{ __('Naziv Kompanije') }}
                             </label>
                             <input type="text" name="name" id="name" value="{{ old('name') }}" required
                                    class="mt-1 block w-full rounded-md border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 focus:border-blue-500 focus:ring-blue-500">
@@ -66,7 +63,7 @@
                         <!-- Phone Field -->
                         <div class="mb-4">
                             <label for="phone" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                {{ __('Phone') }}
+                                {{ __('Telefon') }}
                             </label>
                             <input type="text" name="contact_phone" id="phone" value="{{ old('contact_phone') }}"
                                    class="mt-1 block w-full rounded-md border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 focus:border-blue-500 focus:ring-blue-500">
@@ -82,7 +79,7 @@
 
                         <div class="mb-4">
                             <label for="address" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                {{ __('Address') }}
+                                {{ __('Adresa') }}
                             </label>
                             <input type="text" name="address" id="address" value="{{ old('address') }}" required
                                    class="mt-1 block w-full rounded-md border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 focus:border-blue-500 focus:ring-blue-500">
@@ -107,9 +104,9 @@
                         <!-- City Field sa pretragom -->
                         <div class="mb-4 relative">
                             <label for="city" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                {{ __('City') }}
+                                {{ __('Grads') }}
                             </label>
-                            <input type="text" id="city" name="city" placeholder="{{ __('Type at least 3 letters') }}"
+                            <input type="text" id="city" name="city" placeholder="{{ __('Unesite barem 3 slova') }}"
                                    class="mt-1 block w-full rounded-md border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 focus:border-blue-500 focus:ring-blue-500" autocomplete="off">
                             <!-- Kontejner za sugestije -->
                             <ul id="city-suggestions" class="absolute z-10 w-full bg-white dark:bg-gray-700 border border-gray-300 rounded-md mt-1 hidden"></ul>
@@ -119,11 +116,11 @@
                         <div class="flex gap-4">
                             <button type="submit"
                                     class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                                {{ __('Create Company') }}
+                                {{ __('Kreiraj Kompaiju') }}
                             </button>
                             <a href="{{ route('companies.index') }}"
                                class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
-                                {{ __('Cancel') }}
+                                {{ __('Ponisti') }}
                             </a>
                         </div>
                     </form>

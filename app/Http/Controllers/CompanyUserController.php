@@ -12,11 +12,23 @@ class CompanyUserController extends Controller
     {
         $companyId = auth()->user()->company_id;
 
-        // Lokacije koje pripadaju kompaniji korisnika
-        $locations = Location::where('company_id', $companyId)
-            ->withCount('devices', 'hydrants')
+        // Priprema query-a za filtriranje
+        $locationsQuery = Location::where('company_id', $companyId)
+            ->withCount('devices', 'hydrants');
+
+        if ($request->filled('name')) {
+            $locationsQuery->where('name', 'LIKE', '%' . $request->name . '%');
+        }
+        if ($request->filled('address')) {
+            $locationsQuery->where('address', 'LIKE', '%' . $request->address . '%');
+        }
+        if ($request->filled('city')) {
+            $locationsQuery->where('city', 'LIKE', '%' . $request->city . '%');
+        }
+
+        $locations = $locationsQuery
             ->orderBy('name')
-            ->get();
+            ->paginate(10);
 
         // Poslednjih 5 servisnih događaja
         $recentServiceEvents = ServiceEvent::whereHas('locations', function ($q) use ($companyId) {
@@ -24,8 +36,7 @@ class CompanyUserController extends Controller
         })
             ->with('locations')
             ->orderBy('service_date', 'desc')
-            ->take(5)
-            ->get();
+            ->paginate(8);
 
         // Brojač po kategorijama
         $serviceStats = [
@@ -37,6 +48,7 @@ class CompanyUserController extends Controller
         return view('admin.companyuser.index', compact('locations', 'recentServiceEvents', 'serviceStats'));
     }
 
+
     public function show(ServiceEvent $serviceEvent)
     {
         $companyId = auth()->user()->company_id;
@@ -46,8 +58,30 @@ class CompanyUserController extends Controller
             abort(403, 'Nemate pristup ovom servisu.');
         }
 
-        $serviceEvent->load('locations.company', 'locations.devices', 'locations.hydrants');
+        $serviceEvent->load([
+            'locations.company',
+            'locations.devices',
+            'locations.hydrants',
+            'attachments' // Eager load attachments
+        ]);
 
         return view('admin.companyuser.show', compact('serviceEvent'));
     }
+    public function locationShow(Location $location)
+    {
+        $companyId = auth()->user()->company_id;
+
+        if ($location->company_id !== $companyId) {
+            abort(403, 'Nemate pristup ovoj lokaciji.');
+        }
+
+        // Učitaj sve uređaje, hidrante, i servise za lokaciju
+        $location->load(['devices', 'hydrants', 'serviceEvents' => function($q) {
+            $q->orderBy('service_date', 'desc');
+        }]);
+//        dd($location);
+
+        return view('admin.companyuser.location_show', compact('location'));
+    }
+
 }

@@ -31,6 +31,12 @@ class ServiceEvent extends Model
             ->withPivot('description', 'status')
             ->withTimestamps();
     }
+    public function attachments()
+    {
+        return $this->hasMany(\App\Models\Attachment::class, 'service_event_id');
+    }
+
+
 
 
 }

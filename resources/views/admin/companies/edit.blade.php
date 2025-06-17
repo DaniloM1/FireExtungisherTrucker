@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Edit Company') }}
+            {{ __('Izmena Kompanije') }}
         </h2>
     </x-slot>
 
@@ -29,7 +29,7 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-200">
-                    <h3 class="text-lg font-semibold mb-4">{{ __('Edit Company Form') }}</h3>
+                    <h3 class="text-lg font-semibold mb-4">{{ __('Izmena Kompanije Forma') }}</h3>
                     <form method="POST" action="{{ route('companies.update', $company) }}">
                         @csrf
                         @method('PUT')
@@ -37,7 +37,7 @@
                         <!-- Name Field -->
                         <div class="mb-4">
                             <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                {{ __('Company Name') }}
+                                {{ __('Naziv Kompanije') }}
                             </label>
                             <input type="text" name="name" id="name" value="{{ old('name', $company->name) }}" required
                                    class="mt-1 block w-full rounded-md border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 focus:border-blue-500 focus:ring-blue-500">
@@ -55,7 +55,7 @@
                         <!-- Phone Field -->
                         <div class="mb-4">
                             <label for="phone" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                {{ __('Phone') }}
+                                {{ __('Telefon') }}
                             </label>
                             <input type="text" name="contact_phone" id="phone" value="{{ old('contact_phone', $company->contact_phone) }}"
                                    class="mt-1 block w-full rounded-md border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 focus:border-blue-500 focus:ring-blue-500">
@@ -77,14 +77,14 @@
                         <!-- Address Field -->
                         <div class="mb-4">
                             <label for="address" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                {{ __('Address') }}
+                                {{ __('Adresa') }}
                             </label>
                             <input type="text" name="address" id="address" value="{{ old('address', $company->address) }}"
                                    class="mt-1 block w-full rounded-md border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 focus:border-blue-500 focus:ring-blue-500">
                         </div>
                         <div class="mb-4">
                             <label for="city" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                {{ __('City') }}
+                                {{ __('Grad') }}
                             </label>
                             <input type="text" name="city" id="city" value="{{ old('city', $company->city) }}"
                                    class="mt-1 block w-full rounded-md border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 focus:border-blue-500 focus:ring-blue-500">
@@ -95,10 +95,10 @@
                         <!-- Submit i Cancel dugmad -->
                         <div class="flex gap-4">
                             <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                                {{ __('Update Company') }}
+                                {{ __('Izmeni Kompaniju') }}
                             </button>
                             <a href="{{ route('companies.index') }}" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
-                                {{ __('Cancel') }}
+                                {{ __('Ponisti') }}
                             </a>
                         </div>
                     </form>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Company;
+use App\Models\LocationGroup;
 use Illuminate\Http\Request;
 use App\Models\ServiceEvent;
 use App\Models\Location;
@@ -69,12 +70,47 @@ class ServiceEventController extends Controller
     }
     public function show(ServiceEvent $serviceEvent)
     {
-        $serviceEvent->load('locations.company', 'locations.devices', 'locations.hydrants');
-        return view('admin.service-events.show', compact('serviceEvent'));
+        $user = auth()->user();
+
+        // SUPER_ADMIN ima sve dozvole
+        if ($user->hasRole('super_admin')) {
+            // Učitaj relacije i prikaži
+            $serviceEvent->load([
+                'locations.company',
+                'locations.devices',
+                'locations.hydrants',
+                'attachments'
+            ]);
+            return view('admin.service-events.show', compact('serviceEvent'));
+        }
+
+        // Ako je company, proveri da li ima pristup
+        if ($user->hasRole('company')) {
+            $companyId = $user->company_id;
+            $relatedCompanyIds = $serviceEvent->locations->pluck('company_id')->unique();
+
+            if (!$relatedCompanyIds->contains($companyId)) {
+                abort(403, 'Nemate pristup ovom servisu.');
+            }
+
+            $serviceEvent->load([
+                'locations.company',
+                'locations.devices',
+                'locations.hydrants',
+                'attachments'
+            ]);
+//            dd($serviceEvent);
+            return view('admin.service-events.show', compact('serviceEvent'));
+        }
+
+        // Svi ostali nemaju pristup
+        abort(403, 'Nemate pristup ovom servisu.');
     }
+
 
     public function store(Request $request)
     {
+
         $data = $request->validate([
             'category'           => 'required|in:pp_device,hydrant',
             'service_date'       => 'required|date',
@@ -161,5 +197,22 @@ class ServiceEventController extends Controller
         $serviceEvent->delete();
         return redirect()->route('service-events.index')
             ->with('success', 'Service event deleted successfully.');
+    }
+    public function groupService($locationGroupId)
+    {
+        $locationGroup = LocationGroup::with('locations.company')->findOrFail($locationGroupId);
+
+        $companies = Company::all();
+        $allLocations = Location::orderBy('name')->get();
+        $selectedLocationIds = $locationGroup->locations->pluck('id')->toArray();
+        $selectedCompanyIds = $locationGroup->locations->pluck('company_id')->unique()->toArray();
+
+        return view('admin.service-events.create-group', compact(
+            'locationGroup',
+            'allLocations',
+            'companies',
+            'selectedLocationIds',
+            'selectedCompanyIds'
+        ));
     }
 }

@@ -2,25 +2,65 @@
     <x-slot name="header">
         <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6 mb-6">
             <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-2">
-                Location Groups
+                Grupe Lokacija
             </h3>
             <p class="text-gray-600 dark:text-gray-400">
-                Overview of location groups.
+                Pregled grupa lokacija
             </p>
         </div>
         <div class="mt-4">
             <nav class="text-sm text-gray-500">
-                Dashboard <span class="mx-2">&rarr;</span> Location Groups
+                Dashboard <span class="mx-2">&rarr;</span> Grupe Lokacija
             </nav>
         </div>
     </x-slot>
+
+
     <div class="py-6 bg-gray-100 dark:bg-gray-900">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            
+            <div class="bg-white dark:bg-gray-800 shadow sm:rounded-lg p-6 mb-6">
+                <!-- FILTER BAR -->
+                <form method="GET" class="flex flex-col md:flex-row md:items-center gap-3 md:gap-4 mb-4">
+                    <div class="flex-1 flex flex-col md:flex-row gap-3">
+                        <input
+                            type="text"
+                            name="search"
+                            placeholder="Pretraga po imenu ili opisu..."
+                            value="{{ request('search') }}"
+                            class="flex-1 rounded-lg border-gray-300 dark:bg-gray-700 dark:text-gray-200 px-3 py-2 focus:ring-2 focus:ring-blue-400 transition"
+                        >
+                        <select
+                            name="company_id"
+                            class="rounded-lg border-gray-300 dark:bg-gray-700 dark:text-gray-200 px-3 py-2 focus:ring-2 focus:ring-blue-400 transition"
+                        >
+                            <option value="">Sve kompanije</option>
+                            @foreach($companies as $company)
+                                <option value="{{ $company->id }}" {{ request('company_id') == $company->id ? 'selected' : '' }}>
+                                    {{ $company->name }} ({{ $company->city }})
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="flex gap-2 mt-2 md:mt-0">
+                        <button
+                            type="submit"
+                            class="px-4 py-2 bg-blue-600 text-white rounded-lg shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
+                        >
+                            <i class="fa fa-search mr-2"></i>Pretraži
+                        </button>
+                        <a href="{{ route('location-groups.index') }}"
+                           class="px-4 py-2 bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-100 rounded-lg shadow-sm hover:bg-gray-300 dark:hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-red-400 transition flex items-center"
+                           title="Poništi filtere">
+                            <i class="fa-solid fa-filter-circle-xmark mr-2"></i>
+                        </a>
+                    </div>
+                </form>
+            </div>
+
             <!-- Link za kreiranje nove lokacijske grupe -->
             <div class="flex justify-end mb-6">
                 <a href="{{ route('location-groups.create') }}" class="text-lg font-bold text-gray-900 dark:text-gray-200">
-                    <i class="fas fa-plus"></i> {{ __('Create New Location Group') }}
+                    <i class="fas fa-plus"></i> {{ __('Napravi novu Grupu Lokacija') }}
                 </a>
             </div>
 
@@ -37,6 +77,8 @@
                                 <a href="{{ route('location-groups.edit', $group->id) }}" class="text-gray-600 dark:text-gray-300 hover:text-gray-900" title="{{ __('Edit') }}">
                                     <i class="fas fa-edit"></i>
                                 </a>
+
+
                                 <form action="{{ route('location-groups.destroy', $group->id) }}" method="POST" onsubmit="return confirm('Are you sure?')" class="inline">
                                     @csrf
                                     @method('DELETE')
@@ -44,6 +86,8 @@
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </form>
+                                <a href="{{ route('service-events.group-service', $group->id) }}"
+                                   class="text-gray-600 dark:text-gray-300 hover:text-gray-900"><i class="fa fa-hammer"></i></a>
                             </div>
                         </div>
 

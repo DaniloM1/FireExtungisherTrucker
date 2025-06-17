@@ -35,7 +35,7 @@
             <!-- Breadcrumb -->
             <div class="mt-4">
                 <nav class="text-sm text-gray-500">
-                    Company <span class="mx-2">&rarr;</span> Location <span class="mx-2">&rarr;</span> Devices
+                    Kompanija <span class="mx-2">&rarr;</span> Lokacija <span class="mx-2">&rarr;</span> Aparati
                 </nav>
             </div>
         </div>
@@ -71,7 +71,7 @@
                 type="text"
                 name="search"
                 value="{{ request('search') }}"
-                placeholder="{{ __('Search devices...') }}"
+                placeholder="{{ __('Pretrazi aparate..') }}"
                 class="flex-grow rounded-l-md border border-gray-300 dark:border-gray-600 p-2 focus:outline-none focus:ring focus:border-blue-300 dark:bg-gray-700 dark:text-white"
             />
             <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-r-md">
@@ -102,21 +102,21 @@
                     <thead class="bg-gray-50 dark:bg-gray-700">
                     <tr>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                            {{ __('Serial Number') }}
+                            {{ __('Seriski Broj') }}
                         </th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                             {{ __('Model') }}
                         </th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                            {{ __('Manufacturer') }}
+                            {{ __('Prozivodjac') }}
                         </th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                            {{ __('Manufacture Date') }}
+                            {{ __('Datum Proizvdonje') }}
                         </th>
                         <!-- Zaglavlje s filterom/sortiranjem za Next Service Date -->
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                             <div class="flex items-center space-x-1">
-                                <span>{{ __('Next Service Date') }}</span>
+                                <span>{{ __('HVP') }}</span>
                                 @php
                                     $currentSort = request('sort');
                                     // Ako je trenutačni sort asc, postavi idući na desc, inače na asc
@@ -136,13 +136,13 @@
                             </div>
                         </th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                            {{ __('Position') }}
+                            {{ __('Pozicija') }}
                         </th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                             {{ __('Status') }}
                         </th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                            {{ __('Actions') }}
+                            {{ __('Akcije') }}
                         </th>
                     </tr>
                     </thead>
@@ -153,10 +153,10 @@
                             <td class="px-6 py-4 whitespace-nowrap text-gray-800 dark:text-gray-200">{{ $device->model }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-gray-800 dark:text-gray-200">{{ $device->manufacturer }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-gray-800 dark:text-gray-200">
-                                {{ $device->manufacture_date ? \Carbon\Carbon::parse($device->manufacture_date)->format('Y-m-d') : '-' }}
+                                {{ $device->manufacture_date ? \Carbon\Carbon::parse($device->manufacture_date)->format('Y') : '-' }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-gray-800 dark:text-gray-200">
-                                {{ $device->next_service_date ? \Carbon\Carbon::parse($device->next_service_date)->format('Y-m-d') : '-' }}
+                                {{ $device->next_service_date ? \Carbon\Carbon::parse($device->next_service_date)->format('Y') : '-' }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-gray-800 dark:text-gray-200">{{ $device->position ?? '-' }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-gray-800 dark:text-gray-200">
@@ -193,72 +193,113 @@
                     </tbody>
                 </table>
 
-                <!-- Mobile prikaz -->
-      <!-- Mobile prikaz -->
-<div class="block md:hidden">
-    @forelse ($devices as $device)
-        <div class="bg-gray-100 dark:bg-gray-700 rounded-lg p-4 mb-4 shadow">
-            <!-- Zaglavlje kartice sa serijskim brojem i akcijama -->
-            <div class="mb-2 flex items-center space-x-4">
-                <span class="block font-bold text-lg  text-gray-800 dark:text-gray-300">{{ $device->serial_number }}</span>
-                <div class="flex items-end space-x-4 ml-auto">
-                    <a href="{{ route('devices.edit', $device->id) }}" class="text-black dark:text-white hover:underline" title="{{ __('Edit') }}">
-                        <i class="fas fa-edit"></i>
-                    </a>
-                    <form action="{{ route('devices.destroy', $device->id) }}" method="POST" onsubmit="return confirm('{{ __('Are you sure?') }}');">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="hover:text-red-700 text-black dark:text-white hover:underline" title="{{ __('Delete') }}">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </form>
+
+                <div class="block md:hidden">
+                    @forelse ($devices as $device)
+                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-4 mb-4 border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-shadow">
+                            <!-- Header with serial number and status -->
+                            <div class="flex justify-between items-center mb-3">
+                                <h3 class="font-bold text-blue-800 dark:text-blue-300 text-lg">
+                                    {{ $device->serial_number }}
+                                </h3>
+                                <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold
+                      @if($device->status == 'active') bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200
+                      @elseif($device->status == 'inactive') bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300
+                      @else bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200 @endif">
+                    {{ __(ucfirst($device->status)) }}
+                </span>
+                            </div>
+
+                            <!-- Device details grid -->
+                            <div class="grid grid-cols-2 gap-3 mb-3">
+                                <!-- Model -->
+                                <div class="col-span-2 flex items-start">
+                                    <i class="fas fa-cube mt-1 mr-2 text-gray-500 dark:text-gray-400"></i>
+                                    <div>
+                                        <p class="text-xs text-gray-500 dark:text-gray-400 font-medium">Model</p>
+                                        <p class="text-sm font-semibold text-gray-700 dark:text-gray-300">{{ $device->model ?? '-' }}</p>
+                                    </div>
+                                </div>
+
+                                <!-- Manufacturer -->
+                                <div class="flex items-start">
+                                    <i class="fas fa-industry mt-1 mr-2 text-gray-500 dark:text-gray-400"></i>
+                                    <div>
+                                        <p class="text-xs text-gray-500 dark:text-gray-400 font-medium">Proizvođač</p>
+                                        <p class="text-sm text-gray-700 dark:text-gray-300">{{ $device->manufacturer ?? '-' }}</p>
+                                    </div>
+                                </div>
+
+                                <!-- Position -->
+                                <div class="flex items-start">
+                                    <i class="fas fa-map-marker-alt mt-1 mr-2 text-gray-500 dark:text-gray-400"></i>
+                                    <div>
+                                        <p class="text-xs text-gray-500 dark:text-gray-400 font-medium">Pozicija</p>
+                                        <p class="text-sm text-gray-700 dark:text-gray-300">{{ $device->position ?? '-' }}</p>
+                                    </div>
+                                </div>
+
+                                <!-- Manufacture Date -->
+                                <div class="flex items-start">
+                                    <i class="fas fa-calendar-alt mt-1 mr-2 text-gray-500 dark:text-gray-400"></i>
+                                    <div>
+                                        <p class="text-xs text-gray-500 dark:text-gray-400 font-medium">God. proizvodnje</p>
+                                        <p class="text-sm text-gray-700 dark:text-gray-300">
+                                            {{ $device->manufacture_date ? \Carbon\Carbon::parse($device->manufacture_date)->format('Y') : '-' }}
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <!-- Next Service Date -->
+                                <div class="flex items-start">
+                                    <i class="fas fa-wrench mt-1 mr-2 text-gray-500 dark:text-gray-400"></i>
+                                    <div>
+                                        <p class="text-xs text-gray-500 dark:text-gray-400 font-medium">HVP</p>
+                                        <p class="text-sm font-semibold text-blue-600 dark:text-blue-400">
+                                            {{ $device->next_service_date ? \Carbon\Carbon::parse($device->next_service_date)->format('Y') : '-' }}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Actions -->
+                            <div class="flex justify-between items-center pt-3 border-t border-gray-200 dark:border-gray-700">
+                                <!-- Status dropdown -->
+                                <select name="status" data-device-id="{{ $device->id }}"
+                                        class="status-dropdown text-sm rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-blue-500 focus:ring-blue-500 py-1.5">
+                                    <option value="active" {{ $device->status == 'active' ? 'selected' : '' }}>Aktivan</option>
+                                    <option value="inactive" {{ $device->status == 'inactive' ? 'selected' : '' }}>Neaktivan</option>
+                                    <option value="needs_service" {{ $device->status == 'needs_service' ? 'selected' : '' }}>Za servis</option>
+                                </select>
+
+                                <!-- Edit/Delete buttons -->
+                                <div class="flex space-x-2">
+                                    <a href="{{ route('devices.edit', $device->id) }}"
+                                       class="p-2 rounded-md bg-gray-100 dark:bg-gray-700 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900 transition-colors"
+                                       title="Uredi">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <form action="{{ route('devices.destroy', $device->id) }}" method="POST"
+                                          onsubmit="return confirm('Da li ste sigurni da želite obrisati ovaj aparat?');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit"
+                                                class="p-2 rounded-md bg-gray-100 dark:bg-gray-700 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900 transition-colors"
+                                                title="Obriši">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    @empty
+                        <div class="text-center py-6 bg-white dark:bg-gray-800 rounded-xl shadow">
+                            <i class="fas fa-fire-extinguisher text-3xl text-gray-300 dark:text-gray-600 mb-2"></i>
+                            <p class="text-gray-500 dark:text-gray-400">Nema pronađenih aparata.</p>
+                        </div>
+                    @endforelse
                 </div>
-            </div>
 
-            <!-- Osnovne informacije o uređaju -->
-            <div class="mb-1">
-                <span class="font-semibold text-sm text-gray-600 dark:text-gray-300">{{ __('Model') }}:</span>
-                <span class="text-sm text-gray-600 dark:text-gray-300">{{ $device->model }}</span>
-            </div>
-            <div class="mb-1">
-                <span class="font-semibold text-sm text-gray-600 dark:text-gray-300">{{ __('Manufacturer') }}:</span>
-                <span class="text-sm text-gray-600 dark:text-gray-300">{{ $device->manufacturer }}</span>
-            </div>
-            <div class="mb-1">
-                <span class="font-semibold text-sm text-gray-600 dark:text-gray-300">{{ __('Manufacture Date') }}:</span>
-                <span class="text-sm text-gray-600 dark:text-gray-300">{{ $device->manufacture_date ? \Carbon\Carbon::parse($device->manufacture_date)->format('Y-m-d') : '-' }}</span>
-            </div>
-            <div class="mb-1">
-                <span class="font-semibold text-sm text-gray-600 dark:text-gray-300">{{ __('Next Service Date') }}:</span>
-                <span class="text-sm text-gray-600 dark:text-gray-300">{{ $device->next_service_date ? \Carbon\Carbon::parse($device->next_service_date)->format('Y-m-d') : '-' }}</span>
-            </div>
-            <div class="mb-1">
-                <span class="font-semibold text-sm text-gray-600 dark:text-gray-300">{{ __('Position') }}:</span>
-                <span class="text-sm text-gray-600 dark:text-gray-300">{{ $device->position ?? '-' }}</span>
-            </div>
-
-            <!-- Red za brzu promenu statusa -->
-            <div class="mb-1 flex items-center">
-                <span class="font-semibold mr-2 text-gray-600 dark:text-gray-300">{{ __('Status') }}:</span>
-                <select name="status" data-device-id="{{ $device->id }}" class="status-dropdown border border-gray-300 dark:border-gray-600 rounded p-1 dark:bg-gray-700 dark:text-white">
-                    <option value="active" {{ $device->status == 'active' ? 'selected' : '' }} class="bg-white text-black dark:bg-gray-700 dark:text-white">
-                        {{ __('Active') }}
-                    </option>
-                    <option value="inactive" {{ $device->status == 'inactive' ? 'selected' : '' }} class="bg-white text-black dark:bg-gray-700 dark:text-white">
-                        {{ __('Inactive') }}
-                    </option>
-                    <option value="needs_service" {{ $device->status == 'needs_service' ? 'selected' : '' }} class="bg-white text-black dark:bg-gray-700 dark:text-white">
-                        {{ __('Needs Service') }}
-                    </option>
-                </select>
-            </div>
-        </div>
-    @empty
-        <div class="text-center text-gray-500 dark:text-gray-300">
-            {{ __('No devices found.') }}
-        </div>
-    @endforelse
-</div>
 
 
             </div>

@@ -2,7 +2,7 @@
     <!-- Header -->
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Companies') }}
+            {{ __('Kompanije') }}
         </h2>
     </x-slot>
 
@@ -35,23 +35,19 @@
                     type="text"
                     name="search"
                     value="{{ request('search') }}"
-                    placeholder="{{ __('Search companies...') }}"
+                    placeholder="{{ __('Unesite naziv...') }}"
                     class="flex-grow rounded-l-md border border-gray-300 dark:border-gray-600 p-2 focus:outline-none focus:ring focus:border-blue-300 dark:bg-gray-700 dark:text-white"
                 />
                 <button type="submit" class="rounded-r-md bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 focus:outline-none focus:ring">
-                    <!-- Ikonica za pretragu -->
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline" viewBox="0 0 20 20" fill="currentColor">
                         <path fill-rule="evenodd" d="M12.9 14.32a8 8 0 111.414-1.414l5.386 5.387a1 1 0 01-1.414 1.414l-5.386-5.387zM14 8a6 6 0 11-12 0 6 6 0 0112 0z" clip-rule="evenodd" />
                     </svg>
                 </button>
-
-
-                        <a href="{{ route('companies.index') }}" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-full flex items-center gap-2 transition">
-                            <i class="fa-solid fa-filter-circle-xmark"></i>
-
+                        <a href="{{ route('companies.index') }}"
+                           class="px-4 py-2 bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-100 rounded-lg shadow-sm hover:bg-gray-300 dark:hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-red-400 transition flex items-center"
+                           title="Poništi filtere">
+                            <i class="fa-solid fa-filter-circle-xmark mr-2"></i>
                         </a>
-
-
             </form>
         </div>
     </div>
@@ -65,10 +61,10 @@
 
                     <!-- Header sa naslovom i Add Company linkom (kao u lokacijama) -->
                     <div class="flex justify-between items-center mb-6">
-                        <h3 class="text-lg font-semibold">{{ __('Company List') }}</h3>
+                        <h3 class="text-lg font-semibold">{{ __('Lista Kompanija') }}</h3>
                         <a href="{{ route('companies.create') }}"
                            class= "hover:underline">
-                            <i class="fas fa-plus"></i> {{ __('Add Company') }}
+                            <i class="fas fa-plus"></i> {{ __('Dodaj Kompaniju') }}
                         </a>
                     </div>
 
@@ -79,19 +75,19 @@
                             <thead class="bg-gray-50 dark:bg-gray-700">
                             <tr>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                                    {{ __('Name') }}
+                                    {{ __('Naziv') }}
                                 </th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                                     {{ __('Email') }}
                                 </th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                                    {{ __('City') }}
+                                    {{ __('Grad') }}
                                 </th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                                    {{ __('Phone') }}
+                                    {{ __('Telefon') }}
                                 </th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                                    {{ __('Actions') }}
+                                    {{ __('Akcijes') }}
                                 </th>
                             </tr>
                             </thead>
@@ -139,7 +135,7 @@
                             @empty
                                 <tr>
                                     <td colspan="5" class="px-6 py-4 text-center text-gray-500 dark:text-gray-300">
-                                        {{ __('No companies found.') }}
+                                        {{ __('Nema pronadjenih kompanija') }}
                                     </td>
                                 </tr>
                             @endforelse
@@ -175,7 +171,7 @@
                                 </div>
                             @empty
                                 <div class="text-center text-gray-500 dark:text-gray-300">
-                                    {{ __('No companies found.') }}
+                                    {{ __('Nema pronadjenih kompanija..') }}
                                 </div>
                             @endforelse
                         </div>

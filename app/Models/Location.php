@@ -56,6 +56,10 @@ class Location extends Model
             ->sortBy('next_service_date') // ručno sortiranje jer je kolekcija
             ->first()?->next_service_date;
     }
+    public function attachments()
+    {
+        return $this->hasMany(Attachment::class);
+    }
 
 
 

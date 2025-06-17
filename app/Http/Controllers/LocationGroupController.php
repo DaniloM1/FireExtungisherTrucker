@@ -9,11 +9,31 @@ use Illuminate\Http\Request;
 
 class LocationGroupController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $locationGroups = LocationGroup::with('locations.company')->paginate(10);
-        return view('admin.location_groups.index', compact('locationGroups'));
+        $query = LocationGroup::with('locations.company');
+
+        // Filter po nazivu grupe
+        if ($request->filled('search')) {
+            $query->where('name', 'like', '%' . $request->search . '%')
+                ->orWhere('description', 'like', '%' . $request->search . '%');
+        }
+
+        // Opcionalno: filter po kompaniji (preko lokacija)
+        if ($request->filled('company_id')) {
+            $query->whereHas('locations', function ($q) use ($request) {
+                $q->where('company_id', $request->company_id);
+            });
+        }
+
+        $locationGroups = $query->paginate(10)->appends($request->query());
+
+        // Za dropdown kompanija
+        $companies = \App\Models\Company::orderBy('name')->get();
+
+        return view('admin.location_groups.index', compact('locationGroups', 'companies'));
     }
+
 
     public function create()
     {

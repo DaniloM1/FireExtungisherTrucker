@@ -4,7 +4,7 @@
             {{ __('Locations') }}
         </h2>
     </x-slot>
-    
+
     <div class="py-6 bg-gray-100 dark:bg-gray-900">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <!-- Filter Forma -->
@@ -54,16 +54,23 @@
                         </div>
                     </div>
                     <div class="mt-4 flex justify-end space-x-2">
-                        <a href="{{ route('locations.test') }}" class="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-gray-600">
-                            <i class="fa-solid fa-filter-circle-xmark"></i>
-                        </a>
-                        <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
-                             Search
+                        <button
+                            type="submit"
+                            class="px-4 py-2 bg-blue-600 text-white rounded-lg shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
+                        >
+                            <i class="fa fa-search mr-2"></i>Pretraži
                         </button>
+                        <a href="{{ route('locations.test') }}"
+                            class="px-4 py-2 bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-100 rounded-lg shadow-sm hover:bg-gray-300 dark:hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-red-400 transition flex items-center"
+                            title="Poništi filtere">
+                            <i class="fa-solid fa-filter-circle-xmark mr-2"></i>
+                        </a>
+
+
                     </div>
                 </form>
             </div>
-            
+
             <!-- Prikaz rezultata -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 @forelse($locations as $location)
@@ -85,7 +92,7 @@
                                 $nextServiceDate = $location->serviceEvents->first()->next_service_date ?? null;
                             @endphp
                             <p class="text-sm text-gray-700 dark:text-gray-300 mt-2">
-                                <strong>Next Service:</strong> 
+                                <strong>Next Service:</strong>
                                 {{ $nextServiceDate ? \Carbon\Carbon::parse($nextServiceDate)->format('d.m.Y') : 'N/A' }}
                             </p>
                         @endif
