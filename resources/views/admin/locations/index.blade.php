@@ -9,11 +9,17 @@
                     {{ $company->address }}
                 </p>
             </div>
-            <div class="mt-4">
-                <nav class="text-sm text-gray-500">
-                    Kompanija <span class="mx-2">&rarr;</span> Lokacije
-                </nav>
-            </div>
+        <div class="mt-4">
+            <nav class="text-sm text-gray-500">
+                <a href="{{ route('companies.index', $company->id) }}" class="hover:underline">
+                    Kompanija
+                </a>
+                <span class="mx-2">&rarr;</span>
+                <span class="text-gray-700 dark:text-gray-300">
+                Lokacije
+            </span>
+            </nav>
+        </div>
     </x-slot>
     <div class="py-6 bg-gray-100 dark:bg-gray-900">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -143,13 +149,18 @@
                                     <td class="px-6 py-4 whitespace-nowrap">{{ $location->city }}</td>
 
                                     <td class="px-6 py-4 whitespace-nowrap">
-                                        @if($location->next_service_date)
-                                            <a href="{{ route('service-events.show', $location->serviceEvents->first()->id) }}" class="text-white-500 underline">
-                                                {{ \Carbon\Carbon::parse($location->next_service_date)->format('d.m.Y') }}
+                                        @if($location->nextServiceEvent->first())
+                                            @php
+                                                $nextEvent = $location->nextServiceEvent->first();
+                                            @endphp
+                                            <a href="{{ route('service-events.show', $nextEvent->id) }}" class="text-blue-500 underline">
+                                                {{ \Carbon\Carbon::parse($nextEvent->next_service_date)->format('d.m.Y') }}
                                             </a>
                                         @else
-                                            N/A
+                                            Nema zakazanog servisa
                                         @endif
+
+
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <div class="flex items-center space-x-4">

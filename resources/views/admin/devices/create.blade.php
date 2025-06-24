@@ -26,7 +26,7 @@
 
                 <div class="mb-4">
                     <label for="serial_number" class="block text-gray-700 dark:text-gray-300 font-bold mb-2">
-                        {{ __('Serial Number') }}
+                        {{ __('Seriski broj') }}
                     </label>
                     <input type="text" name="serial_number" id="serial_number" value="{{ old('serial_number') }}" required
                            class="w-full border-gray-300 dark:border-gray-600 rounded p-2 dark:bg-gray-700 dark:text-white">
@@ -42,7 +42,7 @@
 
                 <div class="mb-4">
                     <label for="manufacturer" class="block text-gray-700 dark:text-gray-300 font-bold mb-2">
-                        {{ __('Manufacturer') }}
+                        {{ __('Proizvodjac') }}
                     </label>
                     <input type="text" name="manufacturer" id="manufacturer" value="{{ old('manufacturer') }}" required
                            class="w-full border-gray-300 dark:border-gray-600 rounded p-2 dark:bg-gray-700 dark:text-white">
@@ -50,7 +50,7 @@
 
                 <div class="mb-4">
                     <label for="manufacture_date" class="block text-gray-700 dark:text-gray-300 font-bold mb-2">
-                        {{ __('Manufacture Date') }}
+                        {{ __('Datum Proizvodnje') }}
                     </label>
                     <input type="date" name="manufacture_date" id="manufacture_date" value="{{ old('manufacture_date') }}"
                            class="w-full border-gray-300 dark:border-gray-600 rounded p-2 dark:bg-gray-700 dark:text-white">
@@ -58,7 +58,7 @@
 
                 <div class="mb-4">
                     <label for="next_service_date" class="block text-gray-700 dark:text-gray-300 font-bold mb-2">
-                        {{ __('Expires at') }}
+                        {{ __('HVP') }}
                     </label>
                     <input type="date" name="next_service_date" id="next_service_date" value="{{ old('next_service_date') }}"
                            class="w-full border-gray-300 dark:border-gray-600 rounded p-2 dark:bg-gray-700 dark:text-white">
@@ -66,7 +66,7 @@
 
                 <div class="mb-4">
                     <label for="position" class="block text-gray-700 dark:text-gray-300 font-bold mb-2">
-                        {{ __('Position') }}
+                        {{ __('Pozicija') }}
                     </label>
                     <input type="text" name="position" id="position" value="{{ old('position') }}"
                            placeholder="{{ __('Enter device position (e.g., Room 101, 3rd floor)') }}"
@@ -87,7 +87,7 @@
 
                 <div class="mb-4">
                     <label for="group_id" class="block text-gray-700 dark:text-gray-300 font-bold mb-2">
-                        {{ __('Group') }}
+                        {{ __('Grupa') }}
                     </label>
                     <select name="group_id" id="group_id"
                             class="w-full border-gray-300 dark:border-gray-600 rounded p-2 dark:bg-gray-700 dark:text-white">
@@ -102,10 +102,10 @@
 
                 <div class="flex justify-end">
                     <a href="{{ route('locations.devices.index', $location->id) }}" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded mr-2">
-                        {{ __('Cancel') }}
+                        {{ __('Ponisti') }}
                     </a>
                     <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
-                        {{ __('Save Device') }}
+                        {{ __('Dodaj Aparat') }}
                     </button>
                 </div>
             </form>

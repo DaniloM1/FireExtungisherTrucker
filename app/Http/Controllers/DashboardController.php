@@ -28,10 +28,11 @@ class DashboardController extends Controller
             ->where('status', 'active')
             ->whereBetween('next_service_date', [$now->toDateString(), $fifteenDays->toDateString()])
             ->orderBy('next_service_date', 'asc')
-            ->get()
-            ->each(function ($event) {
-                $this->calculateActiveDevices($event);
-            });
+            ->paginate(12); // ili 6, 24 – koliko ti treba po strani
+        $serviceEvents->getCollection()->each(function ($event) {
+            $this->calculateActiveDevices($event);
+        });
+
 
         $electricalInspections = ElectricalInspection::with('location.company')
             ->whereBetween('next_inspection_date', [$now->toDateString(), $fifteenDays->toDateString()])

@@ -22,7 +22,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        Model::preventLazyLoading(true);
+//        Model::preventLazyLoading(true);
 //         URL::forceScheme('https');
    }
 }

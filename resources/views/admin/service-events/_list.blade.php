@@ -11,7 +11,7 @@
         <!-- Button for Creating New Service Event -->
         <div class="flex justify-end mb-6">
             <a href="{{ route('service-events.create') }}" class="text-lg font-bold text-gray-900 dark:text-gray-200">
-                <i class="fas fa-plus"></i> {{ __('Create New Service') }}
+                <i class="fas fa-plus"></i> {{ __('Kreiraj Servis') }}
             </a>
         </div>
 
@@ -22,10 +22,15 @@
                     <!-- Service Event Header -->
                     <div class="flex items-center justify-between">
                         <a href="{{ route('service-events.show', $event->id)}}">
-                        <h3 class="text-lg font-bold text-gray-900 dark:text-gray-200">
-                            #{{ $event->id }} - {{ ucfirst($event->category) }}
-                        </h3>
-                    </a>
+                            <h3 class="text-lg font-bold text-gray-900 dark:text-gray-200">
+                                #{{ $event->id }} - {{ ucfirst($event->evid_number) }}
+                                <span class="ml-2 text-gray-500 dark:text-gray-400 italic text-base align-middle">
+        {{ $event->category == 'pp_device' ? 'Aparati' : 'Hidranti' }}
+    </span>
+                            </h3>
+
+
+                        </a>
                         <div class="flex space-x-3">
                             <a href="{{ route('service-events.edit', $event->id) }}" class="text-gray-600 dark:text-gray-300 hover:text-gray-900">
                                 <i class="fas fa-edit"></i>

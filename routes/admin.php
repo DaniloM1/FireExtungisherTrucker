@@ -73,8 +73,12 @@ Route::middleware('role:super_admin')->group(function () {
             Route::get('/', 'index')->name('locations.hydrants.index');
             Route::get('/create', 'create')->name('locations.hydrants.create');
             Route::post('/', 'store')->name('locations.hydrants.store');
+            Route::get('/{hydrant}/edit','edit')->name('locations.hydrants.edit');
+            Route::patch('/{hydrant}',   'update')->name('locations.hydrants.update');
+            Route::delete('/{hydrant}',  'destroy')->name('locations.hydrants.destroy');
         });
     });
+
 
     // Devices
     Route::controller(DeviceController::class)->prefix('devices')->group(function () {

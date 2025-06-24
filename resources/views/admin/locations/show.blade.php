@@ -29,8 +29,6 @@
         </div>
     </x-slot>
 
-
-
     <div class="py-8 bg-gray-100 dark:bg-gray-900 min-h-screen">
         <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
 
@@ -48,7 +46,6 @@
                         <span class="font-medium">Adresa:</span>
                         <span class="ml-1">{{ $location->address }}</span>
                     </div>
-
                 </div>
 
                 <div class="md:w-1/2 w-full">
@@ -80,7 +77,7 @@
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </form>
-                            @endhasrole
+                                @endhasrole
                             </div>
                         @empty
                             <div class="text-gray-400 dark:text-gray-500 text-sm py-3 text-center">Nema priloga.</div>
@@ -140,15 +137,32 @@
             <!-- Devices Section -->
             <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700">
                 <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 flex items-center">
                         <i class="fas fa-fire-extinguisher mr-2 text-blue-500"></i>
                         Aparati ({{ $location->devices->count() }})
+                        @hasrole('super_admin|admin')
+                        <a href="{{ route('locations.devices.index', $location->id) }}"
+                           class="ml-3 text-blue-600 dark:text-blue-400 hover:underline flex items-center"
+                           title="Vidi sve aparate">
+                            <i class="fas fa-arrow-right"></i>
+                            <span class="ml-1">Vidi aparate</span>
+                        </a>
+                        @endhasrole
+                        @hasrole('company')
+                        <a href="{{ route('company.locations.devices.index',  $location->id) }}"
+                           class="ml-3 text-blue-600 dark:text-blue-400 hover:underline flex items-center"
+                           title="Vidi sve aparate">
+                            <i class="fas fa-arrow-right"></i>
+                            <span class="ml-1">Vidi aparate</span>
+                        </a>
+                        @endhasrole
                     </h3>
-                    @hasrole('super_admin')  <a href="#" class="text-sm text-blue-600 dark:text-blue-400 hover:underline">+ Dodaj aparat</a>@endhasrole
+
+                    @hasrole('super_admin')  <a href="{{route('locations.devices.create',$location->id)}}" class="text-sm text-blue-600 dark:text-blue-400 hover:underline">+ Dodaj aparat</a>@endhasrole
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    @forelse($location->devices as $device)
+                    @forelse($location->devices->take(6) as $device)
                         <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 border border-gray-200 dark:border-gray-600 hover:shadow-md transition-shadow">
                             <div class="flex justify-between items-start">
                                 <div>
@@ -193,21 +207,48 @@
                             <p class="text-gray-500 dark:text-gray-400">Nema registrovanih aparata.</p>
                         </div>
                     @endforelse
+
+                    @if($location->devices->count() > 6)
+                        <div class="col-span-2 text-center py-3">
+                            <p class="text-gray-500 dark:text-gray-400">
+                                Prikazano 6 od {{ $location->devices->count() }} aparata.
+                                <a href="{{ route('locations.devices.index', $location->id) }}" class="text-blue-600 dark:text-blue-400 hover:underline">
+                                    Pogledaj sve
+                                </a>
+                            </p>
+                        </div>
+                    @endif
                 </div>
             </div>
 
             <!-- Hydrants Section -->
             <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700">
                 <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 flex items-center">
                         <i class="fas fa-faucet mr-2 text-cyan-500"></i>
                         Hidranti ({{ $location->hydrants->count() }})
+                        @hasrole('super_admin|admin')
+                        <a href="{{ route('locations.hydrants.index', $location->id) }}"
+                           class="ml-3 text-blue-600 dark:text-blue-400 hover:underline flex items-center"
+                           title="Vidi sve hidrante">
+                            <i class="fas fa-arrow-right"></i>
+                            <span class="ml-1">Vidi Hidrante</span>
+                        </a>
+                        @endhasrole
+                        @hasrole('company')
+                        <a href="{{ route('company.hydrant.devices.index',  $location->id) }}"
+                           class="ml-3 text-blue-600 dark:text-blue-400 hover:underline flex items-center"
+                           title="Vidi sve hidrante">
+                            <i class="fas fa-arrow-right"></i>
+                            <span class="ml-1">Vidi Hidrante</span>
+                        </a>
+                        @endhasrole
                     </h3>
-                    @hasrole('super_admin')<a href="#" class="text-sm text-blue-600 dark:text-blue-400 hover:underline">+ Dodaj hidrant</a>@endhasrole
+                    @hasrole('super_admin')<a href="{{route('locations.hydrants.create', $location->id)}}" class="text-sm text-blue-600 dark:text-blue-400 hover:underline">+ Dodaj hidrant</a>@endhasrole
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    @forelse($location->hydrants as $hydrant)
+                    @forelse($location->hydrants->take(6) as $hydrant)
                         <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 border border-gray-200 dark:border-gray-600 hover:shadow-md transition-shadow">
                             <div class="flex justify-between items-start">
                                 <div>
@@ -265,30 +306,38 @@
                             <p class="text-gray-500 dark:text-gray-400">Nema registrovanih hidranta.</p>
                         </div>
                     @endforelse
+
+                    @if($location->hydrants->count() > 6)
+                        <div class="col-span-2 text-center py-3">
+                            <p class="text-gray-500 dark:text-gray-400">
+                                Prikazano 6 od {{ $location->hydrants->count() }} hidranta.
+                                <a href="{{ route('locations.hydrants.index', $location->id) }}" class="text-blue-600 dark:text-blue-400 hover:underline">
+                                    Pogledaj sve
+                                </a>
+                            </p>
+                        </div>
+                    @endif
                 </div>
             </div>
 
             <!-- Service Events Section -->
             <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700">
                 <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 flex items-center">
                         <i class="fas fa-tools mr-2 text-purple-500"></i>
                         Servisi ({{ $location->serviceEvents->count() }})
                     </h3>
-                    @hasrole('super_admin') <a href="#" class="text-sm text-blue-600 dark:text-blue-400 hover:underline">+ Dodaj servis</a>@endhasrole
+                    @hasrole('super_admin') <a href="{{route('service-events.create')}}" class="text-sm text-blue-600 dark:text-blue-400 hover:underline">+ Dodaj servis</a>@endhasrole
                 </div>
 
                 <div class="space-y-4">
-                    @forelse($location->serviceEvents as $service)
+                    @forelse($location->serviceEvents->sortByDesc('service_date')->take(6) as $service)
                         <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 border border-gray-200 dark:border-gray-600">
                             <div class="flex justify-between items-center mb-2">
                                 <div>
                                     <h4 class="font-bold text-purple-700 dark:text-purple-300 flex items-center gap-2">
                                         <i class="fas fa-calendar-day"></i>
-
-
                                         @hasrole('super_admin')
-
                                         <a href="{{ route('service-events.show', $service->id) }}" class="hover:underline text-blue-600 dark:text-blue-400">
                                             <span>{{$service->evid_number}}</span> |
                                             {{ $service->service_date ? \Carbon\Carbon::parse($service->service_date)->format('d.m.Y') : 'Datum nepoznat' }}
@@ -302,29 +351,24 @@
                                             {{ $service->service_date ? \Carbon\Carbon::parse($service->service_date)->format('d.m.Y') : 'Datum nepoznat' }}
                                             @endhasrole
 
-                                        @if($service->next_service_date)
-                                            <span class="ml-3 text-xs text-blue-500 dark:text-blue-300 bg-blue-50 dark:bg-blue-900 rounded px-2 py-1">
-                                        Sledeći: {{ \Carbon\Carbon::parse($service->next_service_date)->format('d.m.Y') }}
-                                    </span>
-                                                            @endif
+                                            @if($service->next_service_date)
+                                                <span class="ml-3 text-xs text-blue-500 dark:text-blue-300 bg-blue-50 dark:bg-blue-900 rounded px-2 py-1">
+                                                Sledeći: {{ \Carbon\Carbon::parse($service->next_service_date)->format('d.m.Y') }}
+                                            </span>
+                                            @endif
                                     </h4>
                                     <div class="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-2 mt-1">
                                         @if($service->user)
                                             <i class="fas fa-user mr-1"></i> {{ $service->user->name }}
                                         @endif
-{{--                                        @if($service->cost)--}}
-{{--                                            <span>| <i class="fas fa-coins mr-1"></i> {{ number_format($service->cost, 2) }} RSD</span>--}}
-{{--                                        @endif--}}
-
                                     </div>
                                 </div>
                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 ml-2">
-                                {{ ucfirst($service->category) }}
-                            </span>
+                                    {{ ucfirst($service->category) }}
+                                </span>
                             </div>
 
-
-                        @if($service->description)
+                            @if($service->description)
                                 <div class="text-sm text-gray-600 dark:text-gray-300 mb-3">
                                     {{ $service->description }}
                                 </div>
@@ -358,6 +402,17 @@
                             <p class="text-gray-500 dark:text-gray-400">Nema registrovanih servisa.</p>
                         </div>
                     @endforelse
+
+                    @if($location->serviceEvents->count() > 6)
+                        <div class="text-center py-3">
+                            <p class="text-gray-500 dark:text-gray-400">
+                                Prikazano 6 od {{ $location->serviceEvents->count() }} servisa.
+                                <a href="#" class="text-blue-600 dark:text-blue-400 hover:underline">
+                                    Pogledaj sve
+                                </a>
+                            </p>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>

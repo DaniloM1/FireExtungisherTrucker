@@ -78,30 +78,31 @@
                                 </dd>
                             </div>
 
-                            <div>
-                                <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 flex items-center">
-                                    <i class="fas fa-building mr-2"></i> Kompanija
-                                </dt>
-                                <dd class="mt-1 text-lg font-semibold text-gray-900 dark:text-gray-100">
-                                    {{ $serviceEvent->locations->first()->company->name }}
-                                </dd>
-                            </div>
-
-                            <div>
-                                <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 flex items-center">
-                                    <i class="fas fa-map-marker-alt mr-2"></i> Lokacije ({{ $serviceEvent->locations->count() }})
+                            @foreach($locationsGrouped as $companyName => $companyLocations)
+                                <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 flex items-center mt-4">
+                                    <i class="fas fa-building mr-2"></i> {{ $companyName }}
                                 </dt>
                                 <dd class="mt-1 text-gray-900 dark:text-gray-100">
                                     <ul class="space-y-1">
-                                        @foreach ($serviceEvent->locations as $location)
+                                        @foreach ($companyLocations as $loc)
                                             <li class="flex items-center">
                                                 <i class="fas fa-circle text-xs text-blue-500 mr-2"></i>
-                                                {{ $location->name }} ({{ $location->city }})
+                                                <a href="{{ auth()->user()->hasRole('company')
+                                                       ? route('company.locations.show', $loc->id)
+                                                       : route('locations.show', $loc->id) }}"
+
+                                                   class="text-blue-600 dark:text-blue-400 hover:underline font-medium">
+                                                    {{ $loc->name }}
+                                                </a>
+                                                <span class="ml-1 text-gray-600 dark:text-gray-300">({{ $loc->city }})</span>
                                             </li>
                                         @endforeach
                                     </ul>
                                 </dd>
-                            </div>
+                            @endforeach
+
+
+
                         </div>
 
                         <!-- Full width description -->
@@ -226,7 +227,7 @@
             </div>
         </div>
     </div>
-ddaaaa
+
     @push('styles')
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
     @endpush

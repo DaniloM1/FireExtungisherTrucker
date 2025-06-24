@@ -18,7 +18,10 @@ Route::middleware(['auth', 'role:company'])->prefix('company')->group(function (
 
     Route::get('/locations/{location}', [\App\Http\Controllers\LocationController::class, 'show'])
         ->name('company.locations.show');
-
+    Route::get('/locations/{location}/devices', [\App\Http\Controllers\DeviceController::class, 'index'])
+        ->name('company.locations.devices.index');
+    Route::get('/locations/{location}/hydrants', [\App\Http\Controllers\HydrantController::class, 'index'])
+        ->name('company.hydrant.devices.index');
 
 });
 

@@ -37,7 +37,7 @@
                         <!-- Prikaz kompanije (read-only) -->
                         <div class="mb-4">
                             <label for="company_name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                {{ __('Company') }}
+                                {{ __('Kompanija') }}
                             </label>
                             <input type="text" name="company_name" id="company_name" value="{{ $location->company->name }}" readonly
                                    class="mt-1 block w-full rounded-md border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200">
@@ -48,7 +48,7 @@
                         <!-- Name Field -->
                         <div class="mb-4">
                             <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                {{ __('Location Name') }}
+                                {{ __('Naziv Lokacije') }}
                             </label>
                             <input type="text" name="name" id="name" value="{{ old('name', $location->name) }}" required
                                    class="mt-1 block w-full rounded-md border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 focus:border-blue-500 focus:ring-blue-500">
@@ -57,14 +57,14 @@
                         <!-- Address Field -->
                         <div class="mb-4">
                             <label for="address" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                {{ __('Address') }}
+                                {{ __('Adresa') }}
                             </label>
                             <input type="text" name="address" id="address" value="{{ old('address', $location->address) }}" required
                                    class="mt-1 block w-full rounded-md border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 focus:border-blue-500 focus:ring-blue-500">
                         </div>
                         <div class="mb-4">
                             <label for="city" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                {{ __('City') }}
+                                {{ __('Grad') }}
                             </label>
                             <input type="text" name="city" id="city" value="{{ old('city', $location->city) }}" required
                                    class="mt-1 block w-full rounded-md border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 focus:border-blue-500 focus:ring-blue-500">
@@ -91,10 +91,10 @@
                         <!-- Submit i Cancel dugmad -->
                         <div class="flex gap-4">
                             <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                                {{ __('Update Location') }}
+                                {{ __('Izmeni Lokaciju') }}
                             </button>
                             <a href="{{ route('companies.locations.index', ['company' => $location->company_id]) }}" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
-                                {{ __('Cancel') }}
+                                {{ __('Ponisti') }}
                             </a>
                         </div>
                     </form>

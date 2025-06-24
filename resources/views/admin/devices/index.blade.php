@@ -1,4 +1,3 @@
-
 <x-app-layout>
     <x-slot name="header">
         <div class="bg-white dark:bg-gray-800 shadow-sm sm:rounded-lg mb-6 p-6">
@@ -20,30 +19,43 @@
                 </div>
                 <!-- Right side: Next Service and Create Service Link -->
                 <div class="mt-4 md:mt-0 text-right w-full md:w-auto">
-                    <<p class="text-gray-600 dark:text-gray-400 mb-2">
+                    <p class="text-gray-600 dark:text-gray-400 mb-2">
                         Next Service:
                         {{ $location->nextServiceDateByCategory('pp_device')
                             ? $location->nextServiceDateByCategory('pp_device')->format('d-m-Y')
                             : 'Nema dostupnog datuma' }}
                     </p>
 
-                    <a href="" class="flex items-center justify-end text-lg text-blue-600 dark:text-blue-400 hover:underline">
-                        <i class="fas fa-plus mr-2"></i> {{ __('Create Service') }}
+                    @hasrole('super_admin|admin')
+                    <a href="{{ route('locations.devices.create', $location->id) }}"
+                       class="flex items-center justify-end text-lg text-blue-600 dark:text-blue-400 hover:underline">
+                        <i class="fas fa-plus mr-2"></i> {{ __('Dodaj Aparat') }}
                     </a>
+                    @endhasrole
                 </div>
             </div>
             <!-- Breadcrumb -->
             <div class="mt-4">
                 <nav class="text-sm text-gray-500">
-                    Kompanija <span class="mx-2">&rarr;</span> Lokacija <span class="mx-2">&rarr;</span> Aparati
+                    @if(auth()->user()->hasRole('company'))
+                        <a href="{{ route('company.locations.show', $location->id) }}"
+                           class="hover:underline">
+                            Lokacija
+                        </a>
+                    @else
+                        <a href="{{ route('locations.show', $location->id) }}"
+                           class="hover:underline">
+                            Lokacija
+                        </a>
+                    @endif
+                    <span class="mx-2">&rarr;</span>
+                    <span class="text-gray-700 dark:text-gray-300">
+                        Aparati
+                    </span>
                 </nav>
             </div>
         </div>
     </x-slot>
-
-
-
-
 
     <!-- Poruke o uspjehu i greškama -->
     <div class="max-w-7xl mx-auto mt-4">
@@ -66,7 +78,7 @@
 
     <!-- Pretraga i filter -->
     <div class="max-w-7xl mx-auto mb-4">
-        <form action="{{ route('locations.devices.index', $location->id) }}" method="GET" class="flex">
+        <form action="{{ route(auth()->user()->hasRole('company') ? 'company.locations.devices.index' : 'locations.devices.index', $location->id) }}" method="GET" class="flex">
             <input
                 type="text"
                 name="search"
@@ -87,13 +99,14 @@
     <div class="max-w-7xl mx-auto">
         <div class="bg-white dark:bg-gray-800 shadow-sm sm:rounded-lg p-6">
 
-        <!-- Header sa naslovom i Add Device linkom -->
+            <!-- Header sa naslovom i Add Device linkom -->
             <div class="flex justify-between items-center mb-6">
-                <h3 class="text-lg text-gray-800 dark:text-gray-200">{{ __('Device List') }}</h3>
-
+                <h3 class="text-lg text-gray-800 dark:text-gray-200">{{ __('Lista Aparata') }}</h3>
+                @hasrole('super_admin|admin')
                 <a href="{{ route('locations.devices.create', $location->id) }}" class="text-lg text-gray-800 dark:text-gray-200 hover:underline">
-                    <i class="fas fa-plus"></i> {{ __('Add Device') }}
+                    <i class="fas fa-plus"></i> {{ __('Dodaj Aparat') }}
                 </a>
+                @endhasrole
             </div>
 
             <!-- Tablica uređaja (Desktop prikaz) -->
@@ -119,9 +132,7 @@
                                 <span>{{ __('HVP') }}</span>
                                 @php
                                     $currentSort = request('sort');
-                                    // Ako je trenutačni sort asc, postavi idući na desc, inače na asc
                                     $nextSort = ($currentSort === 'next_service_date_asc') ? 'next_service_date_desc' : 'next_service_date_asc';
-                                    // Odredi koju ikonicu prikazati
                                     if($currentSort === 'next_service_date_asc'){
                                         $icon = 'fas fa-arrow-up';
                                     } elseif($currentSort === 'next_service_date_desc'){
@@ -130,7 +141,7 @@
                                         $icon = 'fas fa-sort';
                                     }
                                 @endphp
-                                <a href="{{ route('locations.devices.index', $location->id) }}?search={{ request('search') }}&sort={{ $nextSort }}">
+                                <a href="{{ route(auth()->user()->hasRole('company') ? 'company.locations.devices.index' : 'locations.devices.index', $location->id) }}?search={{ request('search') }}&sort={{ $nextSort }}">
                                     <i class="{{ $icon }}"></i>
                                 </a>
                             </div>
@@ -141,9 +152,11 @@
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                             {{ __('Status') }}
                         </th>
+                        @hasrole('super_admin|admin')
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                             {{ __('Akcije') }}
                         </th>
+                        @endhasrole
                     </tr>
                     </thead>
                     <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
@@ -160,16 +173,17 @@
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-gray-800 dark:text-gray-200">{{ $device->position ?? '-' }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-gray-800 dark:text-gray-200">
-                                <select name="status" data-device-id="{{ $device->id }}" class="status-dropdown border border-gray-300 dark:border-gray-600 rounded p-1 dark:bg-gray-700 dark:text-white">
-                                    <option clas="bg-white text-black dark:bg-gray-700 dark:text-white" value="active" {{ $device->status == 'active' ? 'selected' : '' }}>{{ __('Active') }}</option>
-                                    <option clas="bg-white text-black dark:bg-gray-700 dark:text-white" value="inactive" {{ $device->status == 'inactive' ? 'selected' : '' }}>{{ __('Inactive') }}</option>
-                                    <option clas="bg-white text-black dark:bg-gray-700 dark:text-white" value="needs_service" {{ $device->status == 'needs_service' ? 'selected' : '' }}>{{ __('Needs Service') }}</option>
+                                <select name="status" data-device-id="{{ $device->id }}"
+                                        class="status-dropdown border border-gray-300 dark:border-gray-600 rounded p-1 dark:bg-gray-700 dark:text-white"
+                                        @if(auth()->user()->hasRole('company')) disabled @endif>
+                                    <option value="active" {{ $device->status == 'active' ? 'selected' : '' }}>{{ __('Active') }}</option>
+                                    <option value="inactive" {{ $device->status == 'inactive' ? 'selected' : '' }}>{{ __('Inactive') }}</option>
+                                    <option value="needs_service" {{ $device->status == 'needs_service' ? 'selected' : '' }}>{{ __('Needs Service') }}</option>
                                 </select>
                             </td>
-
+                            @hasrole('super_admin|admin')
                             <td class="px-6 py-4 whitespace-nowrap text-gray-800 dark:text-gray-200">
                                 <div class="flex items-center space-x-4">
-
                                     <a href="{{ route('devices.edit', $device->id) }}" class="text-black dark:text-white hover:underline" title="{{ __('Edit') }}">
                                         <i class="fas fa-edit"></i>
                                     </a>
@@ -182,10 +196,11 @@
                                     </form>
                                 </div>
                             </td>
+                            @endhasrole
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="8" class="px-6 py-4 text-center text-gray-500 dark:text-gray-300">
+                            <td colspan="{{ auth()->user()->hasRole('super_admin|admin') ? 8 : 7 }}" class="px-6 py-4 text-center text-gray-500 dark:text-gray-300">
                                 {{ __('No devices found.') }}
                             </td>
                         </tr>
@@ -193,7 +208,7 @@
                     </tbody>
                 </table>
 
-
+                <!-- Mobile prikaz -->
                 <div class="block md:hidden">
                     @forelse ($devices as $device)
                         <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-4 mb-4 border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-shadow">
@@ -263,6 +278,7 @@
                             </div>
 
                             <!-- Actions -->
+                            @hasrole('super_admin|admin')
                             <div class="flex justify-between items-center pt-3 border-t border-gray-200 dark:border-gray-700">
                                 <!-- Status dropdown -->
                                 <select name="status" data-device-id="{{ $device->id }}"
@@ -291,6 +307,7 @@
                                     </form>
                                 </div>
                             </div>
+                            @endhasrole
                         </div>
                     @empty
                         <div class="text-center py-6 bg-white dark:bg-gray-800 rounded-xl shadow">
@@ -299,9 +316,6 @@
                         </div>
                     @endforelse
                 </div>
-
-
-
             </div>
 
             <!-- Pagination -->
@@ -310,6 +324,8 @@
             </div>
         </div>
     </div>
+
+    @hasrole('super_admin|admin')
     <script>
         document.querySelectorAll('.status-dropdown').forEach(dropdown => {
             dropdown.addEventListener('change', function() {
@@ -325,20 +341,21 @@
                     },
                     body: JSON.stringify({ status: status })
                 })
-                .then(response => {
-                    if (response.ok) {
-                        // Opcionalno: prikažite obavijest o uspjehu
-                        console.log('Status uspješno ažuriran');
-                    } else {
-                        // Opcionalno: obradite grešku
-                        console.error('Greška prilikom ažuriranja statusa');
-                    }
-                })
-                .catch(error => {
-                    console.error('Greška: ', error);
-                });
+                    .then(response => {
+                        if (response.ok) {
+                            // Opcionalno: prikažite obavijest o uspjehu
+                            console.log('Status uspješno ažuriran');
+                        } else {
+                            // Opcionalno: obradite grešku
+                            console.error('Greška prilikom ažuriranja statusa');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Greška: ', error);
+                    });
             });
         });
-        </script>
+    </script>
+    @endhasrole
 
 </x-app-layout>

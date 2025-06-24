@@ -16,12 +16,13 @@ class LocationController extends Controller
         $company = Company::findOrFail($companyId);
 
         $locations = $company->locations()
-            ->with('serviceEvents')
+            ->with(['lastServiceEvent', 'nextServiceEvent']) // dodaj ove dve relacije
             ->when(request('name'), fn($q, $name) => $q->where('name', 'like', "%$name%"))
             ->when(request('address'), fn($q, $address) => $q->where('address', 'like', "%$address%"))
             ->when(request('city'), fn($q, $city) => $q->where('city', 'like', "%$city%"))
             ->paginate(10)
-            ->appends(request()->query()); // da paginacija čuva filtere
+            ->appends(request()->query());
+
 
         return view('admin.locations.index', compact('company', 'locations'));
     }
@@ -50,12 +51,17 @@ class LocationController extends Controller
     public function store(Request $request, Company $company)
     {
         $validated = $request->validate([
-            'name'      => 'required|string|max:255',
-            'address'   => 'required|string|max:255',
-            'latitude'  => 'nullable|numeric',
-            'longitude' => 'nullable|numeric',
-            'city'      => 'required|string|max:255',
+            'name'          => 'required|string|max:255',
+            'address'       => 'required|string|max:255',
+            'latitude'      => 'nullable|numeric',
+            'longitude'     => 'nullable|numeric',
+            'city'          => 'required|string|max:255',
+            'pib'           => 'nullable|string|max:50',
+            'maticni'       => 'nullable|string|max:50',
+            'contact'       => 'nullable|string|max:255',
+            'kontakt_broj'  => 'nullable|string|max:50',
         ]);
+
 
         $company->locations()->create($validated);
 

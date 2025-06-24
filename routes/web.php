@@ -6,10 +6,13 @@ use App\Http\Controllers\FrontController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\PDFController;
+use App\Http\Controllers\ExcelImportController;
 
 Route::get('/service-report/{serviceEventId}', [PDFController::class, 'generateServiceReport']);
 
 
+//Route::get('/excel/import', [ExcelImportController::class, 'showForm'])->name('excel.import.form');
+//Route::post('/excel/import', [ExcelImportController::class, 'import'])->name('excel.import');
 
 /*
 |--------------------------------------------------------------------------

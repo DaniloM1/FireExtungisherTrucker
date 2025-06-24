@@ -22,6 +22,41 @@ class HydrantController extends Controller
     public function store(Request $request, Location $location)
     {
         $data = $request->validate([
+            'serial_number' => 'nullable|string|max:255',
+            'type' => 'nullable|string|max:255',
+            'model' => 'nullable|string|max:255',
+            'manufacturer' => 'nullable|string|max:255',
+            'manufacture_date' => 'nullable|date',
+            'next_service_date' => 'nullable|date',
+            'position' => 'nullable|string|max:255',
+            'hvp' => 'nullable|date',
+            'static_pressure' => 'nullable|numeric',
+            'dynamic_pressure' => 'nullable|numeric',
+            'flow' => 'nullable|numeric',
+            'status' => 'nullable|string|max:255',
+        ]);
+
+        $location->hydrants()->create($data);
+
+        return redirect()->route('locations.hydrants.index', $location)->with('success', 'Hydrant created.');
+    }
+
+    public function edit(Location $location, Hydrant $hydrant)
+    {
+        return view('admin.hydrants.edit', compact('location', 'hydrant'));
+
+    }
+    public function destroy(Location $location, Hydrant $hydrant)
+    {
+        $hydrant->delete();
+
+        return redirect()
+            ->route('locations.hydrants.index', $location)
+            ->with('success', 'Hydrant obrisan.');
+    }
+    public function update(Request $request, Location $location, Hydrant $hydrant)
+    {
+        $data = $request->validate([
             'serial_number'     => 'nullable|string|max:255',
             'type'              => 'nullable|string|max:255',
             'model'             => 'nullable|string|max:255',
@@ -36,8 +71,10 @@ class HydrantController extends Controller
             'status'            => 'nullable|string|max:255',
         ]);
 
-        $location->hydrants()->create($data);
+        $hydrant->update($data);
 
-        return redirect()->route('locations.hydrants.index', $location)->with('success', 'Hydrant created.');
+        return redirect()
+            ->route('locations.hydrants.index', $location)
+            ->with('success', 'Hydrant ažuriran.');
     }
 }

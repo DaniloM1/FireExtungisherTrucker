@@ -16,7 +16,11 @@ return new class extends Migration
             $table->foreignId('company_id')->constrained()->onDelete('cascade');
             $table->string('name');
             $table->string('address');
-            $table->string('city'); // Dodata kolona za grad
+            $table->string('city');
+            $table->string('contact')->nullable();
+            $table->string('pib', 32)->nullable();
+            $table->string('maticni', 32)->nullable();
+            $table->string('kontakt_broj', 32)->nullable();
             $table->decimal('latitude', 10, 7)->nullable();
             $table->decimal('longitude', 10, 7)->nullable();
             $table->timestamps();

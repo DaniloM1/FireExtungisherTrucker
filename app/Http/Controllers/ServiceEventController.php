@@ -72,40 +72,57 @@ class ServiceEventController extends Controller
     {
         $user = auth()->user();
 
-        // SUPER_ADMIN ima sve dozvole
+        // Učitaj uvek samo priloge
+        $serviceEvent->load('attachments');
+
+        // SUPER_ADMIN vidi sve lokacije i pripadajuće relacije
         if ($user->hasRole('super_admin')) {
-            // Učitaj relacije i prikaži
             $serviceEvent->load([
                 'locations.company',
                 'locations.devices',
                 'locations.hydrants',
-                'attachments'
             ]);
-            return view('admin.service-events.show', compact('serviceEvent'));
+            $locationsGrouped = $serviceEvent->locations->groupBy(function($loc) {
+                return $loc->company->name;
+            });
+
+            return view('admin.service-events.show', [
+                'serviceEvent'      => $serviceEvent,
+                'locationsGrouped'  => $locationsGrouped,
+            ]);
         }
 
-        // Ako je company, proveri da li ima pristup
+        // COMPANY vidi samo sopstvene lokacije
         if ($user->hasRole('company')) {
             $companyId = $user->company_id;
-            $relatedCompanyIds = $serviceEvent->locations->pluck('company_id')->unique();
 
-            if (!$relatedCompanyIds->contains($companyId)) {
+            // Dohvati samo lokacije servisa koje pripadaju toj kompaniji
+            $locations = $serviceEvent->locations()
+                ->where('company_id', $companyId)
+                ->with(['company','devices','hydrants'])
+                ->get();
+
+            // Ako ne postoji nijedna, nemaš pristup
+            if ($locations->isEmpty()) {
                 abort(403, 'Nemate pristup ovom servisu.');
             }
 
-            $serviceEvent->load([
-                'locations.company',
-                'locations.devices',
-                'locations.hydrants',
-                'attachments'
+            // Zameni relaciju locations filtriranim setom
+            $serviceEvent->setRelation('locations', $locations);
+            $locationsGrouped = $serviceEvent->locations->groupBy(function($loc) {
+                return $loc->company->name;
+            });
+
+            return view('admin.service-events.show', [
+                'serviceEvent'      => $serviceEvent,
+                'locationsGrouped'  => $locationsGrouped,
             ]);
-//            dd($serviceEvent);
-            return view('admin.service-events.show', compact('serviceEvent'));
         }
 
-        // Svi ostali nemaju pristup
+        // Ostali nemaju pristup
         abort(403, 'Nemate pristup ovom servisu.');
     }
+
 
 
     public function store(Request $request)

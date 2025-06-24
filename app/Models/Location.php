@@ -16,6 +16,10 @@ class Location extends Model
         'city',
         'latitude',
         'longitude',
+        'pib',
+        'maticni',
+        'contact',
+        'kontakt_broj',
     ];
 
     public function company()
@@ -56,10 +60,24 @@ class Location extends Model
             ->sortBy('next_service_date') // ručno sortiranje jer je kolekcija
             ->first()?->next_service_date;
     }
+    public function lastServiceEvent()
+    {
+        return $this->belongsToMany(ServiceEvent::class, 'service_event_locations')
+            ->orderByDesc('service_date')
+            ->limit(1);
+    }
+    public function nextServiceEvent()
+    {
+        return $this->belongsToMany(ServiceEvent::class, 'service_event_locations')
+            ->whereNotNull('next_service_date')
+            ->orderBy('next_service_date', 'desc')
+            ->limit(1);
+    }
     public function attachments()
     {
         return $this->hasMany(Attachment::class);
     }
+
 
 
 
