@@ -57,5 +57,12 @@
             <!-- Prikaz lokacija -->
             @include('admin.locations._list')
         </div>
+
+    </div>
+    <div class="bg-white rounded-xl shadow p-4">
+        <div class="overflow-hidden rounded-lg border border-gray-200">
+            <x-map :locations="$locations" />
+        </div>
+    </div>
     </div>
 </x-app-layout>

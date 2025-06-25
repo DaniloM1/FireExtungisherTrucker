@@ -110,6 +110,21 @@
             </div> <!-- Kraj tabova -->
         </div>
     </div>
+        @php
+            // Simulacija podataka, inače ovo ide iz baze/kontrolera
+            $locationss = [
+                ['latitude' => 44.7866, 'longitude' => 20.4489, 'title' => 'Beograd'],
+                ['latitude' => 45.2671, 'longitude' => 19.8335, 'title' => 'Novi Sad'],
+                ['latitude' => 43.3209, 'longitude' => 21.8958, 'title' => 'Niš'],
+            ];
+        @endphp
+        </div>
+        <div class="bg-white rounded-xl shadow p-4">
+            <div class="overflow-hidden rounded-lg border border-gray-200">
+                <x-map :locations="$locations" />
+            </div>
+        </div>
 
-    <script src="//unpkg.com/alpinejs" defer></script>
+
+        <script src="//unpkg.com/alpinejs" defer></script>
 </x-app-layout>
