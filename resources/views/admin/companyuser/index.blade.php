@@ -95,140 +95,17 @@
                         </div>
                     </form>
 
-                    <div class="overflow-x-auto">
-                        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                            <thead class="bg-gray-50 dark:bg-gray-700">
-                            <tr>
-                                <th class="px-2 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Naziv</th>
-                                <th class="px-2 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Grad</th>
-                                <th class="px-2 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">PP uređaji</th>
-                                <th class="px-2 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Hidranti</th>
-                            </tr>
-                            </thead>
-                            <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                            @forelse ($locations as $location)
-                                <tr>
-                                    <td class="px-2 sm:px-6 py-4 text-sm text-blue-600 dark:text-blue-400 hover:underline">
-                                        <a href="{{ route('company.locations.show', $location->id) }}">
-                                            {{ $location->name }}
-                                        </a>
-                                    </td>
-                                    <td class="px-2 sm:px-6 py-4 text-sm text-gray-900 dark:text-gray-100">{{ $location->city }}</td>
-                                    <td class="px-2 sm:px-6 py-4 text-sm text-gray-900 dark:text-gray-100">{{ $location->devices_count }}</td>
-                                    <td class="px-2 sm:px-6 py-4 text-sm text-gray-900 dark:text-gray-100">{{ $location->hydrants_count }}</td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="4" class="px-2 sm:px-6 py-4 text-center text-gray-500 dark:text-gray-400">
-                                        Nema lokacija za prikaz.
-                                    </td>
-                                </tr>
-                            @endforelse
-                            </tbody>
-                        </table>
-                        {{ $locations->links() }}
-                    </div>
+
+
+                    @include('admin.locations._list')
+
                 </div>
+
 
                 <!-- Servisi Tab -->
                 <div x-show="tab === 'services'" x-cloak class="bg-white dark:bg-gray-800 rounded-b-xl shadow p-4 sm:p-6">
                     <h3 class="text-lg font-semibold mb-4 text-gray-800 dark:text-gray-200">Poslednji servisi</h3>
-                    {{-- MOBILE LISTA --}}
-                    <div class="block md:hidden space-y-4">
-                        @forelse ($recentServiceEvents as $event)
-                            <div class="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4 shadow">
-                                <div class="flex justify-between items-center mb-2">
-                                    <div class="text-xs text-gray-500 dark:text-gray-400">Evid. broj</div>
-                                    <div class="font-semibold text-blue-600 dark:text-blue-300">{{ $event->evid_number }}</div>
-                                </div>
-                                <div class="flex flex-wrap gap-2 text-xs mb-1">
-                                    <div class="flex-1">
-                                        <span class="text-gray-500 dark:text-gray-400">Servis:</span>
-                                        <span class="text-gray-900 dark:text-gray-100">
-                                            {{ $event->service_date ? \Carbon\Carbon::parse($event->service_date)->format('d.m.Y') : '-' }}
-                                        </span>
-                                    </div>
-
-                                    <div class="flex-1">
-                                        <span class="text-gray-500 dark:text-gray-400">Sledeći:</span>
-                                        <span class="font-semibold text-blue-700 dark:text-blue-300">{{ $event->next_service_date ? \Carbon\Carbon::parse($event->next_service_date)->format('d.m.Y') : '-' }}</span>
-                                    </div>
-                                </div>
-                                <div class="text-xs text-gray-500 dark:text-gray-400 mb-1">Kategorija:
-                                    <span class="text-gray-900 dark:text-gray-100 font-medium">{{ ucfirst($event->category) }}</span>
-                                </div>
-                                <div class="text-xs text-gray-500 dark:text-gray-400 mb-2">Lokacije:
-                                    @foreach ($event->locations as $loc)
-                                        <span class="inline-block bg-gray-100 dark:bg-gray-700 rounded px-2 py-1 mx-1 text-gray-700 dark:text-gray-200">{{ $loc->name }}</span>
-                                    @endforeach
-                                </div>
-                                <div class="flex justify-end">
-                                    <a href="{{ route('company.service-events.show', $event->id) }}"
-                                       class="text-blue-600 dark:text-blue-300 hover:underline font-medium text-sm">Detalji</a>
-                                </div>
-                            </div>
-                        @empty
-                            <div class="text-gray-500 dark:text-gray-400 text-center">Nema servisnih događaja za prikaz.</div>
-                        @endforelse
-                    </div>
-                    {{-- DESKTOP TABELA --}}
-                    <div class="hidden md:block overflow-x-auto">
-                        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                            <thead class="bg-gray-50 dark:bg-gray-700">
-                            <tr>
-                                <th class="px-2 sm:px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Evid. broj</th>
-                                <th class="px-2 sm:px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Datum servisa</th>
-                                <th class="px-2 sm:px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Sledeći servis</th>
-                                <th class="px-2 sm:px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Kategorija</th>
-                                <th class="px-2 sm:px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Lokacije</th>
-                                <th class="px-2 sm:px-4 py-3 text-right"></th>
-                            </tr>
-                            </thead>
-                            <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                            @forelse ($recentServiceEvents as $event)
-                                <tr>
-                                    <td class="px-2 sm:px-4 py-4 text-sm text-gray-900 dark:text-gray-100">
-                                        {{ $event->evid_number }}
-                                    </td>
-                                    <td class="px-2 sm:px-4 py-4 text-sm">
-                        <span class="inline-block px-2 py-1 rounded bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200">
-                            {{ $event->service_date ? \Carbon\Carbon::parse($event->service_date)->format('d.m.Y') : '-' }}
-                        </span>
-                                    </td>
-                                    <td class="px-2 sm:px-4 py-4 text-sm">
-                        <span class="inline-block px-2 py-1 rounded bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-200">
-                            {{ $event->next_service_date ? \Carbon\Carbon::parse($event->next_service_date)->format('d.m.Y') : '-' }}
-                        </span>
-                                    </td>
-                                    <td class="px-2 sm:px-4 py-4 text-sm text-gray-900 dark:text-gray-100">
-                                        {{ ucfirst($event->category) }}
-                                    </td>
-                                    <td class="px-2 sm:px-4 py-4 text-sm text-gray-900 dark:text-gray-100">
-                                        @foreach ($event->locations as $loc)
-                                            <span class="inline-block bg-gray-100 dark:bg-gray-700 rounded px-2 py-1 mr-1">{{ $loc->name }}</span>
-                                        @endforeach
-                                    </td>
-                                    <td class="px-2 sm:px-4 py-4 text-right">
-                                        <a href="{{ route('company.service-events.show', $event->id) }}"
-                                           class="text-blue-600 dark:text-blue-300 hover:underline font-medium">Detalji</a>
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="6" class="px-2 sm:px-4 py-4 text-center text-gray-500 dark:text-gray-400">
-                                        Nema servisnih događaja za prikaz.
-                                    </td>
-                                </tr>
-                            @endforelse
-                            </tbody>
-                        </table>
-                        {{$recentServiceEvents->links()}}
-                    </div>
-                </div>
-
-
-
-                <!-- Novi tab: Računi i prilozi -->
+                    @include('admin.service-events._list')
 
             </div> <!-- Kraj tabova -->
         </div>

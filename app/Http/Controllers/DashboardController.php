@@ -20,10 +20,8 @@ class DashboardController extends Controller
         $fifteenDays = $now->copy()->addDays(15);
         $threeMonths = $now->copy()->addMonths(3);
 
-        // Konsolidacija aktivnih servisa (ukoliko je potrebna)
         $this->consolidateActiveServiceEvents($now, $fifteenDays);
 
-        // Učitavamo samo aktivne servisne događaje unutar perioda
         $serviceEvents = ServiceEvent::with(['locations.company'])
             ->where('status', 'active')
             ->whereBetween('next_service_date', [$now->toDateString(), $fifteenDays->toDateString()])
@@ -143,12 +141,11 @@ class DashboardController extends Controller
     {
         $cities = [];
         $citySummaries = [];
-        $cityEventIds = []; // za praćenje jedinstvenih event ID-jeva po gradu
+        $cityEventIds = [];
 
         foreach ($serviceEvents as $event) {
             $eventDate = Carbon::parse($event->next_service_date);
             foreach ($event->locations as $location) {
-                // Preskočite lokacije koje nemaju pivot zapis ili imaju pivot status različit od "active"
                 if (!isset($location->pivot) || $location->pivot->status !== 'active') {
                     continue;
                 }
@@ -163,35 +160,29 @@ class DashboardController extends Controller
                     $cityEventIds[$city] = [];
                 }
 
-                // Ako je lokacija već dodata, proveravamo da li treba da ažuriramo computed_next_service_date
                 $existing = $cities[$city]->firstWhere('id', $location->id);
                 if ($existing) {
-                    // Ažuriramo ako je trenutni event raniji od prethodno zabeleženog za tu lokaciju
                     if ($eventDate->lessThan(Carbon::parse($existing->computed_next_service_date))) {
                         $existing->computed_next_service_date = $event->next_service_date;
                         $existing->service_event_id = $event->id;
                     }
                 } else {
-                    // Inicijalno postavljamo computed_next_service_date na datum trenutnog event-a
                     $location->computed_next_service_date = $event->next_service_date;
                     $location->service_event_id = $event->id;
                     $cities[$city]->push($location);
                 }
 
-                // Brojimo event samo jednom po gradu
                 if (!in_array($event->id, $cityEventIds[$city])) {
                     $citySummaries[$city]['event_count']++;
                     $cityEventIds[$city][] = $event->id;
                 }
 
-                // Ažuriramo next_service_date za grad ako je trenutni event raniji
                 if (Carbon::parse($event->next_service_date)->lessThan(Carbon::parse($citySummaries[$city]['next_service_date']))) {
                     $citySummaries[$city]['next_service_date'] = $event->next_service_date;
                 }
             }
         }
 
-        // Sortiramo gradove prema najranijem datumu servisa
         uasort($citySummaries, function ($a, $b) {
             return Carbon::parse($a['next_service_date'])->timestamp <=> Carbon::parse($b['next_service_date'])->timestamp;
         });

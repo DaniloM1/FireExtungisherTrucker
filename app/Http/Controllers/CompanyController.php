@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Company;
 use Illuminate\Http\Request;
+use App\Http\Requests\CompanyRequest;
 
 class CompanyController extends Controller
 {
@@ -13,13 +14,7 @@ class CompanyController extends Controller
         $query = Company::query();
 
         if ($search = $request->input('search')) {
-            $query->where(function($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                    ->orWhere('contact_email', 'like', "%{$search}%")
-                    ->orWhere('contact_phone', 'like', "%{$search}%")
-                    ->orWhere('city', 'like', "%{$search}%");
-
-            });
+            $query->search($search);
         }
 
         $companies = $query->paginate(10);
@@ -32,65 +27,47 @@ class CompanyController extends Controller
         return view('admin.companies.create');
     }
 
-    public function store(Request $request)
+    public function store(CompanyRequest $request)
     {
-        $validated = $request->validate([
-            'name'          => 'required|string|max:255',
-            'address'       => 'required|string|max:255',
-            'contact_email' => 'required|email|unique:companies',
-            'contact_phone' => 'required|string|max:20',
-            'pib'           => 'required|string|max:20|unique:companies',
-            'city'          => 'required|string|max:255',
-            'maticni_broj'  => 'required|string|max:20|unique:companies',
-            'website'       => 'nullable|url',
-        ]);
-
+        $validated = $request->validated();
         Company::create($validated);
 
-        return redirect()->route('companies.index')->with('success', 'Company created successfully.');
+        return redirect()->route('companies.index')
+            ->with('success', 'Company created successfully.');
     }
 
     public function show(Company $company)
     {
-        $company->load('locations');
-
-        return view('admin.companies.show', compact('company'));
+        // Redirektuj korisnika na index stranicu lokacija te kompanije
+        return redirect()->route('companies.locations.index', $company->id);
     }
+
 
     public function edit(Company $company)
     {
         return view('admin.companies.edit', compact('company'));
     }
 
-    public function update(Request $request, Company $company)
+    public function update(CompanyRequest $request, Company $company)
     {
-        $validated = $request->validate([
-            'name'          => 'required|string|max:255',
-            'address'       => 'required|string|max:255',
-            'contact_email' => 'required|email|unique:companies,contact_email,' . $company->id,
-            'contact_phone' => 'required|string|max:20',
-            'city'          => 'required|string|max:255',
-            'pib'           => 'required|string|max:20|unique:companies,pib,' . $company->id,
-            'maticni_broj'  => 'required|string|max:20|unique:companies,maticni_broj,' . $company->id,
-            'website'       => 'nullable|url',
-        ]);
-
+        $validated = $request->validated();
         $company->update($validated);
 
-        return redirect()->route('companies.index')->with('success', 'Company updated successfully.');
+        return redirect()->route('companies.index')
+            ->with('success', 'Company updated successfully.');
     }
 
     public function destroy(Company $company)
     {
         $company->delete();
 
-        return redirect()->route('companies.index')->with('success', 'Company deleted successfully.');
+        return redirect()->route('companies.index')
+            ->with('success', 'Company deleted successfully.');
     }
     public function locations(Company $company)
     {
         $locations = $company->locations()->paginate(10);
         return view('admin.companies.locations', compact('company', 'locations'));
     }
-
 
 }

@@ -148,83 +148,192 @@
             </div>
         </div>
     </section>
+    <section class="py-16 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="mt-16 bg-white shadow-lg rounded-xl overflow-hidden">
+                <div class="grid grid-cols-1 md:grid-cols-2">
+                    <div class="p-8 md:p-12 bg-gradient-to-r from-red-600 to-red-800 text-white">
+                        <h3 class="text-2xl font-bold mb-4">Naša stručnost</h3>
+                        <p class="mb-6">Tim iskusnih inženjera i tehničara sa decenijama iskustva u oblasti požarne zaštite i sigurnosti na radu.</p>
+                        <ul class="space-y-3">
+                            <li class="flex items-start">
+                                <svg class="h-5 w-5 text-red-200 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                </svg>
+                                <span>Certifikovani stručnjaci</span>
+                            </li>
+                            <li class="flex items-start">
+                                <svg class="h-5 w-5 text-red-200 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                </svg>
+                                <span>Najsavremenija oprema</span>
+                            </li>
+                            <li class="flex items-start">
+                                <svg class="h-5 w-5 text-red-200 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                </svg>
+                                <span>Kontinuirano usavršavanje</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="p-8 md:p-12">
+                        <h3 class="text-2xl font-bold text-gray-900 mb-4">Zašto izabrati nas?</h3>
+                        <p class="text-gray-600 mb-6">Kombinacija iskustva, najnovijih tehnologija i individualnog pristupa svakom klijentu čini nas liderom u oblasti.</p>
+                        <div class="space-y-4">
+                            <div>
+                                <h4 class="font-medium text-gray-900">Širok spektar usluga</h4>
+                                <p class="text-gray-600 text-sm">Od projektovanja do održavanja - kompletnu rešenja pod jednim krovom</p>
+                            </div>
+                            <div>
+                                <h4 class="font-medium text-gray-900">Brz i pouzdan odgovor</h4>
+                                <p class="text-gray-600 text-sm">Reagujemo brzo na sve zahteve i hitne intervencije</p>
+                            </div>
+                            <div>
+                                <h4 class="font-medium text-gray-900">Transparentnost</h4>
+                                <p class="text-gray-600 text-sm">Jasne i fer cene bez skrivenih troškova</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <!-- Naši Partneri Sekcija -->
-    <section id="partneri" class="py-10 md:py-20 bg-gray-100">
+    <section id="partneri" class="py-16 bg-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <!-- Grid: Na mobilu jedna kolona, na desktopu dve kolone -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
+            <div class="text-center mb-16">
+                <span class="text-xs md:text-sm font-bold text-red-500 uppercase tracking-wider">Poverenje kompanija</span>
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mt-4">Naši partneri i klijenti</h2>
+                <p class="mt-4 max-w-2xl text-gray-600 mx-auto">
+                    Saradnja sa vodećim kompanijama iz različitih industrija dokaz našeg kvaliteta i pouzdanosti
+                </p>
+            </div>
 
-                <!-- Logos blok: Na mobilu se prikazuje kao drugi element, a na desktopu kao prvi (levo) -->
-                <div class="order-2 md:order-1">
-                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 items-center">
-                        <!-- Logo 1 -->
-                        <div class="flex justify-center">
-                            <img src="{{ asset('images/aman-logo.jpg') }}" alt="Partner Logo" class="object-contain h-16">
+            <!-- Logos grid sa hover efektima -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
+                <!-- Partner 1 -->
+                <div class="flex items-center justify-center p-4 bg-gray-50 rounded-xl hover:bg-white hover:shadow-lg transition-all duration-300 border border-gray-100">
+                    <img src="{{ asset('images/aman-logo.jpg') }}" alt="Aman logo" class="h-12 object-contain opacity-80 hover:opacity-100 transition-opacity">
+                </div>
+
+                <!-- Partner 2 -->
+                <div class="flex items-center justify-center p-4 bg-gray-50 rounded-xl hover:bg-white hover:shadow-lg transition-all duration-300 border border-gray-100">
+                    <img src="{{ asset('images/knjaz-logo.png') }}" alt="Knjaz Miloš logo" class="h-12 object-contain opacity-80 hover:opacity-100 transition-opacity">
+                </div>
+
+{{--                <!-- Partner 3 -->--}}
+{{--                <div class="flex items-center justify-center p-4 bg-gray-50 rounded-xl hover:bg-white hover:shadow-lg transition-all duration-300 border border-gray-100">--}}
+{{--                    <img src="{{ asset('images/partner3.png') }}" alt="Partner logo" class="h-12 object-contain opacity-80 hover:opacity-100 transition-opacity">--}}
+{{--                </div>--}}
+
+{{--                <!-- Partner 4 -->--}}
+{{--                <div class="flex items-center justify-center p-4 bg-gray-50 rounded-xl hover:bg-white hover:shadow-lg transition-all duration-300 border border-gray-100">--}}
+{{--                    <img src="{{ asset('images/partner4.png') }}" alt="Partner logo" class="h-12 object-contain opacity-80 hover:opacity-100 transition-opacity">--}}
+{{--                </div>--}}
+{{--            </div>--}}
+
+            <!-- Testimonials -->
+{{--            <div class="mt-16 bg-red-50 rounded-xl p-8 md:p-12">--}}
+{{--                <div class="max-w-3xl mx-auto text-center">--}}
+{{--                    <svg class="h-12 w-12 text-red-400 mx-auto" fill="currentColor" viewBox="0 0 32 32">--}}
+{{--                        <path d="M9.352 4C4.456 7.456 1 13.12 1 19.36c0 5.088 3.072 8.064 6.624 8.064 3.36 0 5.856-2.688 5.856-5.856 0-3.168-2.208-5.472-5.088-5.472-.576 0-1.344.096-1.536.192.48-3.264 3.552-7.104 6.624-9.024L9.352 4zm16.512 0c-4.8 3.456-8.256 9.12-8.256 15.36 0 5.088 3.072 8.064 6.624 8.064 3.264 0 5.856-2.688 5.856-5.856 0-3.168-2.304-5.472-5.184-5.472-.576 0-1.248.096-1.44.192.48-3.264 3.456-7.104 6.528-9.024L25.864 4z"/>--}}
+{{--                    </svg>--}}
+{{--                    <blockquote class="mt-6">--}}
+{{--                        <p class="text-lg md:text-xl font-medium text-gray-900">--}}
+{{--                            "Inženjer Tim je pokazao visok nivo profesionalizma u saradnji na našim projektima. Njihovo znanje i posvećenost sigurnosti su neuporedivi."--}}
+{{--                        </p>--}}
+{{--                    </blockquote>--}}
+{{--                    <div class="mt-6">--}}
+{{--                        <p class="text-base font-medium text-red-600">Milan Petrović</p>--}}
+{{--                        <p class="text-sm font-medium text-gray-500">Direktor bezbednosti, AMAN doo</p>--}}
+{{--                    </div>--}}
+{{--                </div>--}}
+{{--            </div>--}}
+        </div>
+    </section>
+
+    <!-- Naša Ekspertiza Sekcija -->
+    <section id="expertiza" class="py-16 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="lg:text-center">
+                <span class="text-xs md:text-sm font-bold text-red-500 uppercase tracking-wider">Naše brojke</span>
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mt-4">Brojke koje govore same za sebe</h2>
+                <p class="mt-4 max-w-2xl text-gray-600 ">
+                    Kroz godine rada stekli smo poverenje brojnih klijenata i iskustvo koje nas čini liderima u oblasti
+                </p>
+            </div>
+
+            <div class="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+                <!-- Stat 1 -->
+                <div class="bg-white overflow-hidden shadow rounded-lg hover:shadow-xl transition-shadow duration-300">
+                    <div class="px-4 py-5 sm:p-6 text-center">
+                        <div class="text-5xl font-extrabold text-red-600 mb-4" x-data="{ count: 0 }"
+                             x-init="() => { let start = 0; const end = 100; const duration = 2000;
+                         const step = (timestamp) => { if (!start) start = timestamp;
+                         const progress = Math.min((timestamp - start) / duration, 1);
+                         count = Math.floor(progress * end); if (progress < 1) window.requestAnimationFrame(step); };
+                         window.requestAnimationFrame(step); }">
+                            <span x-text="count">0</span>+
                         </div>
-                        <!-- Logo 2 -->
-                        <div class="flex justify-center">
-                            <img src="{{ asset('images/knjaz-logo.png') }}" alt="Partner Logo" class="object-contain h-16">
-                        </div>
-                        <!-- Logo 3 -->
-                        <div class="flex justify-center">
-                            <img src="{{ asset('images/aman-logo.jpg') }}" alt="Partner Logo" class="object-contain h-16">
-                        </div>
-                        <!-- Logo 4 -->
-                        <div class="flex justify-center">
-                            <img src="{{ asset('images/knjaz-logo.png') }}" alt="Partner Logo" class="object-contain h-16">
-                        </div>
-                        <!-- Dodajte još logotipa po potrebi -->
+                        <div class="text-lg font-medium text-gray-900">Zadovoljnih klijenata</div>
+                        <div class="mt-2 text-sm text-gray-500">Širom Srbije i regiona</div>
                     </div>
                 </div>
 
-                <!-- Tekstualni blok: Na mobilu se prikazuje kao prvi element, a na desktopu kao drugi (desno) -->
-                <div class="order-1 md:order-2 text-left md:text-left">
-                    <h2 class="text-xs md:text-sm font-bold text-red-500 uppercase mb-2">Naši Partneri</h2>
-                    <h3 class="text-2xl md:text-4xl font-bold text-gray-900 mb-3 md:mb-4">
-                        Saradnja koja donosi rezultate
-                    </h3>
-                    <p class="text-gray-600 mb-4 md:mb-6 text-sm md:text-base">
-                        Ponosno sarađujemo s vrhunskim partnerima kako bismo našim klijentima ponudili najbolje rešenje.
-                    </p>
-                    <a href="#partneri" class="inline-block bg-red-600 text-white px-4 py-2 md:px-6 md:py-2 rounded-full hover:bg-red-700 transition duration-300 text-sm md:text-lg">
-                        Saznaj Više
-                    </a>
+                <!-- Stat 2 -->
+                <div class="bg-white overflow-hidden shadow rounded-lg hover:shadow-xl transition-shadow duration-300">
+                    <div class="px-4 py-5 sm:p-6 text-center">
+                        <div class="text-5xl font-extrabold text-red-600 mb-4" x-data="{ count: 0 }"
+                             x-init="() => { let start = 0; const end = 10; const duration = 2000;
+                         const step = (timestamp) => { if (!start) start = timestamp;
+                         const progress = Math.min((timestamp - start) / duration, 1);
+                         count = Math.floor(progress * end); if (progress < 1) window.requestAnimationFrame(step); };
+                         window.requestAnimationFrame(step); }">
+                            <span x-text="count">0</span>+
+                        </div>
+                        <div class="text-lg font-medium text-gray-900">Godina iskustva</div>
+                        <div class="mt-2 text-sm text-gray-500">U oblasti požarne zaštite</div>
+                    </div>
                 </div>
 
+                <!-- Stat 3 -->
+                <div class="bg-white overflow-hidden shadow rounded-lg hover:shadow-xl transition-shadow duration-300">
+                    <div class="px-4 py-5 sm:p-6 text-center">
+                        <div class="text-5xl font-extrabold text-red-600 mb-4" x-data="{ count: 0 }"
+                             x-init="() => { let start = 0; const end = 500; const duration = 2000;
+                         const step = (timestamp) => { if (!start) start = timestamp;
+                         const progress = Math.min((timestamp - start) / duration, 1);
+                         count = Math.floor(progress * end); if (progress < 1) window.requestAnimationFrame(step); };
+                         window.requestAnimationFrame(step); }">
+                            <span x-text="count">0</span>+
+                        </div>
+                        <div class="text-lg font-medium text-gray-900">Projekata</div>
+                        <div class="mt-2 text-sm text-gray-500">Uspešno realizovanih</div>
+                    </div>
+                </div>
+
+                <!-- Stat 4 -->
+                <div class="bg-white overflow-hidden shadow rounded-lg hover:shadow-xl transition-shadow duration-300">
+                    <div class="px-4 py-5 sm:p-6 text-center">
+                        <div class="text-5xl font-extrabold text-red-600 mb-4" x-data="{ count: 0 }"
+                             x-init="() => { let start = 0; const end = 20; const duration = 2000;
+                         const step = (timestamp) => { if (!start) start = timestamp;
+                         const progress = Math.min((timestamp - start) / duration, 1);
+                         count = Math.floor(progress * end); if (progress < 1) window.requestAnimationFrame(step); };
+                         window.requestAnimationFrame(step); }">
+                            <span x-text="count">0</span>+
+                        </div>
+                        <div class="text-lg font-medium text-gray-900">Certifikata</div>
+                        <div class="mt-2 text-sm text-gray-500">Međunarodno priznatih</div>
+                    </div>
+                </div>
             </div>
+
+            <!-- Dodatni blok sa opisom ekspertize -->
+
         </div>
     </section>
-
-    <section id="expertiza" class="py-20 bg-gray-100">
-        <div class="container mx-auto px-4 text-center">
-            <h2 class="text-4xl font-bold text-gray-800 mb-4">Naša Ekspertiza</h2>
-            <p class="text-lg text-gray-600 mb-12">
-                Više od 10 godina iskustva i saradnja sa preko 100 kompanija
-            </p>
-            <div class="flex flex-col sm:flex-row justify-center items-center gap-12">
-                <!-- Kartica za kompanije -->
-                <div class="w-64 h-40 bg-gray-200 rounded-lg shadow p-6 flex flex-col justify-center items-center"
-                     x-data="{ count: 0 }"
-                     x-init="const end = 100; const duration = 2000; const stepTime = Math.floor(duration / end); const timer = setInterval(() => { if(count < end){ count++; } else { clearInterval(timer); } }, stepTime)">
-                    <div class="text-gray-800 text-5xl font-bold" x-text="count + '+'"></div>
-                    <p class="mt-4 text-xl font-medium text-gray-700">Kompanija</p>
-                </div>
-                <!-- Kartica za godine iskustva -->
-                <div class="w-64 h-40 bg-gray-200 rounded-lg shadow p-6 flex flex-col justify-center items-center"
-                     x-data="{ count: 0 }"
-                     x-init="const end = 10; const duration = 2000; const stepTime = Math.floor(duration / end); const timer = setInterval(() => { if(count < end){ count++; } else { clearInterval(timer); } }, stepTime)">
-                    <div class="text-gray-800 text-5xl font-bold" x-text="count + '+'"></div>
-                    <p class="mt-4 text-xl font-medium text-gray-700">Godina iskustva</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-
-
-
-
     <!-- Kontakt Sekcija -->
     <section id="kontakt" class="md:py-20 bg-gray-200 ">
         <div class="container mx-auto text-center ">

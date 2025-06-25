@@ -17,15 +17,32 @@
                         </p>
                     </div>
                 </div>
-                <!-- Right side: Next Service and Create Service Link -->
+                @php
+                    // Pronađi sledeći servis event za hidrante
+                    $nextServiceEvent = $location->serviceEvents()
+                        ->where('category', 'pp_device')
+                        ->wherePivot('status', 'active')
+                        ->where('next_service_date', '>=', now())
+                        ->orderBy('next_service_date', 'asc')
+                        ->first();
+                @endphp
+                    <!-- Desna strana -->
                 <div class="mt-4 md:mt-0 text-right w-full md:w-auto">
+                    {{--                    <a href="{{route('service-event.show')}}"></a>--}}
                     <p class="text-gray-600 dark:text-gray-400 mb-2">
-                        Next Service:
-                        {{ $location->nextServiceDateByCategory('pp_device')
-                            ? $location->nextServiceDateByCategory('pp_device')->format('d-m-Y')
-                            : 'Nema dostupnog datuma' }}
+                        Sledeći servis:
+                        @if($nextServiceEvent)
+                            <a
+                                href="{{ route('company.service-events.show', $nextServiceEvent->id) }}"
+                                class="text-blue-700 dark:text-blue-400 underline hover:no-underline font-semibold"
+                                title="Prikaži servisni događaj"
+                            >
+                                {{ \Carbon\Carbon::parse($nextServiceEvent->next_service_date)->format('d.m.Y') }}
+                            </a>
+                        @else
+                            Nema dostupnog datuma
+                        @endif
                     </p>
-
                     @hasrole('super_admin|admin')
                     <a href="{{ route('locations.devices.create', $location->id) }}"
                        class="flex items-center justify-end text-lg text-blue-600 dark:text-blue-400 hover:underline">

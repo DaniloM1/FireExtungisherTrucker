@@ -17,13 +17,31 @@
                         </p>
                     </div>
                 </div>
+                @php
+                    // Pronađi sledeći servis event za hidrante
+                    $nextServiceEvent = $location->serviceEvents()
+                        ->where('category', 'hydrant')
+                        ->wherePivot('status', 'active')
+                        ->where('next_service_date', '>=', now())
+                        ->orderBy('next_service_date', 'asc')
+                        ->first();
+                @endphp
                 <!-- Desna strana -->
                 <div class="mt-4 md:mt-0 text-right w-full md:w-auto">
+{{--                    <a href="{{route('service-event.show')}}"></a>--}}
                     <p class="text-gray-600 dark:text-gray-400 mb-2">
                         Sledeći servis:
-                        {{ $location->nextServiceDateByCategory('hydrant')
-                            ? $location->nextServiceDateByCategory('hydrant')->format('d-m-Y')
-                            : 'Nema dostupnog datuma' }}
+                        @if($nextServiceEvent)
+                            <a
+                                href="{{ route('company.service-events.show', $nextServiceEvent->id) }}"
+                                class="text-blue-700 dark:text-blue-400 underline hover:no-underline font-semibold"
+                                title="Prikaži servisni događaj"
+                            >
+                                {{ \Carbon\Carbon::parse($nextServiceEvent->next_service_date)->format('d.m.Y') }}
+                            </a>
+                        @else
+                            Nema dostupnog datuma
+                        @endif
                     </p>
                     @hasrole('super_admin|admin')
                     <a href="{{ route('locations.hydrants.create', $location->id) }}"

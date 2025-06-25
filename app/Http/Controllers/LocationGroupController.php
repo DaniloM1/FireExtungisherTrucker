@@ -1,10 +1,10 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\Location;
 use App\Models\Company;
 use App\Models\LocationGroup;
+use App\Http\Requests\LocationGroupRequest;
 use Illuminate\Http\Request;
 
 class LocationGroupController extends Controller
@@ -13,27 +13,24 @@ class LocationGroupController extends Controller
     {
         $query = LocationGroup::with('locations.company');
 
-        // Filter po nazivu grupe
-        if ($request->filled('search')) {
-            $query->where('name', 'like', '%' . $request->search . '%')
-                ->orWhere('description', 'like', '%' . $request->search . '%');
+        if ($search = $request->input('search')) {
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%$search%")
+                    ->orWhere('description', 'like', "%$search%");
+            });
         }
 
-        // Opcionalno: filter po kompaniji (preko lokacija)
-        if ($request->filled('company_id')) {
-            $query->whereHas('locations', function ($q) use ($request) {
-                $q->where('company_id', $request->company_id);
+        if ($companyId = $request->input('company_id')) {
+            $query->whereHas('locations', function ($q) use ($companyId) {
+                $q->where('company_id', $companyId);
             });
         }
 
         $locationGroups = $query->paginate(10)->appends($request->query());
-
-        // Za dropdown kompanija
-        $companies = \App\Models\Company::orderBy('name')->get();
+        $companies = Company::orderBy('name')->get();
 
         return view('admin.location_groups.index', compact('locationGroups', 'companies'));
     }
-
 
     public function create()
     {
@@ -42,66 +39,50 @@ class LocationGroupController extends Controller
         return view('admin.location_groups.create', compact('locations', 'companies'));
     }
 
-    public function store(Request $request)
+    public function store(LocationGroupRequest $request)
     {
-        $validated = $request->validate([
-            'name'        => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'locations'   => 'nullable|array',
-            'locations.*' => 'exists:locations,id'
-        ]);
+        $validated = $request->validated();
 
         $locationGroup = LocationGroup::create([
             'name'        => $validated['name'],
             'description' => $validated['description'] ?? null,
         ]);
 
-        if (isset($validated['locations'])) {
+        if (!empty($validated['locations'])) {
             $locationGroup->locations()->attach($validated['locations']);
         }
 
         return redirect()->route('location-groups.index')
-                         ->with('success', 'Location group created successfully.');
+            ->with('success', 'Location group created successfully.');
     }
 
-    public function edit($id)
+    public function edit(LocationGroup $locationGroup)
     {
-        $locationGroup  = LocationGroup::with('locations')->findOrFail($id);
-        $locations      = Location::all();
+        $locationGroup->load('locations');
+        $locations = Location::all();
         return view('admin.location_groups.edit', compact('locationGroup', 'locations'));
     }
 
-    public function update(Request $request, $id)
+    public function update(LocationGroupRequest $request, LocationGroup $locationGroup)
     {
-        $locationGroup = LocationGroup::findOrFail($id);
-
-        $validated = $request->validate([
-            'name'        => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'locations'   => 'nullable|array',
-            'locations.*' => 'exists:locations,id'
-        ]);
+        $validated = $request->validated();
 
         $locationGroup->update([
             'name'        => $validated['name'],
             'description' => $validated['description'] ?? null,
         ]);
-        if (isset($validated['locations'])) {
-            $locationGroup->locations()->sync($validated['locations']);
-        } else {
-            $locationGroup->locations()->detach();
-        }
+
+        $locationGroup->locations()->sync($validated['locations'] ?? []);
 
         return redirect()->route('location-groups.index')
-                         ->with('success', 'Location group updated successfully.');
+            ->with('success', 'Location group updated successfully.');
     }
 
-    public function destroy($id)
+    public function destroy(LocationGroup $locationGroup)
     {
-        $locationGroup = LocationGroup::findOrFail($id);
         $locationGroup->delete();
 
         return redirect()->route('location-groups.index')
-                         ->with('success', 'Location group deleted successfully.');
+            ->with('success', 'Location group deleted successfully.');
     }
 }

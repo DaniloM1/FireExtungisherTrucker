@@ -1,18 +1,13 @@
 <?php
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\CityController;
 use App\Http\Controllers\FrontController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\PDFController;
-use App\Http\Controllers\ExcelImportController;
 
-Route::get('/service-report/{serviceEventId}', [PDFController::class, 'generateServiceReport']);
+Route::get('/service-report/{serviceEventId}', [PDFController::class, 'generateServiceReport'])->name('service-report.generate');
 
-
-//Route::get('/excel/import', [ExcelImportController::class, 'showForm'])->name('excel.import.form');
-//Route::post('/excel/import', [ExcelImportController::class, 'import'])->name('excel.import');
 
 /*
 |--------------------------------------------------------------------------
@@ -24,19 +19,21 @@ Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
 Route::get('/blog/{post:slug}', [BlogController::class, 'show'])->name('blog.show');
 
 Route::controller(FrontController::class)->group(function () {
+    // Glavna
     Route::get('/', 'index')->name('home');
-    Route::get('/usluge', 'services')->name('services');
-
-    // Pojedinačne usluge
-    Route::get('/usluge/inspekcija-aparata', 'inspection')->name('services.inspection');
-    Route::get('/usluge/protivpozarni-sistemi', 'protection')->name('services.protection');
-    Route::get('/usluge/evakuacijski-planovi', 'evacuation')->name('services.evacuation');
-    Route::get('/usluge/ugradnja-servis', 'installation')->name('services.installation');
-    Route::get('/usluge/polaganje-ispita', 'exam')->name('services.exam');
-    Route::get('/usluge/obuke-edukacija', 'training')->name('services.training');
-
     Route::get('/o-nama', 'aboutUs')->name('aboutUs');
     Route::get('/kontakt', 'contact')->name('contact');
+
+    // Usluge
+    Route::get('/usluge', 'services')->name('services');
+    Route::prefix('usluge')->name('services.')->group(function () {
+        Route::get('/inspekcija-aparata', 'inspection')->name('inspection');
+        Route::get('/protivpozarni-sistemi', 'protection')->name('protection');
+        Route::get('/evakuacijski-planovi', 'evacuation')->name('evacuation');
+        Route::get('/ugradnja-servis', 'installation')->name('installation');
+        Route::get('/polaganje-ispita', 'exam')->name('exam');
+        Route::get('/obuke-edukacija', 'training')->name('training');
+    });
 });
 
 // Dashboard

@@ -2,26 +2,29 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CompanyUserController;
-/*
-|--------------------------------------------------------------------------
-| Company Routes
-|--------------------------------------------------------------------------
-*/
+use App\Http\Controllers\ServiceEventController;
+use App\Http\Controllers\LocationController;
+use App\Http\Controllers\DeviceController;
+use App\Http\Controllers\HydrantController;
 
-Route::middleware(['auth', 'role:company'])->prefix('company')->group(function () {
+Route::middleware(['auth', 'role:company'])
+    ->prefix('company')
+    ->name('company.')
+    ->group(function () {
+        // Servisni događaji
+        Route::get('/service-events', [CompanyUserController::class, 'index'])
+            ->name('service-events.index');
+        Route::get('/service-events/{service_event}', [ServiceEventController::class, 'show'])
+            ->name('service-events.show');
 
-    Route::get('/service-events', [CompanyUserController::class, 'index'])
-        ->name('company.service-events.index');
+        // Lokacije i uređaji
+        Route::get('/locations/{location}', [LocationController::class, 'show'])
+            ->name('locations.show');
 
-    Route::get('/service-events/{service_event}', [\App\Http\Controllers\ServiceEventController::class, 'show'])
-        ->name('company.service-events.show');
+        Route::get('/locations/{location}/devices', [DeviceController::class, 'index'])
+            ->name('locations.devices.index');
 
-    Route::get('/locations/{location}', [\App\Http\Controllers\LocationController::class, 'show'])
-        ->name('company.locations.show');
-    Route::get('/locations/{location}/devices', [\App\Http\Controllers\DeviceController::class, 'index'])
-        ->name('company.locations.devices.index');
-    Route::get('/locations/{location}/hydrants', [\App\Http\Controllers\HydrantController::class, 'index'])
-        ->name('company.hydrant.devices.index');
-
-});
+        Route::get('/locations/{location}/hydrants', [HydrantController::class, 'index'])
+            ->name('locations.hydrants.index');
+    });
 

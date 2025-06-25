@@ -1,19 +1,17 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\Group;
 use App\Models\Location;
-use Illuminate\Http\Request;
 use App\Models\Device;
+use App\Http\Requests\GroupRequest;
+use App\Http\Requests\DeviceToGroupRequest;
 
 class GroupController extends Controller
 {
-
     public function index(Location $location)
     {
         $groups = $location->groups()->paginate(10);
-
         return view('admin.groups.index', compact('location', 'groups'));
     }
 
@@ -22,46 +20,31 @@ class GroupController extends Controller
         return view('admin.groups.create', compact('location'));
     }
 
-    public function store(Request $request, Location $location)
+    public function store(GroupRequest $request, Location $location)
     {
-        $validated = $request->validate([
-            'name'              => 'required|string|max:255',
-            'description'       => 'nullable|string',
-            'next_service_date' => 'nullable|date',
-        ]);
-
+        $validated = $request->validated();
         $validated['location_id'] = $location->id;
-
         Group::create($validated);
 
-        return redirect()->route('locationsx.groups.index', $location->id)
+        return redirect()->route('locations.groups.index', $location->id)
             ->with('success', 'Group created successfully.');
     }
 
     public function show(Group $group)
     {
-
         return view('admin.groups.show', compact('group'));
     }
 
     public function edit(Group $group)
     {
-//        dd($group);
         return view('admin.groups.edit', compact('group'));
     }
 
-
-    public function update(Request $request, Group $group)
+    public function update(GroupRequest $request, Group $group)
     {
-        $validated = $request->validate([
-            'name'              => 'required|string|max:255',
-            'description'       => 'nullable|string',
-            'next_service_date' => 'nullable|date',
-        ]);
+        $group->update($request->validated());
 
-        $group->update($validated);
-
-        return redirect()->route('groups.update', $group->id)
+        return redirect()->route('groups.show', $group->id)
             ->with('success', 'Group updated successfully.');
     }
 
@@ -73,6 +56,7 @@ class GroupController extends Controller
         return redirect()->route('locations.groups.index', $locationId)
             ->with('success', 'Group deleted successfully.');
     }
+
     public function addDevice(Group $group)
     {
         $location = $group->location;
@@ -81,23 +65,12 @@ class GroupController extends Controller
         return view('admin.groups.add-device', compact('group', 'devices'));
     }
 
-    public function storeDevice(Request $request, Group $group)
+    public function storeDevice(DeviceToGroupRequest $request, Group $group)
     {
-        $validated = $request->validate([
-            'device_id' => 'required|exists:devices,id',
-        ]);
-
-        $device = Device::find($validated['device_id']);
-
-        if ($device->location_id != $group->location_id || !is_null($device->group_id)) {
-            return redirect()->back()
-                ->withErrors(['device_id' => 'Odabrani uređaj nije validan ili je već dodijeljen nekoj grupi.'])
-                ->withInput();
-        }
-
+        $device = Device::find($request->device_id);
         $device->update(['group_id' => $group->id]);
 
         return redirect()->route('groups.show', $group->id)
-            ->with('success', 'Uređaj je uspješno dodan u grupu.');
+            ->with('success', 'Uređaj je uspješno dodat u grupu.');
     }
 }

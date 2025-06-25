@@ -31,4 +31,13 @@ class Company extends Model
     // {
     //     return $this->hasManyThrough(Device::class, Location::class);
     // }
+    public function scopeSearch($query, $term)
+    {
+        $columns = ['name', 'contact_email', 'contact_phone', 'city'];
+        $query->where(function($q) use ($term, $columns) {
+            foreach ($columns as $col) {
+                $q->orWhere($col, 'like', "%{$term}%");
+            }
+        });
+    }
 }

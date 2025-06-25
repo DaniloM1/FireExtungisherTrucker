@@ -4,9 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Device;
 use App\Models\Group;
-
 use App\Models\Location;
 use Illuminate\Http\Request;
+use App\Http\Requests\DeviceRequest;
 
 class DeviceController extends Controller
 {
@@ -44,30 +44,11 @@ class DeviceController extends Controller
         return view('admin.devices.create', compact('location', 'groups'));
     }
 
-    public function store(Request $request, Location $location)
+    public function store(DeviceRequest $request, Location $location)
     {
-        $validated = $request->validate([
-            'serial_number'     => 'required|string|max:255',
-            'model'             => 'required|string|max:255',
-            'manufacturer'      => 'required|string|max:255',
-            'manufacture_date'  => 'nullable|date',
-            'next_service_date' => 'nullable|date',
-            'position'          => 'nullable|string|max:255',
-            'status'            => 'required|in:active,inactive,needs_service',
-            'group_id'          => 'nullable|exists:groups,id',
-        ]);
-
-        if (!empty($validated['group_id'])) {
-            $group = \App\Models\Group::find($validated['group_id']);
-            if (!$group || $group->location_id != $location->id) {
-                return redirect()->back()
-                    ->withErrors(['group_id' => 'Odabrana grupa ne pripada ovoj lokaciji.'])
-                    ->withInput();
-            }
-        }
-
+        $validated = $request->validated();
         $validated['location_id'] = $location->id;
-        \App\Models\Device::create($validated);
+        Device::create($validated);
 
         return redirect()->route('locations.devices.index', $location->id)
             ->with('success', 'Device created successfully.');
@@ -86,7 +67,6 @@ class DeviceController extends Controller
 
     public function show(Group $group)
     {
-        // Učitaj i povezan uređaje (ako nisi postavio eager loading u modelu)
         $group->load('devices');
         return view('admin.groups.show', compact('group'));
     }
@@ -98,19 +78,9 @@ class DeviceController extends Controller
         return view('admin.devices.edit', compact('device', 'groups'));
     }
 
-    public function update(Request $request, Device $device)
+    public function update(DeviceRequest $request, Device $device)
     {
-        $validated = $request->validate([
-            'serial_number'     => 'required|string|max:255',
-            'model'             => 'required|string|max:255',
-            'manufacturer'      => 'required|string|max:255',
-            'manufacture_date'  => 'nullable|date',
-            'next_service_date' => 'nullable|date',
-            'position'          => 'nullable|string|max:255',
-            'status'            => 'required|in:active,inactive,needs_service',
-            'group_id'          => 'nullable|exists:groups,id',
-        ]);
-
+        $validated = $request->validated();
         $device->update($validated);
 
         return redirect()->route('locations.devices.index', $device->location_id)

@@ -1,10 +1,9 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\Hydrant;
 use App\Models\Location;
-use Illuminate\Http\Request;
+use App\Http\Requests\HydrantRequest;
 
 class HydrantController extends Controller
 {
@@ -19,62 +18,32 @@ class HydrantController extends Controller
         return view('admin.hydrants.create', compact('location'));
     }
 
-    public function store(Request $request, Location $location)
+    public function store(HydrantRequest $request, Location $location)
     {
-        $data = $request->validate([
-            'serial_number' => 'nullable|string|max:255',
-            'type' => 'nullable|string|max:255',
-            'model' => 'nullable|string|max:255',
-            'manufacturer' => 'nullable|string|max:255',
-            'manufacture_date' => 'nullable|date',
-            'next_service_date' => 'nullable|date',
-            'position' => 'nullable|string|max:255',
-            'hvp' => 'nullable|date',
-            'static_pressure' => 'nullable|numeric',
-            'dynamic_pressure' => 'nullable|numeric',
-            'flow' => 'nullable|numeric',
-            'status' => 'nullable|string|max:255',
-        ]);
+        $location->hydrants()->create($request->validated());
 
-        $location->hydrants()->create($data);
-
-        return redirect()->route('locations.hydrants.index', $location)->with('success', 'Hydrant created.');
+        return redirect()->route('locations.hydrants.index', $location)
+            ->with('success', 'Hydrant created.');
     }
 
     public function edit(Location $location, Hydrant $hydrant)
     {
         return view('admin.hydrants.edit', compact('location', 'hydrant'));
-
     }
+
+    public function update(HydrantRequest $request, Location $location, Hydrant $hydrant)
+    {
+        $hydrant->update($request->validated());
+
+        return redirect()->route('locations.hydrants.index', $location)
+            ->with('success', 'Hydrant ažuriran.');
+    }
+
     public function destroy(Location $location, Hydrant $hydrant)
     {
         $hydrant->delete();
 
-        return redirect()
-            ->route('locations.hydrants.index', $location)
+        return redirect()->route('locations.hydrants.index', $location)
             ->with('success', 'Hydrant obrisan.');
-    }
-    public function update(Request $request, Location $location, Hydrant $hydrant)
-    {
-        $data = $request->validate([
-            'serial_number'     => 'nullable|string|max:255',
-            'type'              => 'nullable|string|max:255',
-            'model'             => 'nullable|string|max:255',
-            'manufacturer'      => 'nullable|string|max:255',
-            'manufacture_date'  => 'nullable|date',
-            'next_service_date' => 'nullable|date',
-            'position'          => 'nullable|string|max:255',
-            'hvp'               => 'nullable|date',
-            'static_pressure'   => 'nullable|numeric',
-            'dynamic_pressure'  => 'nullable|numeric',
-            'flow'              => 'nullable|numeric',
-            'status'            => 'nullable|string|max:255',
-        ]);
-
-        $hydrant->update($data);
-
-        return redirect()
-            ->route('locations.hydrants.index', $location)
-            ->with('success', 'Hydrant ažuriran.');
     }
 }

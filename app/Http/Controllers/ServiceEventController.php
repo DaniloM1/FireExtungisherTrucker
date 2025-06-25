@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ServiceEventRequest;
 use App\Models\Company;
 use App\Models\LocationGroup;
 use Illuminate\Http\Request;
@@ -10,42 +11,30 @@ use App\Models\Location;
 
 class ServiceEventController extends Controller
 {
-    /**
-     * Prikazuje listu servisnih događaja.
-     */
+
     public function index(Request $request)
     {
         $query = ServiceEvent::with('locations.company');
 
+        // Filters
+        $filters = [
+            'category'   => fn($q, $v) => $q->where('category', $v),
+            'service_date' => fn($q, $v) => $q->whereDate('service_date', $v),
+            'next_service_date' => fn($q, $v) => $q->whereDate('next_service_date', $v),
+            'evid_number' => fn($q, $v) => $q->where('evid_number', 'like', "%$v%"),
+            'company' => fn($q, $v) => $q->whereHas('locations', fn($qq) => $qq->where('company_id', $v)),
+            'location' => fn($q, $v) => $q->whereHas('locations', fn($qq) => $qq->where('id', $v)),
+        ];
 
-        if ($request->filled('category')) {
-            $query->where('category', $request->category);
-        }
-        if ($request->filled('service_date')) {
-            $query->whereDate('service_date', $request->service_date);
-        }
-        if ($request->filled('next_service_date')) {
-            $query->whereDate('next_service_date', $request->next_service_date);
-        }
-        if ($request->filled('evid_number')) {
-            $query->where('evid_number', 'like', '%' . $request->evid_number . '%');
-        }
-        if ($request->filled('company')) {
-            $query->whereHas('locations', function ($q) use ($request) {
-                $q->where('company_id', $request->company);
-            });
+        foreach ($filters as $key => $callback) {
+            if ($request->filled($key)) {
+                $callback($query, $request->input($key));
+            }
         }
         if ($request->filled('year') && $request->filled('month')) {
             $firstDay = \Carbon\Carbon::create($request->year, $request->month, 1)->toDateString();
             $lastDay  = \Carbon\Carbon::create($request->year, $request->month, 1)->endOfMonth()->toDateString();
             $query->whereBetween('next_service_date', [$firstDay, $lastDay]);
-        } elseif ($request->filled('next_service_date')) {
-            $query->whereDate('next_service_date', $request->next_service_date);
-        }
-        if ($request->filled('location')) {
-            $query->whereHas('locations', function ($q) use ($request) {
-                $q->where('id', $request->location);
-            });
         }
 
         $serviceEvents = $query->orderBy('service_date', 'desc')
@@ -72,10 +61,8 @@ class ServiceEventController extends Controller
     {
         $user = auth()->user();
 
-        // Učitaj uvek samo priloge
         $serviceEvent->load('attachments');
 
-        // SUPER_ADMIN vidi sve lokacije i pripadajuće relacije
         if ($user->hasRole('super_admin')) {
             $serviceEvent->load([
                 'locations.company',
@@ -86,72 +73,45 @@ class ServiceEventController extends Controller
                 return $loc->company->name;
             });
 
-            return view('admin.service-events.show', [
-                'serviceEvent'      => $serviceEvent,
-                'locationsGrouped'  => $locationsGrouped,
-            ]);
+            return view('admin.service-events.show', ['serviceEvent'=> $serviceEvent, 'locationsGrouped'=> $locationsGrouped,]);
         }
 
-        // COMPANY vidi samo sopstvene lokacije
         if ($user->hasRole('company')) {
             $companyId = $user->company_id;
 
-            // Dohvati samo lokacije servisa koje pripadaju toj kompaniji
             $locations = $serviceEvent->locations()
                 ->where('company_id', $companyId)
                 ->with(['company','devices','hydrants'])
                 ->get();
 
-            // Ako ne postoji nijedna, nemaš pristup
             if ($locations->isEmpty()) {
                 abort(403, 'Nemate pristup ovom servisu.');
             }
 
-            // Zameni relaciju locations filtriranim setom
             $serviceEvent->setRelation('locations', $locations);
             $locationsGrouped = $serviceEvent->locations->groupBy(function($loc) {
                 return $loc->company->name;
             });
 
-            return view('admin.service-events.show', [
-                'serviceEvent'      => $serviceEvent,
-                'locationsGrouped'  => $locationsGrouped,
-            ]);
+            return view('admin.service-events.show', ['serviceEvent' => $serviceEvent, 'locationsGrouped' => $locationsGrouped,]);
         }
 
-        // Ostali nemaju pristup
         abort(403, 'Nemate pristup ovom servisu.');
     }
 
-
-
-    public function store(Request $request)
+    public function store(ServiceEventRequest $request)
     {
+        $data = $request->validated();
 
-        $data = $request->validate([
-            'category'           => 'required|in:pp_device,hydrant',
-            'service_date'       => 'required|date',
-            'next_service_date'  => 'required|date',
-            'evid_number'        => 'required|string',
-            'user_id'            => 'required|integer',
-            'description'        => 'nullable|string',
-            'cost'               => 'required|numeric',
-            // Pretpostavljamo da lokacije dolaze kao niz ID-jeva
-            'locations'          => 'required|array',
-        ]);
+        $newLocationIds = collect($data['locations'])->map(fn($id) => (int)$id);
 
-        $newLocationIds = collect($data['locations'])->map(function ($id) {
-            return (int) $id;
-        });
         $activeServiceEvents = ServiceEvent::where('status', 'active')
             ->where('category', $data['category'])
             ->with('locations')
             ->get();
 
         foreach ($activeServiceEvents as $activeEvent) {
-            $activeLocationIds = $activeEvent->locations->pluck('id')->map(function ($id) {
-                return (int) $id;
-            });
+            $activeLocationIds = $activeEvent->locations->pluck('id')->map(fn($id) => (int)$id);
             if ($activeLocationIds->diff($newLocationIds)->isEmpty() && $activeLocationIds->isNotEmpty()) {
                 $activeEvent->update(['status' => 'inactive']);
                 foreach ($activeEvent->locations as $location) {
@@ -164,9 +124,7 @@ class ServiceEventController extends Controller
         $serviceEvent = ServiceEvent::create($data);
 
         foreach ($newLocationIds as $locationId) {
-            $serviceEvent->locations()->attach($locationId, [
-                'status' => 'active',
-            ]);
+            $serviceEvent->locations()->attach($locationId, ['status' => 'active']);
         }
 
         return redirect()->route('service-events.index')
@@ -179,29 +137,13 @@ class ServiceEventController extends Controller
 
         $companies   = Company::all();
         $allLocations = Location::orderBy('name')->get();
-        return view('admin.service-events.edit', compact(
-            'serviceEvent',
-            'companies',
-            'allLocations'
-        ));
+        return view('admin.service-events.edit', compact('serviceEvent', 'companies', 'allLocations'));
     }
 
 
-    public function update(Request $request, ServiceEvent $serviceEvent)
+    public function update(ServiceEventRequest $request, ServiceEvent $serviceEvent)
     {
-// dd($request);
-        $data = $request->validate([
-            'category'           => 'required|in:pp_device,hydrant',
-            'service_date'       => 'required|date',
-            'next_service_date'  => 'required|date',
-            'evid_number'        => 'required|string',
-            'user_id'            => 'required|integer',
-            'description'        => 'nullable|string',
-            'cost'               => 'required|numeric',
-            'status'             => 'required|in:active,inactive',
-            'locations'          => 'required|array',
-        ]);
-
+        $data = $request->validated();
         $serviceEvent->update($data);
         $serviceEvent->locations()->sync($data['locations']);
 
@@ -224,12 +166,6 @@ class ServiceEventController extends Controller
         $selectedLocationIds = $locationGroup->locations->pluck('id')->toArray();
         $selectedCompanyIds = $locationGroup->locations->pluck('company_id')->unique()->toArray();
 
-        return view('admin.service-events.create-group', compact(
-            'locationGroup',
-            'allLocations',
-            'companies',
-            'selectedLocationIds',
-            'selectedCompanyIds'
-        ));
+        return view('admin.service-events.create-group', compact('locationGroup', 'allLocations', 'companies', 'selectedLocationIds', 'selectedCompanyIds'));
     }
 }

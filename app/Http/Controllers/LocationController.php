@@ -5,12 +5,12 @@ namespace App\Http\Controllers;
 use App\Models\Location;
 use App\Models\Company;
 use Illuminate\Http\Request;
+use App\Http\Requests\LocationRequest;
+
 
 class LocationController extends Controller
 {
-    /**
-     * Display a listing of the locations for a specific company.
-     */
+
     public function index($companyId)
     {
         $company = Company::findOrFail($companyId);
@@ -22,7 +22,6 @@ class LocationController extends Controller
             ->when(request('city'), fn($q, $city) => $q->where('city', 'like', "%$city%"))
             ->paginate(10)
             ->appends(request()->query());
-
 
         return view('admin.locations.index', compact('company', 'locations'));
     }
@@ -37,40 +36,22 @@ class LocationController extends Controller
         return response()->json($locations);
     }
 
-    /**
-     * Show the form for creating a new location for a company.
-     */
     public function create(Company $company)
     {
         return view('admin.locations.create', compact('company'));
     }
 
-    /**
-     * Store a newly created location in storage.
-     */
-    public function store(Request $request, Company $company)
+    public function store(LocationRequest $request, Company $company)
     {
-        $validated = $request->validate([
-            'name'          => 'required|string|max:255',
-            'address'       => 'required|string|max:255',
-            'latitude'      => 'nullable|numeric',
-            'longitude'     => 'nullable|numeric',
-            'city'          => 'required|string|max:255',
-            'pib'           => 'nullable|string|max:50',
-            'maticni'       => 'nullable|string|max:50',
-            'contact'       => 'nullable|string|max:255',
-            'kontakt_broj'  => 'nullable|string|max:50',
-        ]);
-
+        $validated = $request->validated();
 
         $company->locations()->create($validated);
 
-        return redirect()->route('companies.locations.index', $company->id)->with('success', 'Location created successfully.');
+        return redirect()
+            ->route('companies.locations.index', $company->id)
+            ->with('success', 'Location created successfully.');
     }
 
-    /**
-     * Show the form for editing the specified location.
-     */
     public function edit(Location $location)
     {
 
@@ -115,20 +96,13 @@ class LocationController extends Controller
        return view('admin.locations.test', compact('locations', 'companies'));
    }
 
-    public function update(Request $request, Location $location)
+    public function update(LocationRequest $request, Location $location)
     {
-        $validated = $request->validate([
-            'name'      => 'required|string|max:255',
-            'address'   => 'required|string|max:255',
-            'city'   => 'required|string|max:255',
-
-            'latitude'  => 'nullable|numeric',
-            'longitude' => 'nullable|numeric',
-        ]);
-
+        $validated = $request->validated();
         $location->update($validated);
 
-        return redirect()->route('companies.locations.index', $location->company_id)->with('success', 'Location updated successfully.');
+        return redirect()->route('companies.locations.index', $location->company_id)
+            ->with('success', 'Location updated successfully.');
     }
 
     public function destroy(Location $location)
@@ -136,7 +110,8 @@ class LocationController extends Controller
         $companyId = $location->company_id;
         $location->delete();
 
-        return redirect()->route('companies.locations', $companyId)->with('success', 'Location deleted successfully.');
+        return redirect()->route('companies.locations', $companyId)
+            ->with('success', 'Location deleted successfully.');
     }
     public function show(Location $location)
     {
@@ -147,17 +122,11 @@ class LocationController extends Controller
             'serviceEvents.attachments'
         ]);
 
-        // Generalni prilozi za lokaciju (bez servisa)
         $generalAttachments = \App\Models\Attachment::where('location_id', $location->id)
             ->whereNull('service_event_id')
             ->get();
 
         return view('admin.locations.show', compact('location', 'generalAttachments'));
     }
-
-
-
-
-
 
 }

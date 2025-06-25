@@ -12,7 +12,6 @@ class CompanyUserController extends Controller
     {
         $companyId = auth()->user()->company_id;
 
-        // Priprema query-a za filtriranje
         $locationsQuery = Location::where('company_id', $companyId)
             ->withCount('devices', 'hydrants');
 
@@ -30,22 +29,20 @@ class CompanyUserController extends Controller
             ->orderBy('name')
             ->paginate(10);
 
-        // Poslednjih 5 servisnih događaja
-        $recentServiceEvents = ServiceEvent::whereHas('locations', function ($q) use ($companyId) {
+        $serviceEvents  = ServiceEvent::whereHas('locations', function ($q) use ($companyId) {
             $q->where('company_id', $companyId);
         })
             ->with('locations')
             ->orderBy('service_date', 'desc')
             ->paginate(8);
 
-        // Brojač po kategorijama
         $serviceStats = [
             'total' => ServiceEvent::whereHas('locations', fn ($q) => $q->where('company_id', $companyId))->count(),
             'pp_devices' => ServiceEvent::where('category', 'pp_device')->whereHas('locations', fn ($q) => $q->where('company_id', $companyId))->count(),
             'hydrants' => ServiceEvent::where('category', 'hydrant')->whereHas('locations', fn ($q) => $q->where('company_id', $companyId))->count(),
         ];
 
-        return view('admin.companyuser.index', compact('locations', 'recentServiceEvents', 'serviceStats'));
+        return view('admin.companyuser.index', compact('locations', 'serviceEvents', 'serviceStats'));
     }
 
 
@@ -62,7 +59,7 @@ class CompanyUserController extends Controller
             'locations.company',
             'locations.devices',
             'locations.hydrants',
-            'attachments' // Eager load attachments
+            'attachments'
         ]);
 
         return view('admin.companyuser.show', compact('serviceEvent'));
@@ -75,11 +72,9 @@ class CompanyUserController extends Controller
             abort(403, 'Nemate pristup ovoj lokaciji.');
         }
 
-        // Učitaj sve uređaje, hidrante, i servise za lokaciju
         $location->load(['devices', 'hydrants', 'serviceEvents' => function($q) {
             $q->orderBy('service_date', 'desc');
         }]);
-//        dd($location);
 
         return view('admin.companyuser.location_show', compact('location'));
     }

@@ -10,12 +10,11 @@ class PDFController extends Controller
 {
     public function generateServiceReport($serviceEventId)
     {
-        // Eager-load locations sa devices i serviceEvents
         $serviceEvent = ServiceEvent::with([
             'locations' => function($q) {
                 $q->with([
-                    'devices'       => fn($q2) => $q2->where('status', 'active'),
-                    'serviceEvents' // <-- dodajemo ovde
+                    'devices'       => fn($q2) => $q2->whereIn('status', ['active', 'needs_service']),
+                    'serviceEvents'
                 ]);
             }
         ])->findOrFail($serviceEventId);
@@ -27,14 +26,15 @@ class PDFController extends Controller
                 'locations' => function($q) use ($locationIds) {
                     $q->whereIn('id', $locationIds)
                         ->with([
-                            'devices'       => fn($q2) => $q2->where('status', 'active'),
-                            'serviceEvents' // <-- i ovde
+                            'devices'       => fn($q2) => $q2->whereIn('status', ['active', 'needs_service']),
+                            'serviceEvents'
                         ]);
                 }
             ])->get();
 
-        return Pdf::view('admin.pdfTamplates.service_report', compact('companies'))
+        return Pdf::view('admin.pdfTamplates.service_report', compact('companies', 'serviceEvent'))
             ->format('a4')
             ->name('service_report.pdf');
+
     }
 }

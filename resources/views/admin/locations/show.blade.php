@@ -236,7 +236,7 @@
                         </a>
                         @endhasrole
                         @hasrole('company')
-                        <a href="{{ route('company.hydrant.devices.index',  $location->id) }}"
+                        <a href="{{ route('company.locations.hydrants.index',  $location->id) }}"
                            class="ml-3 text-blue-600 dark:text-blue-400 hover:underline flex items-center"
                            title="Vidi sve hidrante">
                             <i class="fas fa-arrow-right"></i>
@@ -374,14 +374,14 @@
                                 </div>
                             @endif
 
-                            @if($service->attachments && $service->attachments->count())
+                            @if($service->attachments && $service->attachments->where('location_id', $location->id)->count())
                                 <div class="mt-3">
                                     <div class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center">
                                         <i class="fas fa-paperclip mr-2"></i>
-                                        Prilozi uz servis:
+                                        Prilozi uz servis (za ovu lokaciju):
                                     </div>
                                     <div class="space-y-2">
-                                        @foreach($service->attachments as $att)
+                                        @foreach($service->attachments->where('location_id', $location->id) as $att)
                                             <div class="flex items-center justify-between bg-white dark:bg-gray-600 rounded px-3 py-2">
                                                 <div class="flex items-center min-w-0">
                                                     <i class="far fa-file-alt text-gray-500 dark:text-gray-300 mr-2"></i>
@@ -396,6 +396,8 @@
                                     </div>
                                 </div>
                             @endif
+
+
                         </div>
                     @empty
                         <div class="text-center py-6">
