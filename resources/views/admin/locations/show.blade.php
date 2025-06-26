@@ -46,14 +46,7 @@
                         <span class="font-medium">Adresa:</span>
                         <span class="ml-1">{{ $location->address }}</span>
                     </div>
-                    <x-map-card
-                        :locations="[$location]"
-                        title="Lokacija"
-                        width="max-w-s"
-                    />
-                </div>
 
-                <div class="md:w-1/2 w-full">
                     <div class="flex items-center mb-4">
                         <i class="fas fa-paperclip text-blue-500 mr-2"></i>
                         <span class="font-semibold text-gray-700 dark:text-gray-200">Prilozi za lokaciju</span>
@@ -136,6 +129,14 @@
                         @endif
                     </div>
                     @endhasrole
+                </div>
+
+                <div class="md:w-1/2 w-full">
+                    <x-map-card
+                        :locations="[$location]"
+                        title="Lokacija"
+                        width="max-w-s"
+                    />
                 </div>
             </div>
 

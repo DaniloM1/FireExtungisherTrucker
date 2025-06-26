@@ -98,7 +98,12 @@
 
 
                     @include('admin.locations._list')
-
+                    <x-map-card
+                        :locations="$locations"
+                        title="Lokacije"
+                        width="max-w-5xl"
+                        height="h-200"
+                    />
                 </div>
 
 
@@ -111,18 +116,7 @@
         </div>
     </div>
 
+
         </div>
-    <!-- Map card – kompaktan i dark-mode spreman -->
-    <x-map-card
-        :locations="$locations"
-        title="Lokacije"
-        width="max-w-5xl"
-        height="h-200"
-    />
-
-
-
-
-
     <script src="//unpkg.com/alpinejs" defer></script>
 </x-app-layout>

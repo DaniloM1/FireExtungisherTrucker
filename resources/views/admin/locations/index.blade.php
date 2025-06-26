@@ -289,5 +289,12 @@
                 </div>
             </div>
         </div>
+        <x-map-card
+            :locations="$locations"
+            title="Lokacija"
+            width="max-w-5xl"
+            height="h-200"
+            :show-list="false"
+        />
     </div>
 </x-app-layout>
