@@ -99,6 +99,7 @@ class ServiceEventController extends Controller
         abort(403, 'Nemate pristup ovom servisu.');
     }
 
+
     public function store(ServiceEventRequest $request)
     {
         $data = $request->validated();

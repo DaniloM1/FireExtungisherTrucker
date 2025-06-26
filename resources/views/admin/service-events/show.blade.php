@@ -1,3 +1,4 @@
+{{--{{dd($flatLocations)}}--}}
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
@@ -192,7 +193,12 @@
 @include('admin.service-events.attachments-section')
         </div>
     </div>
-
+    <x-map-card
+        :locations="$serviceEvent->locations->toArray()"
+        title="Lokacije"
+        width="max-w-4xl"
+        height="h-200"
+    />
     @push('styles')
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
     @endpush

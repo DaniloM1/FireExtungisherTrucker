@@ -1,54 +1,69 @@
-@props(['locations'])
+@props([
+    'locations',
+    'autoTheme' => false,   // prati dark klasu
+])
 
 @php
-    // Napravi unique id za svaki prikaz (može i sa uniqid(), ali ovako je čistije)
-    $mapId = 'leaflet-map-' . uniqid();
+    $mapId  = 'leaflet-map-' . uniqid();
+
+    $locArr = $locations instanceof \Illuminate\Pagination\LengthAwarePaginator
+        ? $locations->items()
+        : (is_array($locations) ? $locations : []);
+
+    $locArr = array_map(function ($m) {
+        $row        = $m instanceof \Illuminate\Database\Eloquent\Model ? $m->toArray() : $m;
+        $row['url'] = route('locations.show', $row['id']);
+        return $row;
+    }, $locArr);
 @endphp
 
-    <!-- Leaflet CSS -->
-<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
-
-<div id="{{ $mapId }}" style="width: 100%; height: 400px;"></div>
-
-<!-- Leaflet JS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+<div id="{{ $mapId }}" style="width:100%;height:400px"></div>
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        // Uvek koristi tačan id
+    document.addEventListener('DOMContentLoaded', () => {
+
+        /* 1. filtriraj lokacije s koordinatama */
         const mapDiv = document.getElementById(@json($mapId));
+        if (!mapDiv) return;
 
-        // Primi podatke iz Blade-a (pretpostavlja se da svaka lokacija ima latitude, longitude, title)
-        const locations = @json($locations);
+        const locs  = @json($locArr);
+        const valid = locs.filter(l => l.latitude && l.longitude);
+        if (!valid.length) return;
 
-        if (!locations.length) return;
+        /* 2. odaberi sloj – pastel light ili tamni */
+        const prefersDark = (
+            @json($autoTheme) &&
+            document.documentElement.classList.contains('dark')
+    );
 
-        // Prvi marker kao centar
-        const center = [locations[0].latitude ?? locations[0].lat, locations[0].longitude ?? locations[0].lng];
+        const TILE_URL = prefersDark
+            ? 'https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png'   // tamnosiva
+            : 'https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png';       // nova pastel-light
 
-        // Inicijalizuj mapu
-        const map = L.map(mapDiv).setView(center, 8);
+        const ATTRIB  = '&copy; OpenStreetMap &copy; Stadia Maps';
 
-        // OSM tile-ovi
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://openstreetmap.org">OpenStreetMap</a> contributors'
-        }).addTo(map);
+        /* 3. mapa + pinovi */
+        const center = [parseFloat(valid[0].latitude), parseFloat(valid[0].longitude)];
+        const map    = L.map(mapDiv).setView(center, 9);
+        L.tileLayer(TILE_URL, { attribution: ATTRIB }).addTo(map);
 
-        // Dodaj markere (podrži oba naziva: lat/lng i latitude/longitude)
-        locations.forEach(function(loc) {
-            const lat = loc.latitude ?? loc.lat;
-            const lng = loc.longitude ?? loc.lng;
-            L.marker([lat, lng])
-                .addTo(map)
-                .bindPopup(loc.title || '');
+        const bounds = [];
+        valid.forEach(loc => {
+            const lat = parseFloat(loc.latitude);
+            const lng = parseFloat(loc.longitude);
+
+            const popup = `
+            <strong><a href="${loc.url}">${loc.name}</a></strong><br>
+            ${loc.address ?? ''}<br>
+            <a href="https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}"
+               target="_blank" rel="noopener">🚗 Ruta</a>
+        `;
+            L.marker([lat, lng]).addTo(map).bindPopup(popup);
+            bounds.push([lat, lng]);
         });
 
-        // Fituj sve pinove ako ih ima više
-        if (locations.length > 1) {
-            const bounds = locations.map(loc => [
-                loc.latitude ?? loc.lat,
-                loc.longitude ?? loc.lng
-            ]);
-            map.fitBounds(bounds, {padding: [30, 30]});
-        }
+        if (bounds.length > 1) map.fitBounds(bounds, { padding: [30, 30] });
     });
 </script>

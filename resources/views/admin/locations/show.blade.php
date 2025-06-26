@@ -46,6 +46,11 @@
                         <span class="font-medium">Adresa:</span>
                         <span class="ml-1">{{ $location->address }}</span>
                     </div>
+                    <x-map-card
+                        :locations="[$location]"
+                        title="Lokacija"
+                        width="max-w-s"
+                    />
                 </div>
 
                 <div class="md:w-1/2 w-full">
