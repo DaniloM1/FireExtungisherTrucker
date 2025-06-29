@@ -3,6 +3,8 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Models\Exam\Document;
+use App\Models\Exam\ExamGroupMember;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -36,6 +38,15 @@ class User extends Authenticatable
     public function company()
     {
         return $this->belongsTo(Company::class);
+    }
+    public function examGroupMembers()
+    {
+        return $this->hasMany(ExamGroupMember::class);
+    }
+
+    public function documents()
+    {
+        return $this->hasMany(Document::class, 'user_id');
     }
 
 }

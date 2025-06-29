@@ -1,0 +1,143 @@
+<?php
+
+namespace App\Http\Controllers\Exam;
+
+use App\Models\Exam\ExamGroup;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Models\Exam\ExamSubject;
+use App\Models\Exam\Announcement;
+
+class ExamGroupController extends Controller
+{
+    public function index()
+    {
+        $groups = ExamGroup::withCount('members')->orderByDesc('created_at')->paginate(20);
+//        dd($groups);
+        return view('admin.exam.exam_groups.index', compact('groups'));
+    }
+
+    public function create()
+    {
+        return view('exam_groups.create');
+    }
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'name'       => 'required|string|max:255',
+            'start_date' => 'required|date',
+            'exam_date'  => 'nullable|date|after_or_equal:start_date',
+        ]);
+
+        ExamGroup::create($validated);
+        return redirect()->route('exam_groups.index')->with('success', 'Grupa je uspešno dodata!');
+    }
+
+    public function show(ExamGroup $examGroup)
+    {
+        $examGroup->load([
+            'members.user.company',
+            'members.user',
+            'members.memberSubjects.subject',
+        ]);
+
+        $allDocTypes = \App\Models\Exam\DocumentType::all();
+
+        foreach ($examGroup->members as $member) {
+            $user = $member->user;
+            $companyId = $user->company_id;
+
+            // Svi potrebni tipovi za ovog membera
+            if ($companyId) {
+                $requiredDocs = $allDocTypes->where('code', 'company_user_exam')->values();
+            } else {
+                $requiredDocs = $allDocTypes->where('code', 'user_exam')->values();
+            }
+            $member->required_docs = $requiredDocs;
+
+            // Dokumenti koje je user postavio (za ovu grupu)
+            $userDocs = \App\Models\Exam\Document::where('user_id', $user->id)
+                ->where('exam_group_id', $examGroup->id)
+                ->get();
+
+            // Dokumenti koje je firma postavila (za ovu grupu)
+            $companyDocs = ($companyId)
+                ? \App\Models\Exam\Document::whereNull('user_id')
+                    ->where('exam_group_id', $examGroup->id)
+                    ->get()
+                : collect();
+
+            // Mapiranje: tip_dokumenta_id => dokument
+            $member->user_exam_documents = $userDocs->keyBy('document_type_id');
+            $member->company_exam_documents = $companyDocs->keyBy('document_type_id');
+        }
+
+        $allAnnouncements = Announcement::where('exam_group_id', $examGroup->id)->get();
+
+
+        $generalAnnouncements = $allAnnouncements->where('exam_subject_id', null);
+
+
+        $subjectAnnouncements = $allAnnouncements
+            ->whereNotNull('exam_subject_id')
+            ->groupBy(fn($a) => (string) $a->exam_subject_id)
+            ->all();
+
+        return view('admin.exam.exam_groups.show', [
+            'examGroup' => $examGroup,
+            'members'   => $examGroup->members,
+            'generalAnnouncements' => $generalAnnouncements,
+            'subjectAnnouncements' => $subjectAnnouncements,
+        ]);
+    }
+
+
+    public function edit(ExamGroup $examGroup)
+    {
+        return view('exam_groups.edit', compact('examGroup'));
+    }
+
+    public function update(Request $request, ExamGroup $examGroup)
+    {
+        $validated = $request->validate([
+            'name'       => 'required|string|max:255',
+            'start_date' => 'required|date',
+            'exam_date'  => 'nullable|date|after_or_equal:start_date',
+        ]);
+        $examGroup->update($validated);
+
+        return redirect()->route('exam_groups.index')->with('success', 'Grupa izmenjena.');
+    }
+
+    public function destroy(ExamGroup $examGroup)
+    {
+        $examGroup->delete();
+        return redirect()->route('exam_groups.index')->with('success', 'Grupa je obrisana.');
+    }
+    public function unlockSubject(ExamGroup $examGroup, ExamSubject $subject)
+    {
+        foreach ($examGroup->members as $member) {
+            $ms = $member->memberSubjects->firstWhere('exam_subject_id', $subject->id);
+            if ($ms && $ms->status == 'locked') {
+                $ms->update(['status' => 'unlocked', 'unlocked_at' => now()]);
+            }
+        }
+        return back()->with('success', 'Predmet otključan za sve kandidate!');
+    }
+    public function materials(\App\Models\Exam\ExamGroup $examGroup, \App\Models\Exam\ExamSubject $subject)
+    {
+        // Svi materijali za dati predmet u ovoj grupi
+        $documents = \App\Models\Document::where('exam_group_id', $examGroup->id)
+            ->where('exam_subject_id', $subject->id)
+            ->latest()
+            ->get();
+
+        $isAdmin = auth()->user()->hasRole('super_admin');
+
+        return view('admin.exam.exam_groups.materials', compact('examGroup', 'subject', 'documents', 'isAdmin'));
+    }
+
+
+}
+

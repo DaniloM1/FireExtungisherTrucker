@@ -43,6 +43,9 @@ Route::get('/dashboard', function () {
     if ($user->hasRole('company')) {
         return redirect()->route('company.service-events.index');
     }
+    if ($user->hasRole('student')) {
+        return redirect()->route('exam.index');
+    }
 
     // super_admin ili default
     return app(\App\Http\Controllers\DashboardController::class)->index();
@@ -77,6 +80,7 @@ require __DIR__ . '/auth.php';
 require __DIR__ . '/admin.php';
 require __DIR__ . '/company.php';
 require __DIR__ . '/attachments.php';
+require __DIR__ . '/exam.php';
 require __DIR__ . '/api.php';
 
 
