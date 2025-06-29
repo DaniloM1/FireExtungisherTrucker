@@ -69,6 +69,34 @@
                             <input type="text" name="city" id="city" value="{{ old('city', $location->city) }}" required
                                    class="mt-1 block w-full rounded-md border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 focus:border-blue-500 focus:ring-blue-500">
                         </div>
+                        <div class="mb-4">
+                            <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                {{ __('PIB') }}
+                            </label>
+                            <input type="text" name="pib" id="pib" value="{{ old('pib', $location->pib) }}" autocomplete="off"
+                                   class="mt-1 block w-full rounded-md border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 focus:border-blue-500 focus:ring-blue-500">
+
+                            <div class="mb-4">
+                                <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                    {{ __('Maticni broj') }}
+                                </label>
+                                <input type="text" name="maticni" id="maticni" value="{{ old('maticni', $location->maticni) }}" autocomplete="off"
+                                       class="mt-1 block w-full rounded-md border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 focus:border-blue-500 focus:ring-blue-500">
+                            </div>
+                            <div class="mb-4">
+                                <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                    {{ __('Kontakt osoba') }}
+                                </label>
+                                <input type="text" name="contact" id="contact" value="{{ old('contact', $location->contact) }}" autocomplete="off"
+                                       class="mt-1 block w-full rounded-md border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 focus:border-blue-500 focus:ring-blue-500">
+                            </div>
+                            <div class="mb-4">
+                                <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                    {{ __('Kontakt broj') }}
+                                </label>
+                                <input type="text" name="kontakt_broj" id="kontakt_broj" value="{{ old('kontakt_broj', $location->kontakt_broj) }}" autocomplete="off"
+                                       class="mt-1 block w-full rounded-md border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 focus:border-blue-500 focus:ring-blue-500">
+                            </div>
 
                         <!-- Latitude Field -->
                         <div class="mb-4">

@@ -1,10 +1,11 @@
 @props([
     'locations',
-    'autoTheme' => false,   // prati dark klasu
+    'autoTheme' => false,
+    'mapId' => null,
 ])
 
 @php
-    $mapId  = 'leaflet-map-' . uniqid();
+    $mapId  = $mapId ?: 'leaflet-map-'.uniqid();
 
     $locArr = $locations instanceof \Illuminate\Pagination\LengthAwarePaginator
         ? $locations->items()
@@ -20,50 +21,63 @@
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 <div id="{{ $mapId }}" style="width:100%;height:400px"></div>
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-
 <script>
-    document.addEventListener('DOMContentLoaded', () => {
-
-        /* 1. filtriraj lokacije s koordinatama */
+    document.addEventListener('DOMContentLoaded', function () {
         const mapDiv = document.getElementById(@json($mapId));
-        if (!mapDiv) return;
+        const locations = @json($locArr);
+        const valid = locations.filter(l => l.latitude && l.longitude);
 
-        const locs  = @json($locArr);
-        const valid = locs.filter(l => l.latitude && l.longitude);
-        if (!valid.length) return;
+        if (!mapDiv || !valid.length) return;
 
-        /* 2. odaberi sloj – pastel light ili tamni */
-        const prefersDark = (
-            @json($autoTheme) &&
-            document.documentElement.classList.contains('dark')
-    );
+        let map = null, bounds = [];
 
-        const TILE_URL = prefersDark
-            ? 'https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png'   // tamnosiva
-            : 'https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png';       // nova pastel-light
+        function setupMap() {
+            if (!map) {
+                const prefersDark = (
+                    @json($autoTheme) &&
+                    document.documentElement.classList.contains('dark')
+            );
+                const lightURL = 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png';
+                // const darkURL  = lightURL;
+                const darkURL  = 'https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}.png';
 
-        const ATTRIB  = '&copy; OpenStreetMap &copy; Stadia Maps';
+                const TILE_URL = prefersDark ? darkURL : lightURL;
+                const ATTRIB   = '&copy; OpenStreetMap, &copy; CartoDB, &copy; Stamen';
+                map = L.map(mapDiv);
+                L.tileLayer(TILE_URL, { attribution: ATTRIB }).addTo(map);
 
-        /* 3. mapa + pinovi */
-        const center = [parseFloat(valid[0].latitude), parseFloat(valid[0].longitude)];
-        const map    = L.map(mapDiv).setView(center, 9);
-        L.tileLayer(TILE_URL, { attribution: ATTRIB }).addTo(map);
+                bounds = [];
+                valid.forEach(loc => {
+                    const lat = parseFloat(loc.latitude);
+                    const lng = parseFloat(loc.longitude);
+                    const html = `<strong><a href="${loc.url}">${loc.name}</a></strong><br>
+                    ${loc.address ?? ''}<br>
+                    <a href="https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}" target="_blank" rel="noopener">🚗 Ruta</a>`;
+                    L.marker([lat, lng]).addTo(map).bindPopup(html);
+                    bounds.push([lat, lng]);
+                });
+            }
 
-        const bounds = [];
-        valid.forEach(loc => {
-            const lat = parseFloat(loc.latitude);
-            const lng = parseFloat(loc.longitude);
+            setTimeout(() => {
+                map.invalidateSize();
+                if (bounds.length > 1) {
+                    map.fitBounds(bounds, {padding:[30,30]});
+                } else if (bounds.length === 1) {
+                    map.setView(bounds[0], 13);
+                }
+            }, 100);
+        }
 
-            const popup = `
-            <strong><a href="${loc.url}">${loc.name}</a></strong><br>
-            ${loc.address ?? ''}<br>
-            <a href="https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}"
-               target="_blank" rel="noopener">🚗 Ruta</a>
-        `;
-            L.marker([lat, lng]).addTo(map).bindPopup(popup);
-            bounds.push([lat, lng]);
+        // Ako je mapa odmah vidljiva, inicijalizuj je odmah
+        if (window.getComputedStyle(mapDiv).display !== 'none') {
+            setupMap();
+        }
+
+        // Kad tab postane aktivan (event iz Alpine tabova)
+        window.addEventListener('tab-switch', function(e) {
+            if (e.detail === @json($mapId)) {
+                setupMap();
+            }
         });
-
-        if (bounds.length > 1) map.fitBounds(bounds, { padding: [30, 30] });
     });
 </script>

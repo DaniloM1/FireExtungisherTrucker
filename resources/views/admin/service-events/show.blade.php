@@ -50,7 +50,7 @@
                 <div class="p-8">
                     <dl class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <!-- Left Column -->
-                        <div class="md:col-span-1 space-y-4">s
+                        <div class="md:col-span-1 space-y-4">
                             <div>
                                 <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 flex items-center">
                                     <i class="fas fa-calendar-day mr-2"></i> Datum servisa

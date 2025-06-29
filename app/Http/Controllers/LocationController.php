@@ -43,6 +43,7 @@ class LocationController extends Controller
 
     public function store(LocationRequest $request, Company $company)
     {
+//        dd($request);
         $validated = $request->validated();
 
         $company->locations()->create($validated);

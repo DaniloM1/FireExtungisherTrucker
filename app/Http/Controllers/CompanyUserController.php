@@ -27,7 +27,7 @@ class CompanyUserController extends Controller
 
         $locations = $locationsQuery
             ->orderBy('name')
-            ->paginate(10);
+            ->paginate(9);
 
         $serviceEvents  = ServiceEvent::whereHas('locations', function ($q) use ($companyId) {
             $q->where('company_id', $companyId);
@@ -35,6 +35,10 @@ class CompanyUserController extends Controller
             ->with('locations')
             ->orderBy('service_date', 'desc')
             ->paginate(8);
+        $locationsMap = Location::where('company_id', $companyId)
+            ->orderBy('name')
+            ->get(['id', 'name', 'latitude', 'longitude', 'city', 'address'])
+            ->toArray();
 
         $serviceStats = [
             'total' => ServiceEvent::whereHas('locations', fn ($q) => $q->where('company_id', $companyId))->count(),
@@ -42,7 +46,7 @@ class CompanyUserController extends Controller
             'hydrants' => ServiceEvent::where('category', 'hydrant')->whereHas('locations', fn ($q) => $q->where('company_id', $companyId))->count(),
         ];
 
-        return view('admin.companyuser.index', compact('locations', 'serviceEvents', 'serviceStats'));
+        return view('admin.companyuser.index', compact('locations', 'serviceEvents', 'serviceStats', 'locationsMap'));
     }
 
 

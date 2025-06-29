@@ -36,16 +36,61 @@
             <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 mb-6 flex flex-col md:flex-row gap-6 border border-gray-200 dark:border-gray-700">
                 <div class="flex-1 space-y-3">
                     <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-100"><i class="fas fa-location mr-2 text-blue-500"></i>{{ $location->name }}</h3>
-                    <div class="flex items-center text-gray-600 dark:text-gray-300">
-                        <i class="fas fa-city mr-2 text-blue-500"></i>
-                        <span class="font-medium">Grad:</span>
-                        <span class="ml-1">{{ $location->city }}</span>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-2 text-base leading-relaxed">
+                        @if ($location->city)
+                            <div class="flex flex-col text-gray-600 dark:text-gray-300">
+                                <div class="flex items-center gap-2">
+                                    <i class="fas fa-city text-blue-500 w-5"></i>
+                                    <span class="font-semibold">Grad:</span>
+                                    <span>{{ $location->city }}</span>
+                                </div>
+                                @if ($location->address)
+                                    <div class="flex items-center gap-2 ml-7 mt-0.5 text-sm text-gray-400 dark:text-gray-400">
+                                        <i class="fas fa-map-marker-alt text-gray-400 w-4"></i>
+                                        <span>{{ $location->address }}</span>
+                                    </div>
+                                @endif
+                            </div>
+                        @endif
+
+
+                    @if ($location->pib)
+                            <div class="flex items-center gap-2 text-gray-600 dark:text-gray-300">
+                                <i class="fas fa-file-invoice text-blue-500 w-5"></i>
+                                <span class="font-semibold">PIB:</span>
+                                <span>{{ $location->pib }}</span>
+                            </div>
+                        @endif
+
+                        @if ($location->maticni)
+                            <div class="flex items-center gap-2 text-gray-600 dark:text-gray-300">
+                                <i class="fas fa-id-card text-blue-500 w-5"></i>
+                                <span class="font-semibold">Matični broj:</span>
+                                <span>{{ $location->maticni }}</span>
+                            </div>
+                        @endif
+
+                            @if ($location->contact)
+                                <div class="flex flex-col text-gray-600 dark:text-gray-300">
+                                    <div class="flex items-center gap-2">
+                                        <i class="fas fa-user text-blue-500 w-5"></i>
+                                        <span class="font-semibold">Kontakt:</span>
+                                        <span>{{ $location->contact }}</span>
+                                    </div>
+                                    @if ($location->kontakt_broj)
+                                        <a href="tel:{{ preg_replace('/[^0-9+]/', '', $location->kontakt_broj) }}"
+                                           class="ml-7 mt-0.5 text-sm text-gray-400 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400 transition group select-text">
+                                            {{ $location->kontakt_broj }}
+                                            <i class="fas fa-arrow-up-right-from-square text-xs opacity-60 ml-1 group-hover:opacity-100"></i>
+                                        </a>
+                                    @endif
+                                </div>
+                            @endif
+
+
+
                     </div>
-                    <div class="flex items-center text-gray-600 dark:text-gray-300">
-                        <i class="fas fa-map-marker-alt mr-2 text-blue-500"></i>
-                        <span class="font-medium">Adresa:</span>
-                        <span class="ml-1">{{ $location->address }}</span>
-                    </div>
+
 
                     <div class="flex items-center mb-4">
                         <i class="fas fa-paperclip text-blue-500 mr-2"></i>
@@ -131,12 +176,14 @@
                     @endhasrole
                 </div>
 
-                <div class="md:w-1/2 w-full">
+                <div class="w-full px-2 md:px-0 md:w-1/2 max-w-lg mx-auto">
                     <x-map-card
                         :locations="[$location]"
                         title="Lokacija"
                         width="max-w-s"
+                        height="h-64 sm:h-64 md:h-200"
                     />
+
                 </div>
             </div>
 

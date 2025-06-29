@@ -105,88 +105,110 @@
             </div>
         </div>
     </div>
-
-    <!-- JavaScript za dinamičko učitavanje i upravljanje kompanijama i lokacijama -->
-    <!-- Ostali deo koda ostaje nepromenjen -->
-
-    <!-- Postavi listener odmah nakon učitavanja stranice -->
     <script>
-        // Listener za promenu service_date
-        document.getElementById('service_date').addEventListener('change', function () {
-            let serviceDate = new Date(this.value);
-            if (!isNaN(serviceDate.getTime())) { // Provera da li je validan datum
-                serviceDate.setMonth(serviceDate.getMonth() + 6); // Dodaj 6 meseci
-                document.getElementById('next_service_date').value = serviceDate.toISOString().split('T')[0]; // Format u yyyy-mm-dd
-            }
-        });
+        document.addEventListener('DOMContentLoaded', function () {
+            // 1. Auto-calculate next_service_date
+            document.getElementById('service_date').addEventListener('change', function () {
+                let serviceDate = new Date(this.value);
+                if (!isNaN(serviceDate.getTime())) {
+                    serviceDate.setMonth(serviceDate.getMonth() + 6);
+                    document.getElementById('next_service_date').value = serviceDate.toISOString().split('T')[0];
+                }
+            });
 
-        // Listener za dugme "Add Companyf"
-        document.getElementById('add-company').addEventListener('click', function () {
-            let companySelector = document.getElementById('company-selector');
-            let companyId = companySelector.value;
-            let companyName = companySelector.options[companySelector.selectedIndex].text;
-            if (!companyId) {
-                alert("Please select a company");
-                return;
-            }
+            // 2. Add company and load locations
+            document.getElementById('add-company').addEventListener('click', function () {
+                let companySelector = document.getElementById('company-selector');
+                let companyId = companySelector.value;
+                let companyName = companySelector.options[companySelector.selectedIndex].text;
+                if (!companyId) {
+                    alert("Please select a company");
+                    return;
+                }
 
-            // Proveri da li je kompanija već dodata
-            if (document.getElementById('company-block-' + companyId)) {
-                alert("This company is already added");
-                return;
-            }
+                if (document.getElementById('company-block-' + companyId)) {
+                    alert("This company is already added");
+                    return;
+                }
 
-            let container = document.getElementById('companies-container');
-            let companyBlock = document.createElement('div');
-            companyBlock.id = 'company-block-' + companyId;
-            companyBlock.className = 'border p-4 rounded-md bg-gray-50 dark:bg-gray-700';
-            companyBlock.innerHTML = `
+                let container = document.getElementById('companies-container');
+                let companyBlock = document.createElement('div');
+                companyBlock.id = 'company-block-' + companyId;
+                companyBlock.className = 'border p-4 rounded-md bg-gray-50 dark:bg-gray-700 mb-4';
+                companyBlock.innerHTML = `
             <div class="flex justify-between items-center mb-2">
                 <h4 class="text-lg font-semibold text-gray-800 dark:text-gray-200">${companyName}</h4>
-                <button type="button" class="text-red-600 dark:text-red-400 hover:underline remove-company" data-company-id="${companyId}">
+                <button type="button" class="text-red-600 hover:underline remove-company" data-company-id="${companyId}">
                     Remove
+                </button>
+            </div>
+            <div class="mb-2 flex space-x-2">
+                <input type="text" class="search-locations px-2 rounded border" placeholder="Pretraži lokacije..." data-company-id="${companyId}">
+                <button type="button" class="select-all bg-gray-200 dark:bg-gray-600 px-3 py-1 rounded" data-company-id="${companyId}">
+                    Selektuj sve
                 </button>
             </div>
             <div class="locations-container">
                 <p class="text-sm text-gray-500 dark:text-gray-400">Loading locations...</p>
             </div>
         `;
-            container.appendChild(companyBlock);
+                container.appendChild(companyBlock);
 
-            // Učitaj lokacije za odabranu kompaniju putem AJAX-a
-            fetch('/api/companies/' + companyId + '/locations')
-                .then(response => response.json())
-                .then(data => {
-                    let locations = data.data ? data.data : data;
-                    let locationsContainer = companyBlock.querySelector('.locations-container');
-                    if (locations.length === 0) {
-                        locationsContainer.innerHTML = '<p class="text-sm text-gray-500 dark:text-gray-400">No locations found for this company.</p>';
-                        return;
-                    }
-                    let html = '';
-                    locations.forEach(function(location) {
-                        html += `
+                // Fetch locations via AJAX
+                fetch('/api/companies/' + companyId + '/locations')
+                    .then(response => response.json())
+                    .then(data => {
+                        let locations = data.data ? data.data : data;
+                        let locationsContainer = companyBlock.querySelector('.locations-container');
+                        if (!locations.length) {
+                            locationsContainer.innerHTML = '<p class="text-sm text-gray-500 dark:text-gray-400">No locations found for this company.</p>';
+                            return;
+                        }
+                        let html = `<div class="locations-list max-h-64 overflow-y-auto">`;
+                        locations.forEach(function(location) {
+                            html += `
                         <label class="flex items-center space-x-2">
-                            <input type="checkbox" name="locations[]" value="${location.id}" class="form-checkbox h-4 w-4 text-blue-600">
+                            <input type="checkbox" name="locations[]" value="${location.id}" class="form-checkbox location-checkbox h-4 w-4 text-blue-600" data-name="${location.name} ${location.city}">
                             <span class="text-sm text-gray-700 dark:text-gray-300">${location.name} - ${location.city}</span>
                         </label>
                     `;
+                        });
+                        html += `</div>`;
+                        locationsContainer.innerHTML = html;
+                    })
+                    .catch(error => {
+                        companyBlock.querySelector('.locations-container').innerHTML = '<p class="text-sm text-red-500">Error loading locations.</p>';
+                        console.error('Error fetching locations:', error);
                     });
-                    locationsContainer.innerHTML = html;
-                })
-                .catch(error => {
-                    console.error('Error fetching locations:', error);
-                    companyBlock.querySelector('.locations-container').innerHTML = '<p class="text-sm text-red-500">Error loading locations.</p>';
-                });
-        });
+            });
 
-        // Uklanjanje bloka kompanije
-        document.getElementById('companies-container').addEventListener('click', function (e) {
-            if (e.target && e.target.classList.contains('remove-company')) {
-                let companyId = e.target.getAttribute('data-company-id');
-                let block = document.getElementById('company-block-' + companyId);
-                if (block) block.remove();
-            }
+            // 3. Delegated listeners for search, select all, and remove company
+            document.getElementById('companies-container').addEventListener('input', function(e) {
+                if (e.target.classList.contains('search-locations')) {
+                    let block = e.target.closest('[id^="company-block-"]');
+                    let term = e.target.value.toLowerCase();
+                    let checkboxes = block.querySelectorAll('.location-checkbox');
+                    checkboxes.forEach(cb => {
+                        let name = cb.getAttribute('data-name').toLowerCase();
+                        cb.parentElement.style.display = name.includes(term) ? '' : 'none';
+                    });
+                }
+            });
+
+            document.getElementById('companies-container').addEventListener('click', function(e) {
+                // Remove company
+                if (e.target.classList.contains('remove-company')) {
+                    let companyId = e.target.getAttribute('data-company-id');
+                    let block = document.getElementById('company-block-' + companyId);
+                    if (block) block.remove();
+                }
+                // Select all locations in that block
+                if (e.target.classList.contains('select-all')) {
+                    let block = e.target.closest('[id^="company-block-"]');
+                    let checkboxes = block.querySelectorAll('.location-checkbox:enabled');
+                    checkboxes.forEach(cb => cb.checked = true);
+                }
+            });
         });
     </script>
 

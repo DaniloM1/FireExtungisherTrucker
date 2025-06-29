@@ -12,6 +12,6 @@
     <div
         class="map-wrapper overflow-hidden rounded-md {{ $height }}
                border border-gray-300 dark:border-gray-600">
-        <x-map :locations="$locations" :autoTheme="$autoTheme"/>
+        <x-map :locations="$locations" :autoTheme="$autoTheme" :map-id="$mapId ?? 'leaflet-map-'.uniqid()"  />
     </div>
 </section>

@@ -52,6 +52,12 @@
                             class="px-4 py-2 rounded-t-lg font-medium focus:outline-none transition w-full sm:w-auto">
                         Poslednji servisi
                     </button>
+                    <button
+                        @click="tab = 'map'; $nextTick(() => window.dispatchEvent(new CustomEvent('tab-switch', {detail: 'leaflet-map-all'})))"
+                            :class="tab === 'map' ? 'bg-blue-600 text-white' : 'bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200'"
+                            class="px-4 py-2 rounded-t-lg font-medium focus:outline-none transition w-full sm:w-auto">
+                        Mapa
+                    </button>
 
                 </div>
 
@@ -112,11 +118,72 @@
                     <h3 class="text-lg font-semibold mb-4 text-gray-800 dark:text-gray-200">Poslednji servisi</h3>
                     @include('admin.service-events._list')
 
-            </div> <!-- Kraj tabova -->
+            </div>
+                <div x-show="tab === 'map'" x-cloak class="bg-white dark:bg-gray-800 rounded-b-xl shadow p-4 sm:p-6">
+                    <h3 class="text-lg font-semibold mb-4 text-gray-800 dark:text-gray-200">
+                        Sve lokacije na mapi
+                    </h3>
+                    <x-map-card
+                        :locations="$locationsMap"
+                        title="Sve lokacije"
+                        width="max-w-5xl"
+                        height="h-200"
+                        map-id="leaflet-map-all"
+                    />
+                </div>
+            </div>
+                <!-- Kraj tabova -->
         </div>
     </div>
 
 
         </div>
     <script src="//unpkg.com/alpinejs" defer></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            let map;
+            let mapDiv = document.getElementById('leaflet-map'); // proveri ID ako je custom
+            let locations = @json($locations);
+
+            // Provera da li je mapa u tab-u koji je možda sakriven
+            function showMap() {
+                if (!map) {
+                    map = L.map(mapDiv).setView([44.8, 20.5], 8);
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                        attribution: '© OpenStreetMap contributors'
+                    }).addTo(map);
+                    locations.forEach(loc => {
+                        if (loc.latitude && loc.longitude) {
+                            L.marker([loc.latitude, loc.longitude])
+                                .addTo(map)
+                                .bindPopup(loc.name + '<br>' + (loc.address ?? '') + '<br>' + (loc.city ?? ''));
+                        }
+                    });
+                    // Auto-fit all markers
+                    let bounds = locations
+                        .filter(l => l.latitude && l.longitude)
+                        .map(l => [l.latitude, l.longitude]);
+                    if (bounds.length) map.fitBounds(bounds, {padding: [32,32]});
+                } else {
+                    // Ako već postoji, samo osveži veličinu
+                    map.invalidateSize();
+                }
+            }
+
+            // Ako je mapa odmah vidljiva
+            if (window.getComputedStyle(mapDiv).display !== 'none') {
+                setTimeout(showMap, 200);
+            }
+
+            // Ako koristiš Alpinejs tabove:
+            document.addEventListener('alpine:init', () => {
+                document.addEventListener('tab-switch', function(e) {
+                    if (e.detail === 'map') {
+                        setTimeout(showMap, 200);
+                    }
+                });
+            });
+        });
+    </script>
+
 </x-app-layout>
