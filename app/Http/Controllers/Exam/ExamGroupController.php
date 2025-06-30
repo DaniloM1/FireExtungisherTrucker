@@ -137,6 +137,82 @@ class ExamGroupController extends Controller
 
         return view('admin.exam.exam_groups.materials', compact('examGroup', 'subject', 'documents', 'isAdmin'));
     }
+    public function usersNotInGroup($groupId)
+    {
+        $group = ExamGroup::findOrFail($groupId);
+        // Pronađi ID-jeve članova grupe
+        $memberIds = $group->members()->pluck('user_id');
+        // Nađi korisnike koji NISU članovi te grupe
+        $users = \App\Models\User::whereNotIn('id', $memberIds)->get(['id', 'name', 'email']);
+        return response()->json($users);
+    }
+    public function addMember(Request $request, $groupId)
+    {
+        $request->validate([
+            'user_id' => 'required|exists:users,id',
+        ]);
+
+        // 1. Provera da li je već član
+        $exists = \App\Models\Exam\ExamGroupMember::where([
+            'exam_group_id' => $groupId,
+            'user_id' => $request->user_id
+        ])->exists();
+        if ($exists) {
+            return response()->json(['error' => 'Već je član'], 422);
+        }
+
+        // 2. Kreiraj članstvo
+        $member = \App\Models\Exam\ExamGroupMember::create([
+            'exam_group_id' => $groupId,
+            'user_id' => $request->user_id,
+            'status' => 'active',
+            'joined_at' => now(),
+        ]);
+
+        // 3. Pronađi usera da saznaš education_level
+        $user = \App\Models\User::findOrFail($request->user_id);
+
+        // 4. Izaberi sve predmete koji pripadaju toj grupi i korisniku po nivou
+        $subjects = \App\Models\Exam\ExamSubject::where(function($q) use ($user) {
+            $q->where('education_level', 'ALL')
+                ->orWhere('education_level', $user->education_level);
+        })->get();
+
+        // 5. Bulk insert u exam_member_subjects
+        $now = now();
+        $data = [];
+        foreach ($subjects as $subject) {
+            $data[] = [
+                'exam_group_member_id' => $member->id,
+                'exam_subject_id'      => $subject->id,
+                'status'               => 'locked', // ili 'unlocked' ako odmah treba da bude otključan
+                'unlocked_at'          => null,
+                'result_date'          => null,
+                'created_at'           => $now,
+                'updated_at'           => $now,
+            ];
+        }
+        \App\Models\Exam\ExamMemberSubject::insert($data);
+
+        return response()->json(['success' => true]);
+    }
+
+    public function userSearch(Request $request, $groupId)
+    {
+        $q = $request->input('q');
+        $group = ExamGroup::findOrFail($groupId);
+
+        $members = $group->members()->pluck('user_id');
+        $users = \App\Models\User::whereNotIn('id', $members)
+            ->where(function ($query) use ($q) {
+                $query->where('name', 'like', "%{$q}%")
+                    ->orWhere('email', 'like', "%{$q}%");
+            })
+            ->limit(20)
+            ->get(['id', 'name', 'email']);
+
+        return response()->json($users);
+    }
 
 
 }

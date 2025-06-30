@@ -15,6 +15,9 @@ Route::post('/exam-groups/{examGroup}/subjects/{subject}/unlock', [ExamGroupCont
 
 Route::get('/exam-groups/{examGroup}/subjects/{subject}/materials', [ExamGroupController::class, 'materials'])
     ->name('exam-groups.materials');
+Route::get('/exam-groups/{group}/not-in-group', [ExamGroupController::class, 'usersNotInGroup'])->name('exam.groups.not-in-group');
+Route::post('/exam-groups/{group}/add-member', [ExamGroupController::class, 'addMember'])->name('exam.groups.add-member');
+Route::get('/exam-groups/{group}/user-search', [ExamGroupController::class, 'userSearch'])->name('exam.groups.user-search');
 
 
 Route::resource('exam-subjects', ExamSubjectController::class);

@@ -48,5 +48,13 @@ class User extends Authenticatable
     {
         return $this->hasMany(Document::class, 'user_id');
     }
+    public function getEducationLevelAttribute()
+    {
+        if (array_key_exists('education_level', $this->attributes)) {
+            return $this->attributes['education_level'];
+        }
+        // Simuliraj random dok ne dodaš u migraciju
+        return ['SSS', 'VSS'][array_rand(['SSS', 'VSS'])];
+    }
 
 }
