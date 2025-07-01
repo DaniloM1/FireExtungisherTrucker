@@ -5,9 +5,10 @@
     'isAdmin' => false,
     'examGroupId' => null,
     'subjectAnnouncements' => collect(),
+    'documentsBySubject' => collect(),
 ])
-
 @php
+//dd($documentsBySubject);
     $subjectById = $subjects->keyBy('id');
     $defaultSubject = $subjects->first();
 @endphp
@@ -135,6 +136,7 @@
                             'subjectAnnouncements' => $subjectAnnouncements,
                             'isAdmin' => $isAdmin,
                             'examGroupId' => $examGroupId,
+                             'documentsBySubject' => $documentsBySubject, // ← dodaj ovo
                         ])
                     @endif
                 @else
@@ -144,6 +146,7 @@
                         'subjectAnnouncements' => $subjectAnnouncements,
                         'isAdmin' => $isAdmin,
                         'examGroupId' => $examGroupId,
+                         'documentsBySubject' => $documentsBySubject, // ← dodaj ovo
                     ])
                 @endif
             </div>

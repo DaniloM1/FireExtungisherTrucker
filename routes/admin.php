@@ -23,6 +23,10 @@ Route::middleware('role:super_admin')->group(function () {
     // Service Events
     Route::resource('service-events', ServiceEventController::class);
     Route::get('service-events/test/{group}', [ServiceEventController::class, 'groupService'])->name('service-events.group-service');
+    // web.php
+    Route::post('/service-events/{serviceEvent}/locations/{location}/complete', [ServiceEventController::class, 'markDone'])
+        ->name('service-events.locations.complete');
+
     // Location Groups
     Route::resource('location-groups', LocationGroupController::class);
 

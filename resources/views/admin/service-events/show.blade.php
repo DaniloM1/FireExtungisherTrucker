@@ -76,17 +76,12 @@
                                 </dd>
                             </div>
                         </div>
-                        <!-- Right Column -->
+
                         <div class="md:col-span-2 space-y-2">
 {{--                            <div>--}}
                                 <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 flex items-center">
                                      Kompanije/Lokacije
                                 </dt>
-{{--                                <dd class="mt-1 text-lg font-semibold text-gray-900 dark:text-gray-100">--}}
-{{--                                    {{ number_format($serviceEvent->cost, 2, ',', '.') }} RSD--}}
-{{--                                </dd>--}}
-{{--                            </div>--}}
-                            <!-- Lokacije po kompanijama -->
                             @foreach($locationsGrouped as $companyName => $companyLocations)
                                 <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 flex items-center mt-4">
                                     <i class="fas fa-building mr-2"></i> {{ $companyName }}
@@ -94,6 +89,9 @@
                                 <dd class="mt-1 text-gray-900 dark:text-gray-100">
                                     <ul class="space-y-2">
                                         @foreach ($companyLocations as $loc)
+                                            @php
+                                                $sel = $loc->pivot ?? $loc->service_event_location ?? null;
+                                            @endphp
                                             <li class="flex flex-col md:flex-row md:items-center gap-2 md:gap-4 py-1 border-b last:border-none border-gray-100 dark:border-gray-700">
                                                 <div class="flex items-center">
                                                     <i class="fas fa-circle text-xs text-blue-500 mr-2"></i>
@@ -104,6 +102,25 @@
                                                         {{ $loc->name }}
                                                     </a>
                                                     <span class="ml-1 text-gray-600 dark:text-gray-300">({{ $loc->city }})</span>
+                                                    @if($sel && $sel->status !== 'done')
+                                                    @hasrole('super_admin')
+                                                        <form method="POST" action="{{ route('service-events.locations.complete', [$serviceEvent->id, $loc->id]) }}" class="d-inline js-complete-location-form">
+                                                            @csrf
+                                                            <button type="button"
+                                                                    class="bg-green-600 hover:bg-green-700 text-white rounded-full w-8 h-8 flex items-center justify-center shadow transition ml-2 js-complete-location"
+                                                                    title="Označi lokaciju kao završenu"
+                                                                    data-location="{{ $loc->name }}">
+                                                                <i class="fas fa-check"></i>
+                                                            </button>
+                                                        </form>
+                                                        @endhasrole
+                                                    @else
+                                                        <span class="ml-2 px-2 py-1 rounded-full text-xs bg-green-100 text-green-700">Završeno</span>
+                                                        @if($sel && $sel->completed_at)
+                                                            <span class="ml-2 text-xs text-gray-500">({{ \Carbon\Carbon::parse($sel->completed_at)->format('d.m.Y H:i') }})</span>
+                                                        @endif
+                                                    @endif
+
                                                 </div>
                                                 <div class="flex-1">
                                                     <span class="text-xs text-gray-500 dark:text-gray-400">Prilozi: {{ $loc->attachments->count() }}</span>
@@ -126,13 +143,13 @@
                                                                 <label for="attachment_{{ $serviceEvent->id }}_{{ $loc->id }}" class="block text-xs font-medium text-gray-700 dark:text-gray-300">Fajl</label>
                                                                 <input type="file" name="attachment" id="attachment_{{ $serviceEvent->id }}_{{ $loc->id }}" required
                                                                        class="block w-full text-sm text-gray-700 dark:text-gray-300
-                                              file:mr-4 file:py-2 file:px-4
-                                              file:rounded-lg file:border-0
-                                              file:text-sm file:font-semibold
-                                              file:bg-blue-50 file:text-blue-700
-                                              dark:file:bg-blue-900 dark:file:text-blue-200
-                                              hover:file:bg-blue-100 dark:hover:file:bg-blue-800
-                                              transition-colors cursor-pointer" />
+                                                                      file:mr-4 file:py-2 file:px-4
+                                                                      file:rounded-lg file:border-0
+                                                                      file:text-sm file:font-semibold
+                                                                      file:bg-blue-50 file:text-blue-700
+                                                                      dark:file:bg-blue-900 dark:file:text-blue-200
+                                                                      hover:file:bg-blue-100 dark:hover:file:bg-blue-800
+                                                                      transition-colors cursor-pointer" />
                                                             </div>
                                                             <div>
                                                                 <label for="name_{{ $serviceEvent->id }}_{{ $loc->id }}" class="block text-xs font-medium text-gray-700 dark:text-gray-300">Naziv</label>
@@ -193,13 +210,60 @@
 @include('admin.service-events.attachments-section')
         </div>
     </div>
+    @php
+        $doneIds = $serviceEvent
+     ->locations()                    // ← obrati pažnju na zagrade: query builder
+     ->wherePivot('status', 'done')   // filtriraj u JOIN-u
+     ->pluck('locations.id')          // Idi kolonu iz glavne tabele
+     ->toArray();                     // običan niz
+//dd($doneIds);
+    @endphp
+
     <x-map-card
         :locations="$serviceEvent->locations->toArray()"
         title="Lokacije"
         width="max-w-4xl"
         height="h-200"
+        :highlightIds="$doneIds"
     />
     @push('styles')
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
     @endpush
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('.js-complete-location').forEach(function(btn) {
+                btn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    let form = btn.closest('form');
+                    let locationName = btn.getAttribute('data-location') || 'ovu lokaciju';
+
+                    // Detekcija dark/light mode-a
+                    let isDark = document.documentElement.classList.contains('dark');
+
+                    Swal.fire({
+                        title: 'Da li ste sigurni?',
+                        text: `Ova akcija će označiti ${locationName} kao završenu.`,
+                        icon: 'question',
+                        background: isDark ? '#1f2937' : '#fff', // gray-800 : white
+                        color: isDark ? '#e5e7eb' : '#111827',   // gray-200 : gray-900
+                        showCancelButton: true,
+                        confirmButtonColor: isDark ? '#16a34a' : '#198754', // green-600 : bootstrap green
+                        cancelButtonColor: isDark ? '#ef4444' : '#d33',      // red-500 : sweetalert red
+                        confirmButtonText: 'Da, završi!',
+                        cancelButtonText: 'Otkaži',
+                        customClass: {
+                            popup: isDark ? 'swal2-dark' : ''
+                        }
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            form.submit();
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+
+
+
 </x-app-layout>

@@ -13,18 +13,24 @@ class UserManagementController extends Controller
 {
     public function index(Request $request)
     {
-        $search = $request->input('search');
+        $search = $request->input('q');
 
-        $users = User::with(['roles', 'permissions'])
+        $users = User::with(['roles', 'permissions', 'company'])
             ->when($search, function ($query, $search) {
-                $query->where('name', 'like', "%{$search}%")
-                    ->orWhere('email', 'like', "%{$search}%");
+                $query->where(function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")
+                        ->orWhere('email', 'like', "%{$search}%")
+                        ->orWhereHas('company', function ($q2) use ($search) {
+                            $q2->where('name', 'like', "%{$search}%");
+                        });
+                });
             })
             ->orderBy('created_at', 'desc')
             ->paginate(10);
 
         return view('users.index', compact('users', 'search'));
     }
+
 
 
 

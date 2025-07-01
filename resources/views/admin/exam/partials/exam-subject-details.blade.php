@@ -91,7 +91,7 @@
 {{--                Materijali i predavanja--}}
 {{--            </a>--}}
             <button @click="focusSubject('{{ $subject->id }}')"
-                    class="inline-flex items-center px-3 py-2 rounded-xl bg-yellow-500 text-white text-sm font-semibold hover:bg-yellow-600 transition"
+                    class="inline-flex items-center px-3 py-2 rounded-xl bg-blue-600 text-white text-sm font-semibold hover:bg-blue-800 transition"
                     type="button">
                 <svg class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
@@ -167,14 +167,28 @@
 </div>
 
 {{-- Materijali --}}
+@php
+    $subjectDocs = $documentsBySubject[$subject->id] ?? collect();
+@endphp
+
 <div>
     <h5 class="font-semibold text-gray-700 dark:text-gray-200 mb-2">Materijali</h5>
-    @if(isset($subject->materials) && count($subject->materials))
+    @if($subjectDocs->isNotEmpty())
         <ul class="divide-y divide-gray-100 dark:divide-gray-700">
-            @foreach($subject->materials as $material)
+            @foreach($subjectDocs as $doc)
                 <li class="py-2 flex items-center gap-2">
-                    <svg class="h-4 w-4 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7v10M17 7v10M7 7h10M7 17h10" /></svg>
-                    <a href="{{ asset('storage/'.$material['file_path']) }}" class="text-blue-600 dark:text-blue-300 underline" target="_blank">{{ $material['name'] ?? 'Materijal' }}</a>
+                    <svg class="h-4 w-4 text-blue-400" fill="none" stroke="currentColor" stroke-width="2"
+                         viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                              d="M7 7h10M7 11h10M7 15h10M5 5v14h14V5H5z"/>
+                    </svg>
+
+                    <a href="{{ Storage::url($doc->file_path) }}" class="text-blue-600 dark:text-blue-300 underline" target="_blank">
+                        {{ $doc->name ?? 'Materijal' }}
+                    </a>
+                    @if($doc->description)
+                        <span class="text-sm text-gray-400">– {{ $doc->description }}</span>
+                    @endif
                 </li>
             @endforeach
         </ul>

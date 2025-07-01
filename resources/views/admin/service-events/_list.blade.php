@@ -43,6 +43,7 @@
                             $statusClasses = [
                                 'active' => 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300',
                                 'inactive' => 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300',
+
                             ];
                             $statusClass = $statusClasses[strtolower($event->status)] ?? $statusClasses['active'];
                         @endphp
@@ -134,9 +135,9 @@
                                             </h5>
                                             <ul class="list-disc pl-5 mt-1 text-xs text-gray-700 dark:text-gray-300">
                                                 @foreach($locations as $location)
-                                                    <li class="{{ $location->pivot?->status !== 'active' ? 'text-gray-500 dark:text-gray-500' : 'text-gray-700 dark:text-gray-300' }}">
+                                                    <li class="{{ in_array($location->pivot?->status, ['active', 'done']) ? 'text-gray-700 dark:text-gray-300' : 'text-gray-500 dark:text-gray-500' }}">
                                                         {{ $location->name }} - {{ $location->city }}
-                                                        @if($location->pivot?->status !== 'active')
+                                                        @if($location->pivot && !in_array($location->pivot->status, ['active', 'done']))
                                                             <span class="text-xs">(inactive)</span>
                                                         @endif
                                                     </li>

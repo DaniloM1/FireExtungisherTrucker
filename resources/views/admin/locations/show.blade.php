@@ -182,6 +182,7 @@
                         title="Lokacija"
                         width="max-w-s"
                         height="h-64 sm:h-64 md:h-200"
+
                     />
 
                 </div>

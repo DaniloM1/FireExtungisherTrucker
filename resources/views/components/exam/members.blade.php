@@ -78,87 +78,17 @@
             </a>
         @endif
     </div>
-    <div x-data="{ tab: 'users' }" class="space-y-4">
-        <!-- Tabovi -->
-        <div class="flex gap-2 mb-2">
-            <button @click="tab = 'users'"
-                    :class="tab === 'users' ? 'bg-blue-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100'"
-                    class="px-4 py-2 rounded-xl font-semibold transition">Po korisniku</button>
-            <button @click="tab = 'docs'"
-                    :class="tab === 'docs' ? 'bg-blue-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100'"
-                    class="px-4 py-2 rounded-xl font-semibold transition">Po dokumentu</button>
-        </div>
+    <div class="space-y-4">
 
-        <!-- Prikaz po korisniku -->
-        <div x-show="tab === 'users'">
-            {{-- OVO JE TVOJA TABELA --}}
-            @include('admin.exam.partials.members-table', [
-     'members' => $members,
-     'isAdmin' => $isAdmin,
-     'currentUserId' => $currentUserId,
-     'examGroup' => $examGroup,
-     // 'allDocTypes' => $allDocTypes, // opcionalno, možeš proslediti ručno
- ])
-        </div>
+        {{-- Direktno uključujemo moderni prikaz članova --}}
+        @include('admin.exam.partials.members-table', [
+            'members'       => $members,
+            'isAdmin'       => $isAdmin,
+            'currentUserId' => $currentUserId,
+            'examGroup'     => $examGroup,
+        ])
 
-        <!-- Prikaz po dokumentu -->
-        <div x-show="tab === 'docs'">
-            <div class="overflow-x-auto">
-                <table class="w-full text-left text-[15px]">
-                    <thead>
-                    <tr>
-                        <th class="px-4 py-2 text-gray-600 dark:text-gray-300">Dokument</th>
-                        <th class="px-4 py-2 text-gray-600 dark:text-gray-300">Statusi korisnika</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    @foreach($members[0]->required_docs ?? [] as $docType)
-                        <tr class="border-t border-gray-200 dark:border-gray-700">
-                            <td class="px-4 py-2 font-semibold text-gray-900 dark:text-gray-100">
-                                {{ $docType->name }}
-                            </td>
-                            <td class="px-4 py-2">
-                                <div class="flex flex-wrap gap-2">
-                                    @foreach($members as $member)
-                                        @php
-                                            $userDoc = $member->user_exam_documents->get($docType->id);
-                                            $companyDoc = $member->company_exam_documents ? $member->company_exam_documents->get($docType->id) : null;
-                                            $hasDoc = $userDoc || $companyDoc;
-                                            $displayName = $member->user->name ?? '-';
-                                        @endphp
-                                        <div class="flex items-center gap-1 bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded">
-                                            <span class="font-medium text-gray-700 dark:text-gray-200">{{ $displayName }}</span>
-                                            @if($userDoc)
-                                                <svg class="h-4 w-4 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                                                </svg>
-                                                <a class="text-blue-600 dark:text-blue-300 underline font-medium"
-                                                   href="{{ asset('storage/'.$userDoc->file_path) }}" target="_blank">Dok.</a>
-                                            @elseif($companyDoc)
-                                                <svg class="h-4 w-4 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                                                </svg>
-                                                <a class="text-blue-600 dark:text-blue-300 underline font-medium"
-                                                   href="{{ asset('storage/'.$companyDoc->file_path) }}" target="_blank">Firma</a>
-                                            @else
-                                                <svg class="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636L5.636 18.364M6 6h.01M6 18h.01M18 6h.01M18 18h.01"/>
-                                                </svg>
-                                                <span class="text-xs text-red-500">(nedostaje)</span>
-                                            @endif
-                                        </div>
-                                    @endforeach
-                                </div>
-                            </td>
-                        </tr>
-                    @endforeach
-                    </tbody>
-                </table>
-            </div>
-        </div>
     </div>
-
-
     <!-- MODAL: Dodavanje Učesnika -->
     <div x-show="showAddUser" x-cloak class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
         <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-xl p-6 w-full max-w-md relative border border-gray-200 dark:border-gray-800">

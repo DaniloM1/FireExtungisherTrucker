@@ -83,12 +83,22 @@ class ExamGroupController extends Controller
             ->whereNotNull('exam_subject_id')
             ->groupBy(fn($a) => (string) $a->exam_subject_id)
             ->all();
+        $subjects = $examGroup->members
+            ->flatMap(fn($m) => $m->memberSubjects)
+            ->pluck('subject')
+            ->unique('id');
 
+        $documents = \App\Models\Exam\Document::with('documentType')
+            ->whereIn('exam_subject_id', $subjects->pluck('id'))
+            ->whereHas('documentType', fn($q) => $q->where('code', 'subject_pdf'))
+            ->get()
+            ->groupBy('exam_subject_id');
         return view('admin.exam.exam_groups.show', [
             'examGroup' => $examGroup,
             'members'   => $examGroup->members,
             'generalAnnouncements' => $generalAnnouncements,
             'subjectAnnouncements' => $subjectAnnouncements,
+            'documentsBySubject' => $documents,
         ]);
     }
 

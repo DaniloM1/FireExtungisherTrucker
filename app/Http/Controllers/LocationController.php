@@ -90,8 +90,8 @@ class LocationController extends Controller
 
        $locations = $query->paginate(9);
 
-       $companyIds = $locations->pluck('company_id')->unique();
-       $companies = Company::whereIn('id', $companyIds)->get();
+//       $companyIds = $locations->pluck('company_id')->unique();
+       $companies = Company::all();
 
 
        return view('admin.locations.test', compact('locations', 'companies'));

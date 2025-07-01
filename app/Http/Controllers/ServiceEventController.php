@@ -169,4 +169,21 @@ class ServiceEventController extends Controller
 
         return view('admin.service-events.create-group', compact('locationGroup', 'allLocations', 'companies', 'selectedLocationIds', 'selectedCompanyIds'));
     }
+    // ServiceEventLocationController.php
+
+    public function markDone($serviceEventId, $locationId)
+    {
+        $serviceEvent = \App\Models\ServiceEvent::findOrFail($serviceEventId);
+
+        if (!$serviceEvent->locations()->where('locations.id', $locationId)->exists()) {
+            abort(404, 'Lokacija nije deo ovog servisa.');
+        }
+        $serviceEvent->locations()->updateExistingPivot($locationId, [
+            'status'       => 'done',
+        ]);
+
+        return back()->with('success', 'Lokacija je označena kao završena!');
+    }
+
+
 }

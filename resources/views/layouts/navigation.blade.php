@@ -61,11 +61,20 @@ class="bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700">
                 <x-nav-link :href="route('posts.index')" :active="request()->routeIs('posts.*')">
                     {{ __('Blog') }}
                 </x-nav-link>
+                <x-nav-link :href="route('exam.index')" :active="request()->routeIs('exam.*', 'exam-groups.*')">
+                    {{ __('S I') }}
+                </x-nav-link>
                 @endhasrole
                 @hasrole('company')
                 <!-- Kompanijski korisnik vidi samo ovo -->
                 <x-nav-link :href="route('company.service-events.index')" :active="request()->routeIs('company.service-events.index')">
                     {{ __('Dashboard') }}
+                </x-nav-link>
+                @endhasrole
+                @hasrole('student')
+                <!-- Kompanijski korisnik vidi samo ovo -->
+                <x-nav-link :href="route('exam.index')" :active="request()->routeIs('exam.*', 'exam-groups.*')">
+                    {{ __('Strucni Ispit') }}
                 </x-nav-link>
                 @endhasrole
             </div>
@@ -170,6 +179,11 @@ class="bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700">
             {{ __('Grupe L') }}
         </x-responsive-nav-link>
     </div>
+    <div class="pt-2 pb-3 space-y-1">
+        <x-responsive-nav-link :href="route('exam.index')" :active="request()->routeIs('exam.*', 'exam-groups.*')">
+            {{ __('Strucni Ispit') }}
+        </x-responsive-nav-link>
+    </div>
     @endhasrole
     @hasrole('company')
     <div class="pt-2 pb-3 space-y-1">
@@ -178,6 +192,13 @@ class="bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700">
         </x-responsive-nav-link>
     </div>
 @endhasrole
+    @hasrole('student')
+    <div class="pt-2 pb-3 space-y-1">
+        <x-responsive-nav-link :href="route('exam.index')" :active="request()->routeIs('exam.*', 'exam-groups.*')">
+            {{ __('Strucni Ispit') }}
+        </x-responsive-nav-link>
+    </div>
+    @endhasrole
     <!-- Responsive Settings Options -->
     <div class="pt-4 pb-1 border-t border-gray-200 dark:border-gray-600">
         <div class="px-4">

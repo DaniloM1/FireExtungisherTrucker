@@ -79,6 +79,7 @@
         <h3 class="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-4">
             Servis po gradovima
         </h3>
+
         <div class="space-y-4">
 
             @foreach($citySummaries as $city => $summary)

@@ -75,8 +75,11 @@
             :my-membership="$myMembership"
             :is-admin="$isAdmin"
             :exam-group-id="$examGroup->id"
-            :subject-announcements="$subjectAnnouncements"   {{-- <<< OVO JE KLJUČNO --}}
+            :subject-announcements="$subjectAnnouncements"
+            :documents-by-subject="$documentsBySubject"
         />
+
+{{--        {{dd($documentsBySubject)}}--}}
 
     </div>
 </x-app-layout>
