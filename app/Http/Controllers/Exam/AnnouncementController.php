@@ -28,18 +28,23 @@ class AnnouncementController extends Controller
 
     public function store(Request $request)
     {
+//        dd($request->all());
         $request->validate([
             'title' => 'required|string|max:255',
             'body' => 'required|string',
             'exam_group_id' => 'required|exists:exam_groups,id',
-            'exam_subject_id' => 'nullable|exists:exam_subjects,id', // dodato
+            'exam_subject_id' => 'nullable|exists:exam_subjects,id',
+            'link' => 'nullable|string|max:255',
+            'link_title' => 'nullable|string|max:255',
         ]);
 
         $announcement = \App\Models\Exam\Announcement::create([
             'title' => $request->title,
             'body' => $request->body,
             'exam_group_id' => $request->exam_group_id,
-            'exam_subject_id' => $request->exam_subject_id, // dodato
+            'exam_subject_id' => $request->exam_subject_id,
+            'link' => $request->link,
+            'link_title' => $request->link_title,
             'created_by' => auth()->id(),
         ]);
 

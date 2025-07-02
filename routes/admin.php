@@ -8,6 +8,7 @@ use App\Http\Controllers\GroupController;
 use App\Http\Controllers\ServiceEventController;
 use App\Http\Controllers\LocationGroupController;
 use App\Http\Controllers\HydrantController;
+use App\Http\Controllers\PostController;
 
 /*
   |--------------------------------------------------------------------------
@@ -16,7 +17,7 @@ use App\Http\Controllers\HydrantController;
 */
 
 
-Route::middleware('role:super_admin')->group(function () {
+Route::prefix('admin')->middleware('role:super_admin')->group(function () {
     // User Management
     Route::resource('users', UserManagementController::class);
 
@@ -100,6 +101,15 @@ Route::middleware('role:super_admin')->group(function () {
         Route::delete('/{group}', 'destroy')->name('groups.destroy');
         Route::get('/{group}/add-device', 'addDevice')->name('groups.add-device');
         Route::post('/{group}/add-device', 'storeDevice')->name('groups.store-device');
+    });
+    Route::controller(PostController::class)->prefix('posts')->group(function () {
+        Route::get('/', 'index')->name('posts.index');
+        Route::get('/create', 'create')->name('posts.create');
+        Route::post('/', 'store')->name('posts.store');
+        Route::get('/{post}', 'show')->name('posts.show');
+        Route::get('/{post}/edit', 'edit')->name('posts.edit');
+        Route::patch('/{post}', 'update')->name('posts.update');
+        Route::delete('/{post}', 'destroy')->name('posts.destroy');
     });
 
     // API Routes

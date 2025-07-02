@@ -117,14 +117,14 @@ class="bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700">
 
                         <x-slot name="content">
                             <x-dropdown-link :href="route('profile.edit')">
-                                {{ __('Profile') }}
+                                {{ __('Profil') }}
                             </x-dropdown-link>
                             <!-- Authentication -->
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
                                 <x-dropdown-link :href="route('logout')"
                                         onclick="event.preventDefault(); this.closest('form').submit();">
-                                    {{ __('Log Out') }}
+                                    {{ __('Odjavi se') }}
                                 </x-dropdown-link>
                             </form>
                         </x-slot>
@@ -207,13 +207,13 @@ class="bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700">
         </div>
         <div class="mt-3 space-y-1">
             <x-responsive-nav-link :href="route('profile.edit')">
-                {{ __('Profile') }}
+                {{ __('Profil') }}
             </x-responsive-nav-link>
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
                 <x-responsive-nav-link :href="route('logout')"
                         onclick="event.preventDefault(); this.closest('form').submit();">
-                    {{ __('Log Out') }}
+                    {{ __('Odjavi se ') }}
                 </x-responsive-nav-link>
             </form>
         </div>

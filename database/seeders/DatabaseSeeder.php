@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
+        $this->call(\Database\Seeders\RolePermissionSeeder::class);
         // Kreiramo 5 kompanija
         Company::factory(5)->create()->each(function ($company) {
             // Za svaku kompaniju kreiramo 3 lokacije

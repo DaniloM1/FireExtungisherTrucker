@@ -80,6 +80,4 @@ class Location extends Model
 
 
 
-
-
 }

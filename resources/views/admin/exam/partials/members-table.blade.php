@@ -11,7 +11,16 @@
         : collect($members)->filter(fn($m) => $m->user_id == $currentUserId)->values();
 @endphp
 
-<div x-data="membersPanel()" x-init="init()" class="rounded-2xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 shadow-sm">
+<div
+    x-data="membersPanel()"
+    x-init="
+        init();
+        @if(!$isAdmin && $filteredMembers->count() === 1)
+            openRow = '{{ $filteredMembers->first()->user_id }}';
+        @endif
+    "
+    class="rounded-2xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 shadow-sm"
+>
     <!-- Toolbar -->
     <div class="p-4 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
         <input x-model="query" type="search" placeholder="Pretraži članove…" autocomplete="off"

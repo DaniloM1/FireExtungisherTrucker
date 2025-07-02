@@ -85,4 +85,17 @@ class LocationGroupController extends Controller
         return redirect()->route('location-groups.index')
             ->with('success', 'Location group deleted successfully.');
     }
+    public function show( LocationGroup $locationGroup)
+    {
+        $locationGroup->load('locations.company');
+        $otherLocations = Location::whereDoesntHave('locationGroups', function($q) use ($locationGroup) {
+            $q->where('location_group_id', $locationGroup->id);
+        });
+
+        return view('admin.location_groups.show', [
+            'locationGroup'  => $locationGroup,
+            'otherLocations' => $otherLocations,
+        ]);
+    }
+
 }

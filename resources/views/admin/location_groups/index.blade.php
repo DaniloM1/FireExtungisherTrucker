@@ -71,7 +71,7 @@
                         <!-- Header: naziv i akcije -->
                         <div class="flex items-center justify-between">
                             <h3 class="text-lg font-bold text-gray-900 dark:text-gray-200">
-                                {{ $group->name }}
+                                <a href="{{route('location-groups.show', $group->id)}}">{{ $group->name }}</a>
                             </h3>
                             <div class="flex space-x-3">
                                 <a href="{{ route('location-groups.edit', $group->id) }}" class="text-gray-600 dark:text-gray-300 hover:text-gray-900" title="{{ __('Edit') }}">

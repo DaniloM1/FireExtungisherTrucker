@@ -123,30 +123,53 @@
                 Obaveštenje za predmet
             </h5>
         </div>
-        <ul class="space-y-2">
-            @foreach($announcements as $a)
-                <li>
-                    <div class="font-semibold text-gray-900 dark:text-gray-100">{{ $a->title }}</div>
-                    <div class="text-sm text-gray-700 dark:text-gray-200 leading-relaxed">
-                        {!! \Illuminate\Support\Str::of($a->body)->replaceMatches('/https?:\/\/[^\s]+/', function ($match) {
-                            $url = $match[0];
-                            return '<a href="'.$url.'" target="_blank" class="text-blue-600 underline">'.$url.'</a>';
-                        }) !!}
+        <ul class="space-y-6">
+            @foreach($announcements->sortByDesc('created_at') as $a)
+                <li class="relative pb-4">
+                    <div class="flex items-center gap-2 mb-1">
+                        <i class="fas fa-bullhorn text-blue-400"></i>
+                        <div class="font-semibold text-base text-gray-900 dark:text-gray-100">{{ $a->title }}</div>
                     </div>
+                    <div class="text-sm text-gray-700 dark:text-gray-200 leading-relaxed mb-2">
+                        {!! nl2br(
+                            \Illuminate\Support\Str::of($a->body)
+                                ->replaceMatches('/https?:\/\/[^\s]+/', function ($match) {
+                                    $url = $match[0];
+                                    return '<a href="'.$url.'" target="_blank" class="text-blue-600 underline">'.$url.'</a>';
+                                })
+                        ) !!}
+                    </div>
+                    @if($a->link)
+                        <div class="flex items-center gap-2 text-xs mt-2">
+                            <i class="fas fa-link text-gray-400"></i>
+                            <a href="{{ $a->link }}" target="_blank" class="text-blue-600 underline hover:text-blue-800 transition-all">
+                                {{ $a->link_title ?: 'Otvorite link' }}
+                            </a>
+                        </div>
+                    @endif
                     @if($a->created_at)
-                        <div class="text-xs text-gray-400 mt-1">
+                        <div class="text-xs text-gray-400 mt-2">
                             Objavljeno: {{ \Carbon\Carbon::parse($a->created_at)->format('d.m.Y H:i') }}
+                        </div>
+                    @endif
+
+                    @if(!$loop->last)
+                        <div class="absolute left-0 w-full flex justify-center mt-4">
+                            <hr class="border-t border-gray-200 dark:border-gray-700 opacity-50" style="width:90%; margin:0 auto;">
                         </div>
                     @endif
                 </li>
             @endforeach
         </ul>
+
+
+
     </div>
 @endif
 
 {{-- Predavanja --}}
 <div class="mb-4">
-    <h5 class="font-semibold text-gray-700 dark:text-gray-200 mb-2">Predavanja</h5>
+    <h5 class="font-semibold text-gray-700 dark:text-gray-200 mb-2">Snimci Predavanja</h5>
     @if(isset($subject->lectures) && count($subject->lectures))
         <ul class="divide-y divide-gray-100 dark:divide-gray-700">
             @foreach($subject->lectures as $lecture)

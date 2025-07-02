@@ -38,7 +38,7 @@ class ServiceEventController extends Controller
         }
 
         $serviceEvents = $query->orderBy('service_date', 'desc')
-            ->paginate(10)
+            ->paginate(9)
             ->appends($request->query());
 
         $allEvents = (clone $query)->get();

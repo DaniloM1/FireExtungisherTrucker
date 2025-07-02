@@ -15,7 +15,9 @@ class Announcement extends Model
         'user_id',
         'visible_from',
         'visible_to',
-        'created_by'
+        'created_by',
+        'link',
+        'link_title'
     ];
 
     public function group(): BelongsTo

@@ -190,7 +190,7 @@
 
             <!-- Devices Section -->
             <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700">
-                <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center justify-between mb-4 ">
                     <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 flex items-center">
                         <i class="fas fa-fire-extinguisher mr-2 text-blue-500"></i>
                         Aparati ({{ $location->devices->count() }})
@@ -242,7 +242,9 @@
                                 <div class="flex items-center text-gray-600 dark:text-gray-300">
                                     <i class="fas fa-industry mr-2 text-gray-400 w-4"></i>
                                     <span class="font-medium">Proizvođač:</span>
-                                    <span class="ml-1">{{ $device->manufacturer ?? '-' }}</span>
+                                    <span class="ml-1 truncate max-w-[10rem] block" title="{{ $device->manufacturer }}">
+    {{ $device->manufacturer ?? '-' }}
+</span>
                                 </div>
                                 <div class="flex items-center text-gray-600 dark:text-gray-300">
                                     <i class="fas fa-map-pin mr-2 text-gray-400 w-4"></i>
@@ -251,8 +253,8 @@
                                 </div>
                                 <div class="flex items-center text-gray-600 dark:text-gray-300">
                                     <i class="fas fa-calendar-check mr-2 text-gray-400 w-4"></i>
-                                    <span class="font-medium">Sledeći servis:</span>
-                                    <span class="ml-1">{{ optional($device->next_service_date)->format('d.m.Y') ?? '-' }}</span>
+                                    <span class="font-medium">HVP:</span>
+                                    <span class="ml-1">{{ optional($device->next_service_date)->format('Y') ?? '-' }}</span>
                                 </div>
                             </div>
                         </div>

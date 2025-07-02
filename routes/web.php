@@ -58,18 +58,7 @@ Route::get('/dashboard', function () {
 */
 
 Route::middleware(['auth'])->group(function () {
-    //Blog admin controll
-    Route::controller(PostController::class)->prefix('posts')->group(function () {
-        Route::get('/', 'index')->name('posts.index');
-        Route::get('/create', 'create')->name('posts.create');
-        Route::post('/', 'store')->name('posts.store');
-        Route::get('/{post}', 'show')->name('posts.show');
-        Route::get('/{post}/edit', 'edit')->name('posts.edit');
-        Route::patch('/{post}', 'update')->name('posts.update');
-        Route::delete('/{post}', 'destroy')->name('posts.destroy');
-    });
 
-    // Profile
     Route::prefix('profile')->group(function () {
         Route::get('/', [ProfileController::class, 'edit'])->name('profile.edit');
         Route::patch('/', [ProfileController::class, 'update'])->name('profile.update');

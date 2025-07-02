@@ -50,7 +50,7 @@ class RolePermissionSeeder extends Seeder
         $superAdminRole = Role::firstOrCreate(['name' => 'super_admin']);
         $adminRole = Role::firstOrCreate(['name' => 'admin']);
         $companyRole = Role::firstOrCreate(['name' => 'company']);
-        $employeeRole = Role::firstOrCreate(['name' => 'employee']);
+        $employeeRole = Role::firstOrCreate(['name' => 'student']);
 
         // 3. Dodeljivanje permisija ulogama
 
