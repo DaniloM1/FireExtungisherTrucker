@@ -15,16 +15,24 @@ class LocationController extends Controller
     {
         $company = Company::findOrFail($companyId);
 
-        $locations = $company->locations()
-            ->with(['lastServiceEvent', 'nextServiceEvent']) // dodaj ove dve relacije
-            ->when(request('name'), fn($q, $name) => $q->where('name', 'like', "%$name%"))
-            ->when(request('address'), fn($q, $address) => $q->where('address', 'like', "%$address%"))
-            ->when(request('city'), fn($q, $city) => $q->where('city', 'like', "%$city%"))
-            ->paginate(10)
-            ->appends(request()->query());
+        $query = $company->locations()
+            ->with(['lastServiceEvent', 'nextServiceEvent'])
+            ->when(request('name'), fn($q, $name)    => $q->where('name',    'like', "%{$name}%"))
+            ->when(request('address'), fn($q, $addr)=> $q->where('address', 'like', "%{$addr}%"))
+            ->when(request('city'), fn($q, $city)   => $q->where('city',    'like', "%{$city}%"));
+
+        if (request()->hasAny(['name', 'address', 'city'])) {
+            $locations = $query
+                ->paginate(50)
+                ->appends(request()->query());        } else {
+            $locations = $query
+                ->paginate(9)
+                ->appends(request()->query());
+        }
 
         return view('admin.locations.index', compact('company', 'locations'));
     }
+
     public function api($companyId)
     {
         $company = Company::findOrFail($companyId);
@@ -60,42 +68,53 @@ class LocationController extends Controller
     }
 
 
-   public function test(Request $request)
-   {
-       $query = Location::query();
+    public function test(Request $request)
+    {
+        // Bazni query sa eager loading-om
+        $query = Location::with(['company', 'serviceEvents', 'devices']);
 
-       $query->with(['company', 'serviceEvents', 'devices']);
+        // Primeni filtere ako postoje
+        if ($request->filled('name')) {
+            $query->where('name', 'like', '%' . $request->name . '%');
+        }
+        if ($request->filled('address')) {
+            $query->where('address', 'like', '%' . $request->address . '%');
+        }
+        if ($request->filled('city')) {
+            $query->where('city', 'like', '%' . $request->city . '%');
+        }
+        if ($request->filled('company')) {
+            $query->where('company_id', $request->company);
+        }
+        if ($request->filled('next_service_date')) {
+            $query->whereHas('serviceEvents', function ($q) use ($request) {
+                $q->whereDate('next_service_date', $request->next_service_date);
+            });
+        }
 
-       if ($request->filled('name')) {
-           $query->where('name', 'like', '%' . $request->name . '%');
-       }
+        // Ako je bar jedan parametar za pretragu slan — vrati kolekciju
+        if (
+            $request->filled('name') ||
+            $request->filled('address') ||
+            $request->filled('city') ||
+            $request->filled('company') ||
+            $request->filled('next_service_date')
+        ) {
+            $locations = $query
+                ->paginate(100)
+                ->appends($request->query());        // Collection svih rezultata
+        } else {
+            // Inače paginacija po 9 stavki i čuvanje query parametara
+            $locations = $query
+                ->paginate(9)
+                ->appends($request->query());
+        }
 
-       if ($request->filled('address')) {
-           $query->where('address', 'like', '%' . $request->address . '%');
-       }
+        $companies = Company::all();
 
-       if ($request->filled('city')) {
-           $query->where('city', 'like', '%' . $request->city . '%');
-       }
+        return view('admin.locations.test', compact('locations', 'companies'));
+    }
 
-       if ($request->filled('company') && $request->company != '') {
-           $query->where('company_id', $request->company);
-       }
-
-       if ($request->filled('next_service_date')) {
-           $query->whereHas('serviceEvents', function ($q) use ($request) {
-               $q->whereDate('next_service_date', $request->next_service_date);
-           });
-       }
-
-       $locations = $query->paginate(9);
-
-//       $companyIds = $locations->pluck('company_id')->unique();
-       $companies = Company::all();
-
-
-       return view('admin.locations.test', compact('locations', 'companies'));
-   }
 
     public function update(LocationRequest $request, Location $location)
     {

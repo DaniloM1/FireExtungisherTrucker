@@ -24,7 +24,12 @@
     <div class="py-6 bg-gray-100 dark:bg-gray-900">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="bg-white dark:bg-gray-800 shadow sm:rounded-lg p-6 mb-6">
-
+        <button
+            onclick="document.getElementById('mapSection').scrollIntoView({ behavior: 'smooth' })"
+            class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg shadow-sm transition"
+        >
+            <i class="fas fa-map-marked-alt mr-2"></i> Prikaži mapu
+        </button>
     <!-- Polje za pretragu -->
         <form method="GET" action="{{ route('companies.locations.index', $company->id) }}" class="mb-6">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -71,7 +76,9 @@
                     <i class="fa-solid fa-filter-circle-xmark mr-2"></i>
                 </a>
             </div>
+
         </form>
+
     </div>
 
 
@@ -97,11 +104,13 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto">
+
             <!-- Glavni box s tamnijom pozadinom za kontrast -->
             <div class=" shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
 
                     <!-- Header s naslovom i linkom za dodavanje nove lokacije -->
+
                     <div class="flex justify-between items-center mb-6">
                         <h3 class="text-lg font-semibold">{{ __('Lista lokacija') }}</h3>
                         <a href="{{ route('companies.locations.create', $company->id) }}"
@@ -110,191 +119,20 @@
                         </a>
                     </div>
 
-                    <!-- Responzivni prikaz tablice -->
-                    <div class="overflow-x-auto">
-                        <!-- Desktop prikaz -->
-                        <table class="min-w-full hidden md:table divide-y divide-gray-200 dark:divide-gray-700">
-                            <thead class="bg-gray-50 dark:bg-gray-700">
-                            <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                                    {{ __('Naziv') }}
-                                </th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                                    {{ __('Adresa') }}
-                                </th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                                    {{ __('Grad') }}
-                                </th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                                    {{ __('Sledeci servis') }}
-                                </th>
-
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                                    {{ __('Akcije') }}
-                                </th>
-
-                            </tr>
-
-                            </thead>
-                            <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                            @forelse ($locations as $location)
-                                <tr>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <a href="{{ route('locations.show', $location->id) }}"
-                                           class="text-blue-700 dark:text-blue-300 font-medium hover:underline">
-                                            {{ $location->name }}
-                                        </a>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">{{ $location->address }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">{{ $location->city }}</td>
-
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        @if($location->nextServiceEvent->first())
-                                            @php
-                                                $nextEvent = $location->nextServiceEvent->first();
-                                            @endphp
-                                            <a href="{{ route('service-events.show', $nextEvent->id) }}" class="text-blue-500 underline">
-                                                {{ \Carbon\Carbon::parse($nextEvent->next_service_date)->format('d.m.Y') }}
-                                            </a>
-                                        @else
-                                            Nema zakazanog servisa
-                                        @endif
-
-
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="flex items-center space-x-4">
-                                            <!-- Ikonice za Category -->
-                                            <a href="{{ route('locations.devices.index', $location->id) }}"
-                                               class="text-black dark:text-white hover:underline"
-                                               title="Fire Extinguisher">
-                                                <i class="fas fa-fire-extinguisher"></i>
-                                            </a>
-                                            <a href="{{ route('locations.hydrants.index', $location->id) }}"
-                                               class="text-black dark:text-white hover:underline"
-                                               title="{{ __('Hydrants') }}">
-                                                <i class="fas  fa-h-square
-"></i>
-                                            </a>
-                                            <a href="{{ route('locations.groups.index', $location->id) }}"
-                                               class="text-black dark:text-white hover:underline"
-                                               title="Groups">
-                                                <i class="fa-solid fa-layer-group"></i>
-                                            </a>
-                                            <!-- Akcijske ikonice -->
-                                            <a href="{{ route('locations.edit', $location->id) }}"
-                                               class="text-black dark:text-white hover:underline"
-                                               title="{{ __('Edit') }}">
-                                                <i class="fas fa-edit"></i>
-                                            </a>
-
-                                            <a href="{{ route('locations.destroy', $location->id) }}"
-                                               onclick="event.preventDefault(); if(confirm('{{ __('Are you sure?') }}')) { document.getElementById('delete-location-{{ $location->id }}').submit(); }"
-                                               class="text-black dark:text-white hover:underline"
-                                               title="{{ __('Delete') }}">
-                                                <i class="fas fa-trash"></i>
-                                            </a>
-                                        </div>
-                                        <form id="delete-location-{{ $location->id }}" action="{{ route('locations.destroy', $location->id) }}" method="POST" class="hidden">
-                                            @csrf
-                                            @method('DELETE')
-                                        </form>
-                                    </td>
-
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="5" class="px-6 py-4 text-center text-gray-500 dark:text-gray-300">
-                                        {{ __('Nema pronadjenih lokacija') }}
-                                    </td>
-                                </tr>
-                            @endforelse
-                            </tbody>
-                        </table>
-
-                        <!-- Mobile prikaz -->
-                        <div class="block md:hidden">
-                            @forelse ($locations as $location)
-                                <div class="bg-gray-100 dark:bg-gray-700 rounded-lg p-4 mb-4">
-                                    <div class="text-lg font-semibold">
-                                        <a href="{{ route('locations.show', $location->id) }}"
-                                           class="text-blue-700 dark:text-blue-300 hover:underline">
-                                            {{ $location->name }}
-                                        </a>
-                                    </div>
-                                    <div class="text-sm text-gray-600 dark:text-gray-300">{{ $location->address }}</div>
-                                    <div class="mt-2 text-sm text-gray-600 dark:text-gray-300">
-                                        @if($location->next_service_date)
-                                            Sledeći servis:
-                                            <a href="{{ route('service-events.show', $location->serviceEvents->first()->id) }}" class="text-blue-500 hover:underline">
-                                                {{ \Carbon\Carbon::parse($location->next_service_date)->format('d.m.Y') }}
-                                            </a>
-                                        @else
-                                            Sledeći servis: N/A
-                                        @endif
-                                    </div>
-                                    <div class="mt-2">
-
-                                    </div>
-                                    <div class="mt-4 flex items-center space-x-4">
-                                    <a href="{{ route('locations.devices.index', $location->id) }}"
-                                            class="text-black dark:text-white hover:underline"
-                                            title="Fire Extinguisher">
-                                            <i class="fas fa-fire-extinguisher"></i>
-                                        </a>
-                                    <a href="{{ route('locations.hydrants.index', $location->id) }}"
-                                       class="text-black dark:text-white hover:underline"
-                                       title="{{ __('Hydrants') }}">
-                                        <i class="fas  fa-h-square
-"></i>
-                                    </a>
-                                        {{--                                        href="{{ route('locations.fireExtinguisher', $location->id) }}"--}}
-                                        {{--                                        href="{{ route('locations.objectGroups', $location->id) }}"--}}
-                                    <a href="{{ route('locations.groups.index', $location->id) }}"
-
-                                       class="ml-2 text-black dark:text-white hover:underline"
-                                            title="Object Groups">
-                                            <i class="fa-solid fa-layer-group"></i>
-                                        </a>
-                                        <a href="{{ route('locations.edit', $location->id) }}"
-                                           class="text-black dark:text-white hover:underline"
-                                           title="{{ __('Edit') }}">
-                                            <i class="fas fa-edit"></i> {{ __('') }}
-                                        </a>
-                                        <a href="{{ route('locations.destroy', $location->id) }}"
-                                           onclick="event.preventDefault(); if(confirm('{{ __('Are you sure?') }}')) { document.getElementById('delete-location-mobile-{{ $location->id }}').submit(); }"
-                                           class="text-black dark:text-white hover:underline"
-                                           title="{{ __('Delete') }}">
-                                            <i class="fas fa-trash"></i> {{ __('') }}
-                                        </a>
-                                        <form id="delete-location-mobile-{{ $location->id }}" action="{{ route('locations.destroy', $location->id) }}" method="POST" style="display: none;">
-                                            @csrf
-                                            @method('DELETE')
-                                        </form>
-                                    </div>
-                                </div>
-                            @empty
-                                <div class="text-center text-gray-500 dark:text-gray-300">
-                                    {{ __('No locations found.') }}
-                                </div>
-                            @endforelse
-                        </div>
-                    </div>
-
-                    <!-- Pagination -->
-                    <div class="mt-6">
-                        {{ $locations->links() }}
-                    </div>
-
+                    @include('admin.locations._list')
                 </div>
             </div>
         </div>
-        <x-map-card
-            :locations="$locations"
-            title="Lokacija"
-            width="max-w-5xl"
-            height="h-200"
-            :show-list="false"
-        />
+        <div id="mapSection" class="mt-8">
+            <x-map-card
+                :locations="$locations instanceof \Illuminate\Pagination\LengthAwarePaginator
+                ? collect($locations->items())
+                : $locations"
+                title="Lokacije na karti"
+                width="max-w-5xl"
+                height="h-200"
+                :show-list="false"
+            />
+        </div>
     </div>
 </x-app-layout>

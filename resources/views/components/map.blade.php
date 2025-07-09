@@ -19,11 +19,23 @@
         $locArr = [];
     }
 
+
     $locArr = array_map(function ($m) {
-        $row        = $m instanceof \Illuminate\Database\Eloquent\Model ? $m->toArray() : $m;
-        $row['url'] = route('locations.show', $row['id']);
+        $row = $m instanceof \Illuminate\Database\Eloquent\Model
+            ? $m->toArray()
+            : $m;
+
+        // Postavi URL u zavisnosti od role
+        if (auth()->user()->hasRole('super_admin|admin')) {
+            $row['url'] = route('locations.show', $row['id']);
+        } else {
+            $row['url'] = route('company.locations.show', $row['id']);
+        }
+
         return $row;
     }, $locArr);
+
+
 // dd([
 //    'highlightIds' => $highlightIds,
 //    'locArr_ids'   => collect($locArr)->pluck('id'),
@@ -52,8 +64,9 @@
                     document.documentElement.classList.contains('dark')
             );
                 const lightURL = 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png';
-                const darkURL  = 'https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}.png';
+                const darkURL  = 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
                 const TILE_URL = prefersDark ? darkURL : lightURL;
+
 
                 map = L.map(mapDiv);
                 L.tileLayer(TILE_URL, { attribution: '© OpenStreetMap • © CartoDB' }).addTo(map);

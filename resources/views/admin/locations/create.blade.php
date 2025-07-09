@@ -103,7 +103,7 @@
                                 </label>
                                 <input type="url" id="gmap_link"
                                        class="mt-1 block w-full rounded-md border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 focus:border-blue-500 focus:ring-blue-500"
-                                       placeholder="https://maps.google.com/..." autocomplete="off">
+                                       placeholder="https://maps.google.com/... ili 44.2424, 24.2421" autocomplete="off">
                             </div>
                             <div id="gmap_status" class="mt-1 text-sm"></div>
 
@@ -142,58 +142,77 @@
         </div>
     </div>
 
-            <script>
-                document.addEventListener('DOMContentLoaded', function () {
-                    const gmapInput = document.getElementById('gmap_link');
-                    const latInput = document.getElementById('latitude');
-                    const lngInput = document.getElementById('longitude');
-                    const status = document.getElementById('gmap_status');
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const gmapInput = document.getElementById('gmap_link');
+            const latInput   = document.getElementById('latitude');
+            const lngInput   = document.getElementById('longitude');
+            const status     = document.getElementById('gmap_status');
 
-                    function extractLatLng(url) {
-                        // 1. Uzmi poslednji !3dLAT!4dLNG u linku (pravi pin)
-                        let matchAll = [...url.matchAll(/!3d(-?\d+\.\d+)!4d(-?\d+\.\d+)/g)];
-                        if (matchAll.length) {
-                            let last = matchAll[matchAll.length-1];
-                            return [last[1], last[2]];
-                        }
-                        // 2. @LAT,LNG
-                        let match = url.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
-                        if (match) return [match[1], match[2]];
-                        // 3. q=LAT,LNG
-                        match = url.match(/q=(-?\d+\.\d+),(-?\d+\.\d+)/);
-                        if (match) return [match[1], match[2]];
-                        return [null, null];
-                    }
+            function extractLatLng(value) {
+                // 1) Plain coords: "LAT, LNG" or "(LAT, LNG)"
+                let m = value.match(/([-+]?\d{1,3}(?:\.\d+)?)[\s,]+([-+]?\d{1,3}(?:\.\d+)?)/);
+                if (m) {
+                    return [ m[1], m[2] ];
+                }
+                // 2) URL: !3dLAT!4dLNG
+                let all = [...value.matchAll(/!3d(-?\d+\.\d+)!4d(-?\d+\.\d+)/g)];
+                if (all.length) {
+                    let mm = all.pop();
+                    return [ mm[1], mm[2] ];
+                }
+                // 3) URL: @LAT,LNG
+                m = value.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
+                if (m) return [ m[1], m[2] ];
+                // 4) URL: q=LAT,LNG
+                m = value.match(/[?&]q=(-?\d+\.\d+),(-?\d+\.\d+)/);
+                if (m) return [ m[1], m[2] ];
+                // 5) URL: ll=LAT,LNG
+                m = value.match(/[?&]ll=(-?\d+\.\d+),(-?\d+\.\d+)/);
+                if (m) return [ m[1], m[2] ];
+                // 6) URL: center=LAT,LNG
+                m = value.match(/[?&]center=(-?\d+\.\d+),(-?\d+\.\d+)/);
+                if (m) return [ m[1], m[2] ];
+                return [ null, null ];
+            }
 
-                    gmapInput?.addEventListener('input', function () {
-                        const [lat, lng] = extractLatLng(this.value);
-                        if (!this.value.trim()) {
-                            status.innerHTML = '';
-                            latInput.value = '';
-                            lngInput.value = '';
-                            latInput.classList.remove('border-red-500');
-                            lngInput.classList.remove('border-red-500');
-                            return;
-                        }
-                        if (lat && lng) {
-                            latInput.value = lat;
-                            lngInput.value = lng;
-                            latInput.classList.remove('border-red-500');
-                            lngInput.classList.remove('border-red-500');
-                            status.innerHTML = `<span class="inline-flex items-center px-2 py-1 rounded bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300">
+            function resetFields() {
+                status.innerHTML = '';
+                latInput.value = '';
+                lngInput.value = '';
+                latInput.classList.remove('border-red-500');
+                lngInput.classList.remove('border-red-500');
+            }
+
+            gmapInput?.addEventListener('input', function () {
+                const v = this.value.trim();
+                if (!v) {
+                    resetFields();
+                    return;
+                }
+
+                const [lat, lng] = extractLatLng(v);
+
+                if (lat && lng) {
+                    latInput.value = lat;
+                    lngInput.value = lng;
+                    latInput.classList.remove('border-red-500');
+                    lngInput.classList.remove('border-red-500');
+                    status.innerHTML = `<span class="inline-flex items-center px-2 py-1 rounded bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300">
                 <i class="fas fa-check-circle mr-1"></i> Lokacija prepoznata
             </span>`;
-                        } else {
-                            latInput.value = '';
-                            lngInput.value = '';
-                            latInput.classList.add('border-red-500');
-                            lngInput.classList.add('border-red-500');
-                            status.innerHTML = `<span class="inline-flex items-center px-2 py-1 rounded bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300">
-                <i class="fas fa-times-circle mr-1"></i> Nije validan Google Maps link
+                } else {
+                    latInput.value = '';
+                    lngInput.value = '';
+                    latInput.classList.add('border-red-500');
+                    lngInput.classList.add('border-red-500');
+                    status.innerHTML = `<span class="inline-flex items-center px-2 py-1 rounded bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300">
+                <i class="fas fa-times-circle mr-1"></i> Nije validan link ili koordinate
             </span>`;
-                        }
-                    });
-                });
-            </script>
+                }
+            });
+        });
+    </script>
+
 
 </x-app-layout>

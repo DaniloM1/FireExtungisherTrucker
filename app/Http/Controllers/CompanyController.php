@@ -17,7 +17,7 @@ class CompanyController extends Controller
             $query->search($search);
         }
 
-        $companies = $query->paginate(10);
+        $companies = $query->paginate(9);
 
         return view('admin.companies.index', compact('companies'));
     }

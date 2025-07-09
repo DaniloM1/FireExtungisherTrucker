@@ -1,4 +1,4 @@
-    <x-app-layout>
+<x-app-layout>
     <!-- Header -->
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
@@ -6,19 +6,17 @@
         </h2>
     </x-slot>
 
-
-    <!-- Success/Error Poruke (opcionalno) -->
-    <div class="max-w-7xl mx-auto mt-4">
-        @if (session('success'))
-            <div class="bg-green-500 text-white p-4 rounded mb-4">
+    <!-- Success/Error poruke -->
+    <div class="max-w-7xl mx-auto mt-4 px-4 sm:px-6 lg:px-8">
+        @if(session('success'))
+            <div class="bg-green-100 dark:bg-green-800 text-green-800 dark:text-green-100 p-4 rounded mb-4">
                 {{ session('success') }}
             </div>
         @endif
-
-        @if ($errors->any())
-            <div class="bg-red-500 text-white p-4 rounded mb-4">
-                <ul>
-                    @foreach ($errors->all() as $error)
+        @if($errors->any())
+            <div class="bg-red-100 dark:bg-red-800 text-red-800 dark:text-red-100 p-4 rounded mb-4">
+                <ul class="list-disc pl-5">
+                    @foreach($errors->all() as $error)
                         <li>{{ $error }}</li>
                     @endforeach
                 </ul>
@@ -26,162 +24,120 @@
         @endif
     </div>
 
-    <!-- Pretraga -->
-
-    <div class="max-w-7xl mx-auto ">
-        <div class="bg-white dark:bg-gray-800 shadow-sm sm:rounded-lg p-4">
-            <form action="{{ route('companies.index') }}" method="GET" class="flex">
-                <input
-                    type="text"
-                    name="search"
-                    value="{{ request('search') }}"
-                    placeholder="{{ __('Unesite naziv...') }}"
-                    class="flex-grow rounded-l-md border border-gray-300 dark:border-gray-600 p-2 focus:outline-none focus:ring focus:border-blue-300 dark:bg-gray-700 dark:text-white"
-                />
-                <button type="submit" class="rounded-r-md bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 focus:outline-none focus:ring">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M12.9 14.32a8 8 0 111.414-1.414l5.386 5.387a1 1 0 01-1.414 1.414l-5.386-5.387zM14 8a6 6 0 11-12 0 6 6 0 0112 0z" clip-rule="evenodd" />
-                    </svg>
-                </button>
-                        <a href="{{ route('companies.index') }}"
-                           class="px-4 py-2 bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-100 rounded-lg shadow-sm hover:bg-gray-300 dark:hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-red-400 transition flex items-center"
-                           title="Poništi filtere">
-                            <i class="fa-solid fa-filter-circle-xmark mr-2"></i>
-                        </a>
-            </form>
-        </div>
+    <!-- Search form -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-6">
+        <form id="searchForm" action="{{ route('companies.index') }}" method="GET" class="flex bg-white dark:bg-gray-800 shadow rounded-lg overflow-hidden">
+            <input
+                type="text"
+                name="search"
+                value="{{ request('search') }}"
+                placeholder="{{ __('Pretraži po nazivu, gradu ili PIB') }}"
+                class="flex-grow px-4 py-2 border-0 focus:ring-0 bg-transparent text-gray-900 dark:text-gray-100"
+            />
+            <button type="submit" class="px-4 bg-blue-500 hover:bg-blue-600 text-white">
+                <i class="fas fa-search"></i>
+            </button>
+            <a href="{{ route('companies.index') }}"
+               class="px-4 bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-100 hover:bg-gray-300 dark:hover:bg-gray-500"
+               title="{{ __('Poništi filtere') }}">
+                <i class="fa-solid fa-filter-circle-xmark"></i>
+            </a>
+        </form>
     </div>
 
+    <!-- Lista kompanija kao kartice -->
+    <div class="py-6 bg-gray-50 dark:bg-gray-900">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">{{ __('Lista Kompanija') }}</h3>
+                <a href="{{ route('companies.create') }}" class="text-blue-600 dark:text-blue-400 hover:underline">
+                    <i class="fas fa-plus mr-1"></i> {{ __('Dodaj Kompaniju') }}
+                </a>
+            </div>
 
-    <!-- Sadržaj stranice -->
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto">
-            <div class=" shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900 dark:text-gray-100">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                @forelse($companies as $company)
+                    <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-5 flex flex-col">
+                        <div class="flex justify-between items-start">
+                            <h4 class="text-lg font-bold text-gray-900 dark:text-gray-100">
+                                {{ $company->name }}
+                            </h4>
+                            @hasrole('super_admin|admin')
+                            <a href="{{ route('companies.edit', $company->id) }}"
+                               class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                               title="{{ __('Izmeni') }}">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            @endhasrole
+                        </div>
 
-                    <!-- Header sa naslovom i Add Company linkom (kao u lokacijama) -->
-                    <div class="flex justify-between items-center mb-6">
-                        <h3 class="text-lg font-semibold">{{ __('Lista Kompanija') }}</h3>
-                        <a href="{{ route('companies.create') }}"
-                           class= "hover:underline">
-                            <i class="fas fa-plus"></i> {{ __('Dodaj Kompaniju') }}
-                        </a>
-                    </div>
+                        <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
+                            <i class="fa fa-id-card mr-1"></i>
+                            {{ __('PIB') }}: <span class="font-medium">{{ $company->pib }}</span>
+                        </p>
 
-                    <!-- Responzivni prikaz tablice -->
-                    <div class="overflow-x-auto">
-                        <!-- Desktop View -->
-                        <table class="min-w-full hidden md:table divide-y divide-gray-200 dark:divide-gray-700">
-                            <thead class="bg-gray-50 dark:bg-gray-700">
-                            <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                                    {{ __('Naziv') }}
-                                </th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                                    {{ __('Email') }}
-                                </th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                                    {{ __('Grad') }}
-                                </th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                                    {{ __('Telefon') }}
-                                </th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                                    {{ __('Akcijes') }}
-                                </th>
-                            </tr>
-                            </thead>
-                            <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                            @forelse ($companies as $company)
-                                <tr>
-                                    <td class="px-6 py-4 whitespace-nowrap">{{ $company->name }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">{{ $company->contact_email }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">{{ $company->city }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">{{ $company->contact_phone }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="flex items-center space-x-4">
-                                            <!-- View Locations -->
-                                            <a href="{{ route('companies.locations.index', $company->id) }}"
-                                               class="text-black dark:text-white hover:underline"
-                                               title="{{ __('View Locations') }}">
-                                                <i class="fas fa-map-marker-alt"></i>
-                                            </a>
+                        <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                            <i class="fa fa-map-marker-alt mr-1"></i>
+                            {{ $company->address }}, {{ $company->city }}
+                        </p>
 
-                                            <!-- Edit -->
-                                            <a href="{{ route('companies.edit', $company->id) }}"
-                                               class="text-black dark:text-white hover:underline"
-                                               title="{{ __('Edit') }}">
-                                                <i class="fas fa-edit"></i>
-                                            </a>
+                        <div class="mt-4 flex flex-wrap gap-2">
+                            <div class="flex items-center bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 px-3 py-1 rounded-md text-xs">
+                                <i class="fas fa-envelope mr-1"></i>
+                                <a href="mailto:{{ $company->contact_email }}"
+                                   class="truncate hover:underline">
+                                    {{ $company->contact_email }}
+                                </a>
+                                <button type="button"
+                                        onclick="navigator.clipboard.writeText('{{ $company->contact_email }}')"
+                                        class="ml-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                                        title="{{ __('Kopiraj email') }}">
+                                    <i class="fas fa-copy text-xs"></i>
+                                </button>
+                            </div>
+                            <a href="tel:{{ $company->contact_phone }}"
+                               class="flex items-center bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 px-3 py-1 rounded-md text-xs hover:bg-gray-200 dark:hover:bg-gray-600"
+                               title="{{ __('Pozovi') }}">
+                                <i class="fas fa-phone mr-1"></i> {{ $company->contact_phone }}
+                            </a>
+                            <a href="{{ route('companies.locations.index', $company->id) }}"
+                               class="inline-flex items-center bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium shadow"
+                               title="{{ __('Lokacije') }}">
+                                <i class="fas fa-map-marker-alt mr-2"></i>
+                                {{ $company->locations_count ?? $company->locations->count() }} Lokacija
+                            </a>
 
-                                            <!-- Delete -->
-                                            <form action="{{ route('companies.destroy', $company->id) }}" method="POST" onsubmit="return confirm('{{ __('Are you sure?') }}');">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class=" hover:text-red-700" title="{{ __('Delete') }}">
-                                                    <i class="fas fa-trash"></i>
-                                                </button>
-                                            </form>
-                                            <a  href=""
-                                                class="text-black dark:text-white"
-                                                title="{{__('View Informations')}}"
-                                            >
-                                                <i class="fa-solid fa-info"></i>
+                        </div>
 
-                                            </a>
-                                        </div>
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="5" class="px-6 py-4 text-center text-gray-500 dark:text-gray-300">
-                                        {{ __('Nema pronadjenih kompanija') }}
-                                    </td>
-                                </tr>
-                            @endforelse
-                            </tbody>
-                        </table>
-
-                        <!-- Mobile View -->
-                        <div class="block md:hidden">
-                            @forelse ($companies as $company)
-                                <div class="bg-gray-100 dark:bg-gray-700 rounded-lg p-4 mb-4">
-                                    <div class="text-lg font-semibold">{{ $company->name }}</div>
-                                    <div class="text-sm text-gray-600 dark:text-gray-300">{{ $company->contact_email }}</div>
-                                    <div class="text-sm text-gray-600 dark:text-gray-300">{{ $company->contact_phone }}</div>
-                                    <div class="mt-4 flex items-center space-x-4">
-                                        <a href="{{ route('companies.locations.index', $company->id) }}"
-                                           class="text-black dark:text-white hover:underline"
-                                           title="{{ __('View Locations') }}">
-                                            <i class="fas fa-map-marker-alt"></i>
-                                        </a>
-                                        <a href="{{ route('companies.edit', $company->id) }}"
-                                           class="text-black dark:text-white hover:underline"
-                                           title="{{ __('Edit') }}">
-                                            <i class="fas fa-edit" ></i>
-                                        </a>
-                                        <form action="{{ route('companies.destroy', $company->id) }}" method="POST" onsubmit="return confirm('{{ __('Are you sure?') }}');">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="text-white hover:text-white" title="{{ __('Delete') }}">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </form>
-                                    </div>
+                        <button type="button"
+                                onclick="document.getElementById('info-{{ $company->id }}').classList.toggle('hidden')"
+                                class="mt-4 text-blue-600 dark:text-blue-400 hover:underline self-start text-sm">
+                            {{ __('Više informacija') }}
+                        </button>
+                        <div id="info-{{ $company->id }}" class="mt-2 text-sm text-gray-700 dark:text-gray-300 hidden space-y-1">
+                            @if($company->maticni_broj)
+                                <div><strong>{{ __('Matični broj') }}:</strong> {{ $company->maticni_broj }}</div>
+                            @endif
+                            @if($company->website)
+                                <div>
+                                    <strong>{{ __('Web') }}:</strong>
+                                    <a href="{{ $company->website }}" target="_blank" class="underline">
+                                        {{ Str::limit($company->website, 30) }}
+                                    </a>
                                 </div>
-                            @empty
-                                <div class="text-center text-gray-500 dark:text-gray-300">
-                                    {{ __('Nema pronadjenih kompanija..') }}
-                                </div>
-                            @endforelse
+                            @endif
                         </div>
                     </div>
-
-                    <!-- Pagination -->
-                    <div class="mt-6">
-                        {{ $companies->links() }}
+                @empty
+                    <div class="col-span-1 md:col-span-2 lg:col-span-3 text-center text-gray-500 dark:text-gray-300">
+                        {{ __('Nema pronađenih kompanija.') }}
                     </div>
-                </div>
+                @endforelse
+            </div>
+
+            <!-- Pagination -->
+            <div class="mt-6">
+                {{ $companies->withQueryString()->links() }}
             </div>
         </div>
     </div>

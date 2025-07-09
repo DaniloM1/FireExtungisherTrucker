@@ -10,6 +10,12 @@
 
             <!-- Filter forma -->
             <div class="bg-white dark:bg-gray-800 shadow sm:rounded-lg p-6 mb-6">
+                <button
+                    onclick="document.getElementById('mapSection').scrollIntoView({ behavior: 'smooth' })"
+                    class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg shadow-sm transition"
+                >
+                    <i class="fas fa-map-marked-alt mr-2"></i> Prikaži mapu
+                </button>
                 <form method="GET" action="{{ route('locations.test') }}">
                     <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                         <div>
@@ -59,6 +65,7 @@
         </div>
 {{--{{dd($locations)}}--}}
     </div>
+    <div id="mapSection" class="mt-8">
     <x-map-card
         :locations="$locations"
         title="Lokacije"
