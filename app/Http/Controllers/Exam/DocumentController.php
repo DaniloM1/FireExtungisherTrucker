@@ -44,11 +44,11 @@ class DocumentController extends Controller
         ]);
 
         // **1. Čuvamo fajl na 'public' disku**, tako da bude dostupan putem /storage/…
-        $publicPath = $request->file('file')
-            ->store('documents', 'public');
+        $privatePath = $request->file('file')->store('documents_private', 'local');
+
 
         // 2. Ubacimo putanju i uploader ID u array
-        $validated['file_path']   = $publicPath;
+        $validated['file_path']   = $privatePath;
         $validated['uploaded_by'] = Auth::id();
 
         // 3. Kreiramo zapis
@@ -64,5 +64,6 @@ class DocumentController extends Controller
         $document->delete();
         return back()->with('success', 'Dokument obrisan.');
     }
+
 }
 

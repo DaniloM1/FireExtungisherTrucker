@@ -97,11 +97,14 @@
                                     <div class="flex items-center gap-2 px-2 py-1 rounded-lg {{ $hasDoc ? 'bg-green-50 dark:bg-green-900' : 'bg-gray-100 dark:bg-gray-800' }}">
                                         <span class="font-medium text-gray-800 dark:text-gray-100 truncate">{{ $docType->name }}</span>
                                         @if($userDoc)
-                                            <a class="text-blue-600 dark:text-blue-400 underline ml-2" href="{{ asset('storage/'.$userDoc->file_path) }}" target="_blank">(Korisnik)</a>
+                                            <a class="text-blue-600 dark:text-blue-400 underline ml-2"
+                                               href="{{ route('private.documents.show', basename($userDoc->file_path)) }}" target="_blank">(Korisnik)</a>
                                         @elseif($companyDoc)
-                                            <a class="text-blue-600 dark:text-blue-400 underline ml-2" href="{{ asset('storage/'.$companyDoc->file_path) }}" target="_blank">(Firma)</a>
+                                            <a class="text-blue-600 dark:text-blue-400 underline ml-2"
+                                               href="{{ route('private.documents.show', basename($companyDoc->file_path)) }}" target="_blank">(Firma)</a>
                                         @else
-                                            <span class="text-xs text-red-500 ml-2 font-semibold">nedostaje</span>
+
+                                        <span class="text-xs text-red-500 ml-2 font-semibold">nedostaje</span>
                                             @if($isAdmin)
                                                 <button @click.prevent="openDocumentModal('{{ $member->user_id }}', '{{ $docType->id }}', '{{ addslashes($docType->name) }}', '{{ $examGroup->id }}')"
                                                         class="ml-1 px-2 py-0.5 bg-yellow-200 dark:bg-yellow-700 text-yellow-800 dark:text-yellow-200 text-xs rounded">

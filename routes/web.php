@@ -5,6 +5,7 @@ use App\Http\Controllers\FrontController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\PDFController;
+use App\Http\Controllers\Exam\PrivateDocumentController;
 
 Route::get('/service-report/{serviceEventId}', [PDFController::class, 'generateServiceReport'])->name('service-report.generate');
 
@@ -14,6 +15,8 @@ Route::get('/service-report/{serviceEventId}', [PDFController::class, 'generateS
 | Public Routes
 |--------------------------------------------------------------------------
 */
+
+Route::middleware('auth')->get('/private-documents/{filename}', [PrivateDocumentController::class, 'show'])->name('private.documents.show');
 
 Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
 Route::get('/blog/{post:slug}', [BlogController::class, 'show'])->name('blog.show');
