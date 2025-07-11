@@ -60,7 +60,9 @@
                                 id="email"
                                 autocomplete="off"
                                 class="mt-1 block w-full rounded-md border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 focus:border-blue-500 focus:ring-blue-500"
+                                value="{{ old('email') }}"
                                 required
+
                             >
                         </div>
 

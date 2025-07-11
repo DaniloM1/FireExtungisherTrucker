@@ -48,7 +48,7 @@ class UserManagementController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users',
             'password' => 'required|min:6|confirmed',
-            'company_id' => 'required|exists:companies,id', // Validacija za kompaniju
+            'company_id' => 'nullable|exists:companies,id',
             'roles' => 'required|array',
             'roles.*' => 'exists:roles,name',
             'permissions' => 'nullable|array',
