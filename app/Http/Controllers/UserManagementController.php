@@ -49,6 +49,7 @@ class UserManagementController extends Controller
             'email' => 'required|email|unique:users',
             'password' => 'required|min:6|confirmed',
             'company_id' => 'nullable|exists:companies,id',
+            'education_level' => 'nullable|in:ALL,SSS,VSS',
             'roles' => 'required|array',
             'roles.*' => 'exists:roles,name',
             'permissions' => 'nullable|array',

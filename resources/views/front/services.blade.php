@@ -1,5 +1,4 @@
 @extends('layouts-front.main')
-
 @section('title', 'Usluge - Požarna Sigurnost - inženjer Tim')
 @section('meta_description', 'Kompletne protivpožarne usluge i sistemi zaštite. Inspekcije, instalacije, obuke i više.')
 @section('meta_keywords', 'protivpožarne usluge, instalacija alarmnih sistema, vatrogasna obuka, servis aparata')

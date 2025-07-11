@@ -135,11 +135,13 @@ class LocationController extends Controller
     }
     public function show(Location $location)
     {
+
         $location->load([
             'company',
             'devices',
             'hydrants',
-            'serviceEvents.attachments'
+            'serviceEvents.attachments',
+            'locationChecks.inspector'
         ]);
 
         $generalAttachments = \App\Models\Attachment::where('location_id', $location->id)

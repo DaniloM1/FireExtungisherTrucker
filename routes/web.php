@@ -6,6 +6,7 @@ use App\Http\Controllers\PostController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\PDFController;
 use App\Http\Controllers\Exam\PrivateDocumentController;
+use App\Http\Controllers\ContactController;
 
 Route::get('/service-report/{serviceEventId}', [PDFController::class, 'generateServiceReport'])->name('service-report.generate');
 
@@ -15,8 +16,12 @@ Route::get('/service-report/{serviceEventId}', [PDFController::class, 'generateS
 | Public Routes
 |--------------------------------------------------------------------------
 */
+Route::resource('location_checks', \App\Http\Controllers\LocationCheckController::class);
+
 
 Route::middleware('auth')->get('/private-documents/{filename}', [PrivateDocumentController::class, 'show'])->name('private.documents.show');
+
+Route::post('/kontakt', [ContactController::class, 'sendMessage'])->name('contact.send');
 
 Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
 Route::get('/blog/{post:slug}', [BlogController::class, 'show'])->name('blog.show');

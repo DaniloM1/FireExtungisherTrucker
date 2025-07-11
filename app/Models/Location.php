@@ -77,6 +77,10 @@ class Location extends Model
     {
         return $this->hasMany(Attachment::class);
     }
+    public function locationChecks()
+    {
+        return $this->hasMany(LocationCheck::class);
+    }
 
 
 

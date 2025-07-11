@@ -108,62 +108,51 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8 bg-white shadow-lg rounded-xl overflow-hidden">
                 <!-- Expertise -->
                 <div class="p-10 bg-gradient-to-r from-red-600 to-red-800 text-white rounded-l-xl flex flex-col justify-center">
-                    <h3 class="text-2xl font-bold mb-4">Naša Stručnost</h3>
-                    <p class="mb-6 text-lg leading-relaxed">Iskusni inženjeri i tehničari sa višegodišnjom praksom u požarnoj zaštiti i sigurnosti na radu.</p>
-                    <ul class="space-y-3">
-                        <li class="flex items-start gap-3">
-                            <svg class="h-6 w-6 text-red-300 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16..."/></svg>
-                            <span class="text-white text-base">Certifikovani stručnjaci</span>
-                        </li>
-                        <li class="flex items-start gap-3">
-                            <svg class="h-6 w-6 text-red-300 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16..."/></svg>
-                            <span class="text-white text-base">Najsavremenija oprema</span>
-                        </li>
-                        <li class="flex items-start gap-3">
-                            <svg class="h-6 w-6 text-red-300 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16..."/></svg>
-                            <span class="text-white text-base">Kontinuirano usavršavanje</span>
-                        </li>
+                    <h3 class="text-2xl font-bold mb-6">Naša Stručnost</h3>
+                    <p class="mb-8 text-lg leading-relaxed">Iskusni inženjeri i tehničari sa višegodišnjom praksom u požarnoj zaštiti i sigurnosti na radu.</p>
+                    <ul class="space-y-5">
+                        @php
+                            $expertiseItems = [
+                                'Certifikovani stručnjaci' => 'fa-certificate',
+                                'Najsavremenija oprema' => 'fa-tools',
+                                'Kontinuirano usavršavanje' => 'fa-graduation-cap',
+                            ];
+                        @endphp
+                        @foreach($expertiseItems as $text => $icon)
+                            <li class="flex items-center gap-4">
+                                <div class="flex-shrink-0 w-8 h-8 rounded-full bg-red-700 bg-opacity-30 flex items-center justify-center">
+                                    <i class="fas {{ $icon }} text-white text-lg"></i>
+                                </div>
+                                <span class="text-white text-lg font-medium">{{ $text }}</span>
+                            </li>
+                        @endforeach
                     </ul>
                 </div>
 
                 <!-- Why Choose Us -->
                 <div class="p-10 rounded-r-xl flex flex-col justify-center">
-                    <h3 class="text-2xl font-bold text-gray-900 mb-4">Zašto Izabrati Nas?</h3>
-                    <p class="text-gray-700 mb-8 text-lg leading-relaxed">Spoj iskustva, tehnologije i personalizovanog pristupa klijentu čini nas liderom u industriji.</p>
-                    <div class="space-y-6">
-                        <div>
-                            <h4 class="font-semibold text-gray-900">Kompletna Rešenja</h4>
-                            <p class="text-gray-600 text-base">Od projektovanja do servisiranja – sve na jednom mestu.</p>
-                        </div>
-                        <div>
-                            <h4 class="font-semibold text-gray-900">Brza Reakcija</h4>
-                            <p class="text-gray-600 text-base">Hitni odgovori i intervencije 24/7.</p>
-                        </div>
-                        <div>
-                            <h4 class="font-semibold text-gray-900">Transparentne Cene</h4>
-                            <p class="text-gray-600 text-base">Jasni uslovi bez skrivenih troškova.</p>
-                        </div>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-6">Zašto Izabrati Nas?</h3>
+                    <p class="text-gray-700 mb-10 text-lg leading-relaxed">Spoj iskustva, tehnologije i personalizovanog pristupa klijentu čini nas liderom u industriji.</p>
+                    <div class="space-y-8">
+                        @php
+                            $whyChooseItems = [
+                                ['title'=>'Kompletna Rešenja', 'desc'=>'Od projektovanja do servisiranja – sve na jednom mestu.'],
+                                ['title'=>'Brza Reakcija', 'desc'=>'Hitni odgovori i intervencije 24/7.'],
+                                ['title'=>'Transparentne Cene', 'desc'=>'Jasni uslovi bez skrivenih troškova.'],
+                            ];
+                        @endphp
+                        @foreach($whyChooseItems as $item)
+                            <div>
+                                <h4 class="font-semibold text-gray-900 text-xl mb-2">{{ $item['title'] }}</h4>
+                                <p class="text-gray-600 text-base">{{ $item['desc'] }}</p>
+                            </div>
+                        @endforeach
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- PARTNERS -->
-    <section id="partneri" class="py-16 bg-white">
-        <div class="max-w-7xl mx-auto px-6 sm:px-8 lg:px-10 text-center mb-12">
-            <span class="text-sm font-bold text-red-600 uppercase tracking-wide">Poverenje Kompanija</span>
-            <h2 class="text-4xl font-extrabold text-gray-900 mt-3">Naši Partneri</h2>
-            <p class="text-gray-600 mt-4 max-w-3xl mx-auto">Saradnja sa vodećim brendovima potvrđuje naš kvalitet i pouzdanost.</p>
-        </div>
-        <div class="max-w-7xl mx-auto px-6 sm:px-8 lg:px-10 grid grid-cols-2 md:grid-cols-4 gap-10">
-            @foreach(['aman-logo.jpg','knjaz-logo.png'] as $logo)
-                <div class="flex items-center justify-center p-6 bg-gray-50 rounded-xl hover:shadow-lg transition duration-300">
-                    <img src="{{ asset('images/'.$logo) }}" alt="Partner logo" class="h-14 object-contain opacity-90 hover:opacity-100 transition-opacity duration-300" />
-                </div>
-            @endforeach
-        </div>
-    </section>
 
     <!-- STATS -->
     <section id="expertiza" class="py-16 bg-gray-50">
@@ -217,8 +206,6 @@
             @endforeach
         </div>
     </section>
-
-
 
     <!-- CONTACT CTA -->
     <section id="kontakt" class="py-16 bg-gray-200 text-center">

@@ -1,5 +1,4 @@
 <x-app-layout>
-    <!-- Zajednički Alpine.js kontejner -->
     <div x-data="{
         tab: (new URLSearchParams(window.location.search)).get('tab') || 'overview',
         setTab(newTab) {
@@ -9,39 +8,18 @@
             window.history.pushState(null, '', url);
         }
     }">
-        <!-- Header sa tabovima -->
         <x-slot name="header">
-            <h2 class="font-semibold text-xl text-gray-900 dark:text-gray-100 leading-tight">
-                {{ __('Dashboard') }}
-            </h2>
+            <h2 class="font-semibold text-xl text-gray-900 dark:text-gray-100 leading-tight">Dashboard</h2>
         </x-slot>
-        <div class="mt-4 border-b border-gray-200 dark:border-gray-700 ">
-            <nav class="-mb-px flex justify-center md:justify-center space-x-4 whitespace-nowrap">
-                <button @click="setTab('overview')"
-                    :class="tab === 'overview' ? 'border-blue-500 text-blue-500' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
-                    class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
-                    Pregled
-                </button>
-                <button @click="setTab('services')"
-                    :class="tab === 'services' ? 'border-blue-500 text-blue-500' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
-                    class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
-                    Servisi
-                </button>
-                <button @click="setTab('inspections')"
-                    :class="tab === 'inspections' ? 'border-blue-500 text-blue-500' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
-                    class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
-                    Inspekcije
-                </button>
-                <button @click="setTab('companies')"
-                    :class="tab === 'companies' ? 'border-blue-500 text-blue-500' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
-                    class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
-                    Kompanije
-                </button>
-                <button @click="setTab('trends')"
-                    :class="tab === 'trends' ? 'border-blue-500 text-blue-500' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
-                    class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
-                    Trends
-                </button>
+
+        <div class="mt-4 border-b border-gray-200 dark:border-gray-700">
+            <nav class="-mb-px flex justify-center space-x-4 whitespace-nowrap">
+                <button @click="setTab('overview')" :class="tab === 'overview' ? 'border-blue-500 text-blue-500' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'" class="py-4 px-1 border-b-2 font-medium text-sm">Pregled</button>
+                <button @click="setTab('services')" :class="tab === 'services' ? 'border-blue-500 text-blue-500' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'" class="py-4 px-1 border-b-2 font-medium text-sm">Servisi</button>
+                <button @click="setTab('inspections')" :class="tab === 'inspections' ? 'border-blue-500 text-blue-500' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'" class="py-4 px-1 border-b-2 font-medium text-sm">Inspekcije</button>
+                <button @click="setTab('calendar')" :class="tab === 'calendar' ? 'border-blue-500 text-blue-500' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'" class="py-4 px-1 border-b-2 font-medium text-sm">Kalendar</button>
+                <button @click="setTab('companies')" :class="tab === 'companies' ? 'border-blue-500 text-blue-500' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'" class="py-4 px-1 border-b-2 font-medium text-sm">Kompanije</button>
+                <button @click="setTab('trends')" :class="tab === 'trends' ? 'border-blue-500 text-blue-500' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'" class="py-4 px-1 border-b-2 font-medium text-sm">Trends</button>
             </nav>
         </div>
 
@@ -281,8 +259,6 @@
                         @endforelse
                     </div>
                 </div>
-    <!-- Service Trends -->
-    <!-- Service Trends -->
 <div x-show="tab === 'trends'" class="mt-6 space-y-6">
     <h3 class="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-4">
         Service Trends (naredna 3 meseca)
@@ -386,10 +362,18 @@
                         @endforelse
                     </div>
                 </div>
+                <div x-show="tab === 'calendar'" class="mt-6 space-y-6">
+                    <x-calendar :events="$importantDates" />
+                </div>
+
 
             </div>
         </div>
     </div>
+
+
+    </div>
+
     <script>
         function toggleAccordion(eventId) {
             let element = document.getElementById('accordion-' + eventId);
@@ -398,6 +382,7 @@
     </script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
+
         // Kombinovani chart sa lazy loadingom
         document.addEventListener("DOMContentLoaded", function() {
             const observer = new IntersectionObserver((entries) => {

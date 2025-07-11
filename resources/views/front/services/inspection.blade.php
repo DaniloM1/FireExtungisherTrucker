@@ -1,6 +1,6 @@
 @extends('layouts-front.main')
 
-@section('title', 'Inspekcija Aparata - Požarna Sigurnost - Inženjer Tim')
+@section('title', 'Overa Aparata - Požarna Sigurnost - Inženjer Tim')
 @section('meta_description', 'Detaljna inspekcija protivpožarne opreme sa redovnim pregledima svakih 6 meseci, kompletni izveštaji i stručno savetovanje za održavanje. Osigurajte sigurnost vašeg prostora.')
 @section('meta_keywords', 'inspekcija aparata, protivpožarna oprema, redovni pregledi, izveštaji, održavanje, 6 meseci, bezbednost')
 

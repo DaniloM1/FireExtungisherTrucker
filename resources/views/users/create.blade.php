@@ -121,6 +121,21 @@
                             </div>
                             <input type="hidden" name="company_id" id="company_id">
                         </div>
+                        <!-- Stručna sprema (education_level) select -->
+                        <div class="mb-4">
+                            <label for="education_level" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                {{ __('Stručna sprema') }}
+                            </label>
+                            <select
+                                id="education_level"
+                                name="education_level"
+                                class="mt-1 block w-full rounded-md border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 focus:border-blue-500 focus:ring-blue-500"
+                            >
+                                <option value="" {{ old('education_level') === null ? 'selected' : '' }}>{{ __('Izaberite...') }}</option>
+                                <option value="SSS" {{ old('education_level') === 'SSS' ? 'selected' : '' }}>SSS</option>
+                                <option value="VSS" {{ old('education_level') === 'VSS' ? 'selected' : '' }}>VSS</option>
+                            </select>
+                        </div>
 
                         <!-- Company Selection Modal -->
                         <div id="companyModal" class="fixed z-10 inset-0 overflow-y-auto hidden">

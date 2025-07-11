@@ -58,7 +58,12 @@
                 <div>
                     <div class="bg-gray-50 rounded-xl p-8 shadow-md hover:shadow-lg transition-shadow duration-300">
                         <h3 class="text-2xl font-bold text-gray-900 mb-6">Pošaljite poruku</h3>
-                        <form action="" method="POST" class="space-y-6">
+                        <form action="{{ route('contact.send') }}" method="POST" class="space-y-6">
+                            @if(session('success'))
+                                <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-6">
+                                    {{ session('success') }}
+                                </div>
+                            @endif
                             @csrf
                             <div>
                                 <label for="name" class="block text-gray-700 font-medium mb-2">Ime i Prezime</label>

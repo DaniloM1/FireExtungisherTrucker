@@ -20,6 +20,7 @@ class User extends Authenticatable
         'email',
         'password',
         'company_id',
+        'education_level'
 
     ];
 
@@ -55,6 +56,10 @@ class User extends Authenticatable
         }
         // Simuliraj random dok ne dodaš u migraciju
         return ['SSS', 'VSS'][array_rand(['SSS', 'VSS'])];
+    }
+    public function inspections()
+    {
+        return $this->hasMany(LocationCheck::class, 'inspector_id');
     }
 
 }

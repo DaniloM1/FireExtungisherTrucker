@@ -22,20 +22,22 @@ class DashboardController extends Controller
 
         $this->consolidateActiveServiceEvents($now, $fifteenDays);
 
+        // Učitavanje aktivnih servisnih događaja za narednih 15 dana
         $serviceEvents = ServiceEvent::with(['locations.company'])
             ->where('status', 'active')
             ->whereBetween('next_service_date', [$now->toDateString(), $fifteenDays->toDateString()])
             ->orderBy('next_service_date', 'asc')
-            ->paginate(12); // ili 6, 24 – koliko ti treba po strani
+            ->paginate(12);
         $serviceEvents->getCollection()->each(function ($event) {
             $this->calculateActiveDevices($event);
         });
 
-
+        // Učitavanje električnih inspekcija za narednih 15 dana
         $electricalInspections = ElectricalInspection::with('location.company')
             ->whereBetween('next_inspection_date', [$now->toDateString(), $fifteenDays->toDateString()])
             ->get();
 
+        // Kompanije koje zahtevaju servis u narednih 15 dana
         $companiesNeedingService = DB::table('companies')
             ->join('locations', 'companies.id', '=', 'locations.company_id')
             ->join('service_event_locations', 'locations.id', '=', 'service_event_locations.location_id')
@@ -59,6 +61,47 @@ class DashboardController extends Controller
         $serviceTrends = $this->getServiceTrends($now, $threeMonths);
         $deviceTrends = $this->getDeviceTrends($now, $threeMonths);
 
+        // Dodajemo važne datume za celu godinu (servisi + inspekcije)
+        $yearStart = $now->copy()->startOfYear()->toDateString();
+        $yearEnd = $now->copy()->endOfYear()->toDateString();
+
+        $serviceEventsForYear = ServiceEvent::with(['locations.company'])
+            ->where('status', 'active')
+            ->whereBetween('next_service_date', [$yearStart, $yearEnd])
+            ->orderBy('next_service_date')
+            ->get();
+
+        $electricalInspectionsForYear = ElectricalInspection::with('location.company')
+            ->whereBetween('next_inspection_date', [$yearStart, $yearEnd])
+            ->orderBy('next_inspection_date')
+            ->get();
+
+        $importantDates = [];
+
+        foreach ($serviceEventsForYear as $event) {
+            $importantDates[] = [
+                'id' => 'service-' . $event->id,
+                'date' => $event->next_service_date->format('Y-m-d'),
+                'type' => 'Servis',
+                'description' => "Servis #{$event->id} - {$event->category}",
+            ];
+        }
+
+        foreach ($electricalInspectionsForYear as $inspection) {
+            $importantDates[] = [
+                'id' => 'inspection-' . $inspection->id,
+                'date' => $inspection->next_inspection_date->format('Y-m-d'),
+                'type' => 'Inspekcija',
+                'description' => "Inspekcija #{$inspection->id} - {$inspection->location->name}",
+            ];
+        }
+
+        // Sortiraj po datumu rastuće
+        usort($importantDates, function ($a, $b) {
+            return strcmp($a['date'], $b['date']);
+        });
+//        dd($importantDates);
+
         return view('admin.dashboard.index', compact(
             'serviceEvents',
             'electricalInspections',
@@ -66,9 +109,11 @@ class DashboardController extends Controller
             'cities',
             'citySummaries',
             'serviceTrends',
-            'deviceTrends'
+            'deviceTrends',
+            'importantDates'
         ));
     }
+
 
     /**
      * Konsoliduje aktivne servisne događaje na osnovu preklapanja lokacija.
