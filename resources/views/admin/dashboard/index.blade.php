@@ -38,9 +38,9 @@
         </div>
         <!-- Nadolazeće inspekcije -->
         <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-4">
-            <div class="text-3xl font-bold text-gray-900 dark:text-gray-100">
-                {{ $electricalInspections->count() }}
-            </div>
+{{--            <div class="text-3xl font-bold text-gray-900 dark:text-gray-100">--}}
+{{--                {{ $electricalInspections->count() }}--}}
+{{--            </div>--}}
             <div class="text-sm text-gray-500">Nadolazećih inspekcija</div>
         </div>
         <!-- Kompanije koje zahtevaju servis -->
@@ -216,50 +216,52 @@
                 <!-- Inspekcije -->
                 <div x-show="tab === 'inspections'" class="mt-6 space-y-6">
                     <h3 class="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-4">
-                        Nadolazeće Električne Inspekcije
+                        Nadolazeće Inspekcije i Testovi
                     </h3>
+
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        @forelse ($electricalInspections as $inspection)
-                            <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700"
-                                 onclick="">
+                        @forelse ($locationChecks as $check)
+                            <div
+                                class="bg-white dark:bg-gray-800 shadow rounded-lg p-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700"
+                                onclick="window.location='{{ route('location_checks.show', $check->id) }}'"
+                            >
                                 <div class="flex items-center justify-between">
-                                    <span class="text-lg font-bold text-gray-900 dark:text-gray-100">
-                                        ID: {{ $inspection->id }}
-                                    </span>
+                    <span class="text-lg font-bold text-gray-900 dark:text-gray-100">
+                        ID: {{ $check->id }}
+                    </span>
+                                    <span
+                                        class="px-2 py-0.5 rounded text-xs font-medium
+                               {{ $check->type === 'test' ? 'bg-amber-500 text-white' : 'bg-green-600 text-white' }}">
+                        {{ ucfirst($check->type) }}
+                    </span>
                                 </div>
+
                                 <div class="mt-2 text-sm text-gray-700 dark:text-gray-300">
                                     <div>
-                                        Inspekcija: {{ \Carbon\Carbon::parse($inspection->inspection_date)->format('d.m.Y') }}
+                                        Poslednja: {{ optional($check->last_performed_date)->format('d.m.Y') ?? '‑' }}
                                     </div>
                                     <div>
-                                        Naredna: {{ \Carbon\Carbon::parse($inspection->next_inspection_date)->format('d.m.Y') }}
+                                        Sledeća: {{ optional($check->next_due_date)->format('d.m.Y') ?? '‑' }}
                                     </div>
                                 </div>
+
                                 <div class="mt-2 text-sm text-gray-600 dark:text-gray-400">
-                                    <span class="font-medium">{{ $inspection->location->name }}</span>
-                                    @if($inspection->location->company)
-                                        <span>
-                                            ({{ $inspection->location->company->name }})
-                                        </span>
+                                    <span class="font-medium">{{ $check->location->name }}</span>
+                                    @if($check->location->company)
+                                        <span>({{ $check->location->company->name }})</span>
                                     @endif
-                                    <span>
-                                        - {{ $inspection->location->city }}
-                                    </span>
+                                    <span> – {{ $check->location->city }}</span>
                                 </div>
-                                @if($inspection->cost)
-                                    <div class="mt-2 text-sm text-gray-600 dark:text-gray-400">
-                                        Trošak: {{ number_format($inspection->cost, 2, ',', '.') }} RSD
-                                    </div>
-                                @endif
                             </div>
                         @empty
                             <div class="col-span-full text-center text-gray-700 dark:text-gray-300">
-                                Nema nadolazećih inspekcija.
+                                Nema nadolazećih pregleda.
                             </div>
                         @endforelse
                     </div>
                 </div>
-<div x-show="tab === 'trends'" class="mt-6 space-y-6">
+
+                <div x-show="tab === 'trends'" class="mt-6 space-y-6">
     <h3 class="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-4">
         Service Trends (naredna 3 meseca)
     </h3>

@@ -73,14 +73,14 @@ class LocationCheckController extends Controller
 
     public function show(LocationCheck $locationCheck)
     {
-        return view('location_checks.show', compact('locationCheck'));
+        return view('admin.location_checks.show', compact('locationCheck'));
     }
 
     public function edit(LocationCheck $locationCheck)
     {
         $locations = Location::all();
         $inspectors = User::all();
-        return view('location_checks.edit', compact('locationCheck', 'locations', 'inspectors'));
+        return view('admin.location_checks.edit', compact('locationCheck', 'locations', 'inspectors'));
     }
 
     public function update(Request $request, LocationCheck $locationCheck)

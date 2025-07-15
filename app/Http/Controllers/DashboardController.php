@@ -6,6 +6,7 @@ use App\Models\Company;
 use App\Models\Device;
 use App\Models\Hydrant;
 use App\Models\Location;
+use App\Models\LocationCheck;
 use App\Models\ServiceEvent;
 use App\Models\ElectricalInspection;
 use Illuminate\Http\Request;
@@ -16,28 +17,29 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        $now = Carbon::now();
+        $now         = Carbon::now();
         $fifteenDays = $now->copy()->addDays(15);
         $threeMonths = $now->copy()->addMonths(3);
 
         $this->consolidateActiveServiceEvents($now, $fifteenDays);
 
-        // Učitavanje aktivnih servisnih događaja za narednih 15 dana
+        // 15‑day service events
         $serviceEvents = ServiceEvent::with(['locations.company'])
             ->where('status', 'active')
             ->whereBetween('next_service_date', [$now->toDateString(), $fifteenDays->toDateString()])
-            ->orderBy('next_service_date', 'asc')
+            ->orderBy('next_service_date')
             ->paginate(12);
-        $serviceEvents->getCollection()->each(function ($event) {
-            $this->calculateActiveDevices($event);
-        });
 
-        // Učitavanje električnih inspekcija za narednih 15 dana
-        $electricalInspections = ElectricalInspection::with('location.company')
-            ->whereBetween('next_inspection_date', [$now->toDateString(), $fifteenDays->toDateString()])
+        $serviceEvents->getCollection()->each(fn ($e) => $this->calculateActiveDevices($e));
+
+        // 15‑day electrical inspections
+        $locationChecks = LocationCheck::with('location.company')
+            ->whereIn('type', ['inspection', 'test'])
+            ->whereBetween('next_due_date', [$now->toDateString(), $fifteenDays->toDateString()])
+            ->orderBy('next_due_date')
             ->get();
 
-        // Kompanije koje zahtevaju servis u narednih 15 dana
+        // companies needing service
         $companiesNeedingService = DB::table('companies')
             ->join('locations', 'companies.id', '=', 'locations.company_id')
             ->join('service_event_locations', 'locations.id', '=', 'service_event_locations.location_id')
@@ -52,18 +54,17 @@ class DashboardController extends Controller
             ->where('service_events.status', 'active')
             ->whereBetween('service_events.next_service_date', [$now->toDateString(), $fifteenDays->toDateString()])
             ->groupBy('companies.id', 'companies.name', 'companies.city', 'companies.pib')
-            ->orderBy('next_service_date', 'asc')
+            ->orderBy('next_service_date')
             ->get();
 
-        // Grupisanje po gradovima – koristi samo lokacije gde pivot status iz service_event_locations je "active"
+        // city groups + trends
         [$cities, $citySummaries] = $this->groupByCities($serviceEvents);
-
         $serviceTrends = $this->getServiceTrends($now, $threeMonths);
-        $deviceTrends = $this->getDeviceTrends($now, $threeMonths);
+        $deviceTrends  = $this->getDeviceTrends($now, $threeMonths);
 
-        // Dodajemo važne datume za celu godinu (servisi + inspekcije)
+        // full‑year important dates
         $yearStart = $now->copy()->startOfYear()->toDateString();
-        $yearEnd = $now->copy()->endOfYear()->toDateString();
+        $yearEnd   = $now->copy()->endOfYear()->toDateString();
 
         $serviceEventsForYear = ServiceEvent::with(['locations.company'])
             ->where('status', 'active')
@@ -71,40 +72,43 @@ class DashboardController extends Controller
             ->orderBy('next_service_date')
             ->get();
 
-        $electricalInspectionsForYear = ElectricalInspection::with('location.company')
-            ->whereBetween('next_inspection_date', [$yearStart, $yearEnd])
-            ->orderBy('next_inspection_date')
+        $locationChecksForYear = LocationCheck::with('location.company')
+            ->whereIn('type', ['inspection', 'test'])        // samo ova dva tipa
+            ->whereBetween('next_due_date', [$yearStart, $yearEnd])
+            ->orderBy('next_due_date')
             ->get();
+
+//
 
         $importantDates = [];
 
         foreach ($serviceEventsForYear as $event) {
             $importantDates[] = [
-                'id' => 'service-' . $event->id,
-                'date' => $event->next_service_date->format('Y-m-d'),
-                'type' => 'Servis',
-                'description' => "Servis #{$event->id} - {$event->category}",
+                'id'          => 'service-'.$event->id,
+                'date'        => $event->next_service_date->format('Y-m-d'),
+                'type'        => 'Servis',
+                'label'       => "Servis #{$event->id}",
+                'description' => $event->category,
+                'url'         => route('service-events.show', $event->id),
             ];
         }
 
-        foreach ($electricalInspectionsForYear as $inspection) {
+        foreach ($locationChecksForYear as $check) {
             $importantDates[] = [
-                'id' => 'inspection-' . $inspection->id,
-                'date' => $inspection->next_inspection_date->format('Y-m-d'),
-                'type' => 'Inspekcija',
-                'description' => "Inspekcija #{$inspection->id} - {$inspection->location->name}",
+                'id'          => "{$check->type}-{$check->id}",
+                'date'  => Carbon::parse($check->next_due_date)->format('Y-m-d'),
+                'type'        => ucfirst($check->type),
+                'label'       => ucfirst($check->type) . " #{$check->id}",
+                'description' => $check->location->name,
+                'url'         => route('location_checks.show', $check->id),
             ];
         }
 
-        // Sortiraj po datumu rastuće
-        usort($importantDates, function ($a, $b) {
-            return strcmp($a['date'], $b['date']);
-        });
-//        dd($importantDates);
+        usort($importantDates, fn ($a, $b) => strcmp($a['date'], $b['date']));
 
         return view('admin.dashboard.index', compact(
             'serviceEvents',
-            'electricalInspections',
+            'locationChecks',
             'companiesNeedingService',
             'cities',
             'citySummaries',

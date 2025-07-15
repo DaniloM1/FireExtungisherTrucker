@@ -101,7 +101,7 @@
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Model</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Tip</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Proizvođač</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Datum servisa</th>
+{{--                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Datum servisa</th>--}}
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">HVP</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Status</th>
                         @hasrole('super_admin|admin')
@@ -116,9 +116,9 @@
                             <td class="px-6 py-4 text-gray-800 dark:text-gray-200">{{ $hydrant->model }}</td>
                             <td class="px-6 py-4 text-gray-800 dark:text-gray-200">{{ $hydrant->type }}</td>
                             <td class="px-6 py-4 text-gray-800 dark:text-gray-200">{{ $hydrant->manufacturer }}</td>
-                            <td class="px-6 py-4 text-gray-800 dark:text-gray-200">
-                                {{ $hydrant->next_service_date ? \Carbon\Carbon::parse($hydrant->next_service_date)->format('d.m.Y') : '-' }}
-                            </td>
+{{--                            <td class="px-6 py-4 text-gray-800 dark:text-gray-200">--}}
+{{--                                {{ $hydrant->next_service_date ? \Carbon\Carbon::parse($hydrant->next_service_date)->format('d.m.Y') : '-' }}--}}
+{{--                            </td>--}}
                             <td class="px-6 py-4 text-gray-800 dark:text-gray-200">
                                 {{ $hydrant->hvp ? \Carbon\Carbon::parse($hydrant->hvp)->format('d.m.Y') : '-' }}
                             </td>

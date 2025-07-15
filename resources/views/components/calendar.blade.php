@@ -37,20 +37,21 @@
                 <button
                     @click="showDetails(d)"
                     class="w-full h-10 text-sm flex flex-col items-center justify-center rounded
-                           hover:bg-blue-300 dark:hover:bg-blue-700
-                           transition-colors duration-100 ease-in"
-                    :class="d.isToday ? 'bg-blue-500 text-white' : 'text-gray-900 dark:text-gray-100'"
-                >
-                    <!-- day number -->
+                           hover:bg-blue-300 dark:hover:bg-blue-700 transition-colors duration-100 ease-in"
+                    :class="d.isToday
+                        ? 'bg-blue-500 dark:bg-blue-600 text-white'
+                        : 'text-gray-900 dark:text-gray-100'">
                     <span x-text="d.date.getDate()"></span>
 
-                    <!-- dots -->
                     <div class="flex space-x-0.5 mt-0.5">
                         <template x-if="d.hasService">
                             <span class="w-1.5 h-1.5 rounded-full bg-red-600 dark:bg-red-400"></span>
                         </template>
                         <template x-if="d.hasInspection">
                             <span class="w-1.5 h-1.5 rounded-full bg-green-600 dark:bg-green-400"></span>
+                        </template>
+                        <template x-if="d.hasTest">
+                            <span class="w-1.5 h-1.5 rounded-full bg-amber-500 dark:bg-amber-400"></span>
                         </template>
                     </div>
                 </button>
@@ -60,16 +61,27 @@
 
     <!-- modal -->
     <div x-show="detailsVisible"
-         class="mt-4 p-3 border border-gray-300 dark:border-gray-700 rounded bg-gray-50 dark:bg-gray-900"
+         class="mt-4 p-4 border border-gray-300 dark:border-gray-700 rounded bg-gray-50 dark:bg-gray-900"
          style="display:none;">
-        <h3 class="font-semibold mb-2 text-gray-900 dark:text-gray-100" x-text="detailDate"></h3>
+        <h3 class="font-semibold mb-3 text-gray-900 dark:text-gray-100" x-text="detailDate"></h3>
 
         <template x-if="detailEvents.length">
-            <ul class="list-disc list-inside text-sm space-y-1">
+            <ul class="space-y-1 text-sm">
                 <template x-for="ev in detailEvents" :key="ev.id">
-                    <li>
-                        <span class="font-semibold" x-text="ev.type"></span>:
-                        <span x-text="ev.description"></span>
+                    <li class="flex items-start gap-2">
+                        <span class="w-2 h-2 rounded-full mt-1"
+                              :class="{
+                                  'bg-red-600  dark:bg-red-400'   : ev.type.toLowerCase()==='servis',
+                                  'bg-green-600 dark:bg-green-400': ev.type.toLowerCase()==='inspekcija',
+                                  'bg-amber-500 dark:bg-amber-400': ev.type.toLowerCase()==='test'
+                              }"></span>
+
+                        <a :href="ev.url"
+                           class="underline hover:text-blue-700 dark:hover:text-blue-400 font-semibold dark:text-gray-300"
+                           x-text="ev.label">
+                        </a>
+
+                        <span class="text-gray-700 dark:text-gray-300" x-text="ev.description"></span>
                     </li>
                 </template>
             </ul>
@@ -82,7 +94,7 @@
         </template>
 
         <button @click="detailsVisible=false"
-                class="mt-3 px-3 py-1 bg-red-500 hover:bg-red-600 text-white rounded">
+                class="mt-4 px-3 py-1 bg-red-500 hover:bg-red-600 text-white rounded">
             Zatvori
         </button>
     </div>
@@ -115,8 +127,8 @@
                         .toLocaleString('sr-RS', { month: 'long', year: 'numeric' });
 
                     const firstDay = new Date(this.currentYear, this.currentMonth, 1);
-                    let offset = firstDay.getDay();          // 0=Sun
-                    offset = offset === 0 ? 6 : offset - 1;  // Mon=0
+                    let offset = firstDay.getDay();
+                    offset = offset === 0 ? 6 : offset - 1;
                     this.blanks = [...Array(offset).keys()];
 
                     const lastDay = new Date(this.currentYear, this.currentMonth + 1, 0).getDate();
@@ -132,6 +144,7 @@
                             events:        dayEvents,
                             hasService:    dayEvents.some(e => e.type.toLowerCase() === 'servis'),
                             hasInspection: dayEvents.some(e => e.type.toLowerCase() === 'inspekcija'),
+                            hasTest:       dayEvents.some(e => e.type.toLowerCase() === 'test'),
                         });
                     }
                 },

@@ -17,6 +17,10 @@ class LocationCheck extends Model
         'next_due_date',
         'inspector_id',
     ];
+    protected $casts = [
+        'last_performed_date' => 'date',      // ili 'datetime'
+        'next_due_date'       => 'date',
+    ];
 
     // Veza ka lokaciji
     public function location()

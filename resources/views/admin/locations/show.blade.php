@@ -420,7 +420,8 @@
                                     </div>
                                 </div>
                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 ml-2">
-                                    {{ ucfirst($service->category) }}
+                                {{ ['pp_device' => 'Aparati', 'hydrants' => 'Hidranti'][$service->category] ?? ucfirst($service->category) }}
+
                                 </span>
                             </div>
 
@@ -490,24 +491,14 @@
                 <div class="space-y-4 max-h-96 overflow-y-auto pr-2">
                     @forelse($location->locationChecks->sortByDesc('last_performed_date') as $check)
                         <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 border border-gray-200 dark:border-gray-600">
-                            <div class="flex justify-between items-center mb-2">
+                            <div class="flex justify-between items-start mb-2">
                                 <div>
                                     <h4 class="font-bold text-green-700 dark:text-green-300 flex items-center gap-2">
                                         <i class="fas fa-clipboard-list"></i>
+                                        <a href="{{ route('location_checks.show', $check->id) }}" class="" title="Izmeni">
                                         <span>{{ $check->name }}</span>
-                                        <span class="ml-3 text-xs px-2 py-0.5 rounded bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 font-semibold">
-                                        @php
-                                            $typeLabels = [
-                                                'inspection' => 'Elektro Inspekcija',
-                                                'test' => 'Testovi',
-                                            ];
-                                            $typeLabel = $typeLabels[$check->type] ?? ucfirst($check->type);
-                                        @endphp
+                                        </a>
 
-                                        <span>{{ $typeLabel }}</span>
-
-
-                                        </span>
                                     </h4>
                                     <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">
                                         Poslednja inspekcija: {{ $check->last_performed_date ? \Carbon\Carbon::parse($check->last_performed_date)->format('d.m.Y') : '-' }}
@@ -518,14 +509,21 @@
                                     <div class="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-2 mt-1">
                                         <i class="fas fa-user mr-1"></i> {{ $check->inspector->name ?? 'Nije dodeljen' }}
                                     </div>
-
                                 </div>
-                                <a href="{{ route('location_checks.edit', $check->id) }}" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300" title="Izmeni">
-                                    <i class="fas fa-edit"></i>
-                                </a>
+
+                                <div class="flex items-center gap-2">
+        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+            {{ ['inspection' => 'Elektro Inspekcija', 'test' => 'Testovi'][$check->type] ?? ucfirst($check->type) }}
+        </span>
+
+{{--                                    <a href="{{ route('location_checks.edit', $check->id) }}" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300" title="Izmeni">--}}
+{{--                                        <i class="fas fa-edit"></i>--}}
+{{--                                    </a>--}}
+                                </div>
                             </div>
 
-                            @if($check->description)
+
+                        @if($check->description)
                                 <div class="text-sm text-gray-600 dark:text-gray-300 mt-2 whitespace-pre-line">
                                     {{ $check->description }}
                                 </div>
