@@ -30,6 +30,10 @@
                                class="text-gray-600 dark:text-gray-300 hover:text-gray-900" title="Štampa">
                                 <i class="fas fa-print"></i>
                             </a>
+                            <a href="{{ route('service-events.repeat', $serviceEvent->id) }}"
+                               class="text-gray-600 dark:text-gray-300 hover:text-gray-900" title="Ponovi Servis">
+                                <i class="fas fa-hammer"></i>
+                            </a>
 
                             <a href="{{ route('service-events.edit', $serviceEvent->id) }}"
                                class="text-gray-600 dark:text-gray-300 hover:text-gray-900 ml-2" title="Uredi">
@@ -72,8 +76,9 @@
                                     <i class="fas fa-tag mr-2"></i> Kategorija
                                 </dt>
                                 <dd class="mt-1 text-lg font-semibold text-gray-900 dark:text-gray-100">
-                                    {{ ['pp_device' => 'Aparati', 'hydrants' => 'Hidranti'][$serviceEvent->category] ?? ucfirst($service->category) }}
+                                    {{ ['pp_device' => 'Aparati', 'hydrant' => 'Hidranti'][$serviceEvent->category] ?? ucfirst($serviceEvent->category) }}
                                 </dd>
+
                             </div>
                         </div>
 

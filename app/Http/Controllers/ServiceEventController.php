@@ -35,7 +35,12 @@ class ServiceEventController extends Controller
             $firstDay = \Carbon\Carbon::create($request->year, $request->month, 1)->toDateString();
             $lastDay  = \Carbon\Carbon::create($request->year, $request->month, 1)->endOfMonth()->toDateString();
             $query->whereBetween('next_service_date', [$firstDay, $lastDay]);
+        } elseif ($request->filled('year')) {
+            $query->whereYear('next_service_date', $request->year);
+        } elseif ($request->filled('month')) {
+            $query->whereMonth('next_service_date', $request->month);
         }
+
 
         $serviceEvents = $query->orderBy('service_date', 'desc')
             ->paginate(9)
@@ -135,10 +140,11 @@ class ServiceEventController extends Controller
     public function edit(ServiceEvent $serviceEvent)
     {
         $serviceEvent->load('locations.company');
-
-        $companies   = Company::all();
+        $companies = Company::all();
         $allLocations = Location::orderBy('name')->get();
-        return view('admin.service-events.edit', compact('serviceEvent', 'companies', 'allLocations'));
+        $selectedLocationIds = $serviceEvent->locations->pluck('id')->toArray();
+
+        return view('admin.service-events.edit', compact('serviceEvent', 'companies', 'allLocations', 'selectedLocationIds'));
     }
 
 
@@ -184,6 +190,25 @@ class ServiceEventController extends Controller
 
         return back()->with('success', 'Lokacija je označena kao završena!');
     }
+    public function repeatServiceWithLocations($serviceEventId)
+    {
+        $serviceEvent = ServiceEvent::with('locations.company')->findOrFail($serviceEventId);
+
+        $companies = Company::all();
+        $allLocations = Location::orderBy('name')->get();
+
+        $selectedLocationIds = $serviceEvent->locations->pluck('id')->toArray();
+        $selectedCompanyIds = $serviceEvent->locations->pluck('company_id')->unique()->toArray();
+
+        // Možeš koristiti isti view create-group, ili drugi ako želiš
+        return view('admin.service-events.create-group', compact(
+            'allLocations',
+            'companies',
+            'selectedLocationIds',
+            'selectedCompanyIds'
+        ));
+    }
+
 
 
 }

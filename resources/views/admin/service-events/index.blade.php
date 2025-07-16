@@ -21,7 +21,7 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label for="evid_number" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                Evid Number
+                                Evid Broj
                             </label>
                             <input type="text" name="evid_number" id="evid_number" value="{{ request('evid_number') }}"
                                    class="mt-1 block w-full rounded-md border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
@@ -29,7 +29,7 @@
                         </div>
                         <div>
                             <label for="service_date" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                Service Date
+                                Datum Servisa
                             </label>
                             <input type="date" name="service_date" id="service_date" value="{{ request('service_date') }}"
                                    class="mt-1 block w-full rounded-md border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200">
@@ -42,25 +42,25 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                             <div>
                                 <label for="category" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                    Category
+                                    Kategorija
                                 </label>
                                 <select name="category" id="category"
                                         class="mt-1 block w-full rounded-md border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200">
                                     <option value="">{{ __('All Categories') }}</option>
-                                    <option value="pp_device" {{ request('category') == 'pp_device' ? 'selected' : '' }}>PP Device</option>
-                                    <option value="hydrant" {{ request('category') == 'hydrant' ? 'selected' : '' }}>Hydrant</option>
+                                    <option value="pp_device" {{ request('category') == 'pp_device' ? 'selected' : '' }}>Aparati</option>
+                                    <option value="hydrant" {{ request('category') == 'hydrant' ? 'selected' : '' }}>Hidranti</option>
                                 </select>
                             </div>
                             <div>
                                 <label for="next_service_date" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                    Next Service Date
+                                   Datum Sledeceg Servisa
                                 </label>
                                 <input type="date" name="next_service_date" id="next_service_date" value="{{ request('next_service_date') }}"
                                        class="mt-1 block w-full rounded-md border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200">
                             </div>
                             <div>
                                 <label for="company" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                    Company
+                                    Kompanija
                                 </label>
                                 <select name="company" id="company"
                                         class="mt-1 block w-full rounded-md border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200">
@@ -74,7 +74,7 @@
                             </div>
                             <div>
                                 <label for="location" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                    Location
+                                    Lokacija
                                 </label>
                                 <select name="location" id="location"
                                         class="mt-1 block w-full rounded-md border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200">
@@ -84,7 +84,7 @@
                             </div>
                             <div>
                                 <label for="year" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                    Year
+                                    Godina
                                 </label>
                                 <select name="year" id="year" class="mt-1 block w-full rounded-md border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200">
                                     <option value="">{{ __('Select Year') }}</option>
@@ -92,29 +92,29 @@
                                     <option value="2025" {{ request('year') == '2025' ? 'selected' : '' }}>{{ __('2025') }}</option>
                                     <option value="2026" {{ request('year') == '2026' ? 'selected' : '' }}>{{ __('2026') }}</option>
                                 </select>
-                                
+
                             </div>
                             <div>
                                 <label for="month" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                    Month
+                                    Mesec
                         <select name="month" id="month" class="mt-1 block w-full rounded-md border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200">
                             <option value="">{{ __('Select Month') }}</option>
-                            <option value="1" {{ request('month') == '1' ? 'selected' : '' }}>{{ __('January') }}</option>
-                            <option value="2" {{ request('month') == '2' ? 'selected' : '' }}>{{ __('February') }}</option>
-                            <option value="3" {{ request('month') == '3' ? 'selected' : '' }}>{{ __('March') }}</option>
+                            <option value="1" {{ request('month') == '1' ? 'selected' : '' }}>{{ __('Januar') }}</option>
+                            <option value="2" {{ request('month') == '2' ? 'selected' : '' }}>{{ __('Februar') }}</option>
+                            <option value="3" {{ request('month') == '3' ? 'selected' : '' }}>{{ __('Mart') }}</option>
                             <option value="4" {{ request('month') == '4' ? 'selected' : '' }}>{{ __('April') }}</option>
-                            <option value="5" {{ request('month') == '5' ? 'selected' : '' }}>{{ __('May') }}</option>
-                            <option value="6" {{ request('month') == '6' ? 'selected' : '' }}>{{ __('June') }}</option>
-                            <option value="7" {{ request('month') == '7' ? 'selected' : '' }}>{{ __('July') }}</option>
-                            <option value="8" {{ request('month') == '8' ? 'selected' : '' }}>{{ __('August') }}</option>
-                            <option value="9" {{ request('month') == '9' ? 'selected' : '' }}>{{ __('September') }}</option>
-                            <option value="10" {{ request('month') == '10' ? 'selected' : '' }}>{{ __('October') }}</option>
-                            <option value="11" {{ request('month') == '11' ? 'selected' : '' }}>{{ __('November') }}</option>
-                            <option value="12" {{ request('month') == '12' ? 'selected' : '' }}>{{ __('December') }}</option>
+                            <option value="5" {{ request('month') == '5' ? 'selected' : '' }}>{{ __('Maj') }}</option>
+                            <option value="6" {{ request('month') == '6' ? 'selected' : '' }}>{{ __('Jun') }}</option>
+                            <option value="7" {{ request('month') == '7' ? 'selected' : '' }}>{{ __('Jul') }}</option>
+                            <option value="8" {{ request('month') == '8' ? 'selected' : '' }}>{{ __('Avgust') }}</option>
+                            <option value="9" {{ request('month') == '9' ? 'selected' : '' }}>{{ __('Septembar') }}</option>
+                            <option value="10" {{ request('month') == '10' ? 'selected' : '' }}>{{ __('Octobar') }}</option>
+                            <option value="11" {{ request('month') == '11' ? 'selected' : '' }}>{{ __('Novembar') }}</option>
+                            <option value="12" {{ request('month') == '12' ? 'selected' : '' }}>{{ __('Decembar') }}</option>
                         </select>
                     </div>
                 </div>
-                        
+
                         <!-- Hidden inputs za year i month -->
                         @if(request()->has('year'))
                             <input type="hidden" name="year" value="{{ request('year') }}">
@@ -135,7 +135,7 @@
                             </button>
                         </div>
                         <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
-                            <i class="fa fa-search"></i> Search
+                            <i class="fa fa-search"></i> Pretraži
                         </button>
                     </div>
                 </form>

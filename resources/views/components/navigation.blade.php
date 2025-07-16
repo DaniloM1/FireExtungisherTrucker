@@ -81,7 +81,8 @@
                         </a>
                     @endauth
                 @endif
-                <button id="offer-btn" class="hidden md:inline-block bg-red-600 text-white px-5 py-2 rounded-full hover:bg-red-700 transition duration-300">
+                <button  onclick="window.location='{{ route('contact') }}'"
+                    id="offer-btn" class="hidden md:inline-block bg-red-600 text-white px-5 py-2 rounded-full hover:bg-red-700 transition duration-300">
                     Zatraži Ponudu
                 </button>
                 <button id="mobile-menu-button" class="md:hidden focus:outline-none">
@@ -175,9 +176,13 @@
                         </a>
                     @endauth
                 @endif
-                <button  class="mt-2 w-full bg-red-600 text-white px-4 py-2 rounded-full hover:bg-red-700 transition duration-300">
-                    Zatraži Ponudu
-                </button>
+                    <button
+                        onclick="window.location='{{ route('contact') }}'"
+                        class="mt-2 w-full bg-red-600 text-white px-4 py-2 rounded-full hover:bg-red-700 transition duration-300"
+                    >
+                        Zatraži Ponudu
+                    </button>
+
             </div>
         </div>
     </div>

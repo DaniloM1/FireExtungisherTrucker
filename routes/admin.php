@@ -24,6 +24,9 @@ Route::prefix('admin')->middleware('role:super_admin')->group(function () {
     // Service Events
     Route::resource('service-events', ServiceEventController::class);
     Route::get('service-events/test/{group}', [ServiceEventController::class, 'groupService'])->name('service-events.group-service');
+    Route::get('/service-events/repeat/{serviceEventId}', [ServiceEventController::class, 'repeatServiceWithLocations'])
+        ->name('service-events.repeat');
+
     // web.php
     Route::post('/service-events/{serviceEvent}/locations/{location}/complete', [ServiceEventController::class, 'markDone'])
         ->name('service-events.locations.complete');

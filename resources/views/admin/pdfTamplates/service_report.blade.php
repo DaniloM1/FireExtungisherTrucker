@@ -182,8 +182,8 @@
                                         @endif
                                     </td>
                                     <td>
-                                        @if(!empty($device->hvp))
-                                            {{ \Carbon\Carbon::parse($device->hvp)->format('Y') }}
+                                        @if(!empty($device->next_service_date))
+                                            {{ \Carbon\Carbon::parse($device->next_service_date)->format('Y') }}
                                         @endif
                                     </td>
                                     <td>{{ $device->position }}</td>
