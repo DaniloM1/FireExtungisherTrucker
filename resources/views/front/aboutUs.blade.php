@@ -1,8 +1,8 @@
 @extends('layouts-front.main')
 
-@section('title', 'O nama - inženjer Tim')
-@section('meta_description', 'Saznajte više o našem timu stručnjaka, našoj misiji i viziji. Profesionalnost i posvećenost u svakom detalju.')
-@section('meta_keywords', 'o nama, inženjerski tim, misija, vizija, kontakt, stručnjaci')
+@section('title', 'O nama - Protivpožarna zašita | Inženjer Tim')
+@section('meta_description', 'Upoznajte naš stručni inženjerski tim specijalizovan za protivpožarnu zaštitu i sigurnost. Posvećenost, inovacija i profesionalizam u svakom projektu.')
+@section('meta_keywords', 'o nama, inženjerski tim, protivpožarna zaštita, sigurnost, profesionalni inženjeri, inovacija, misija, vizija, kontakt')
 
 @section('content')
 
@@ -32,8 +32,7 @@
                         Inovacija i Stručnost u Svakom Koraku
                     </h3>
                     <p class="text-gray-600 text-base md:text-lg mb-8 leading-relaxed">
-                        Naš inženjerski tim je osnovan sa ciljem da pruži vrhunske usluge kroz inovativna rešenja i konstantno usavršavanje.
-                        Kroz godine rada, okupili smo stručnjake iz različitih oblasti, što nam omogućava da kreiramo rešenja prilagođena potrebama naših klijenata.
+                        Naš stručni tim specijalizovan za protivpožarnu zaštitu i sigurnost na radu osnovan je sa jasnim ciljem – pružanje vrhunskih usluga kroz inovativna i prilagođena rešenja. Kroz višegodišnje iskustvo, okupili smo profesionalce iz različitih oblasti inženjerstva, omogućavajući nam da kreiramo efikasne i sigurne sisteme zaštite koji zadovoljavaju specifične potrebe svakog klijenta.
                     </p>
                 </div>
 

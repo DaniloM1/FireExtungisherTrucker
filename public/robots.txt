@@ -1,2 +1,32 @@
 User-agent: *
-Disallow:
+Disallow: /admin/
+Disallow: /api/
+Disallow: /login
+Disallow: /logout
+Disallow: /register
+Disallow: /password
+Disallow: /profile
+Disallow: /dashboard
+Disallow: /storage/
+Disallow: /private-documents/
+Disallow: /email/verification-notification
+Disallow: /confirm-password
+Disallow: /reset-password
+Disallow: /exam-group-members/
+Disallow: /exam-groups/
+Disallow: /exam-member-subjects/
+Disallow: /exam-subjects/
+Disallow: /exam/
+Disallow: /exam-groups/
+Disallow: /attachments/
+Disallow: /service-events/
+Disallow: /service-report/
+Disallow: /location_checks/
+Disallow: /company/
+Disallow: /documents/
+Disallow: /location-groups/
+Disallow: /groups/
+Disallow: /users/
+Disallow: /location_checks/
+Disallow: /student/
+Disallow: /contact/send   # POST ruta, nije relevantna za pretraživače

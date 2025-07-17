@@ -167,9 +167,9 @@
                 $stats = [
                     ['end'=>100,'label'=>'Zadovoljnih Klijenata','sub'=>'Širom regiona', 'icon'=>'fa-smile'],
                     ['end'=>10,'label'=>'Godina Iskustva','sub'=>'U industriji', 'icon'=>'fa-briefcase'],
-                    ['end'=>500,'label'=>'Projekata','sub'=>'Uspešno realizovanih', 'icon'=>'fa-check-circle'],
-                    ['end'=>20,'label'=>'Certifikata','sub'=>'Međunarodno priznatih', 'icon'=>'fa-certificate'],
-                ];
+                    ['end'=>400,'label'=>'Projekata','sub'=>'Uspešno realizovanih', 'icon'=>'fa-check-circle'],
+                    ['end'=>100,'label'=>'Obuka Uspešno Realizovanih','sub'=>'Podignut nivo znanja i veština', 'icon'=>'fa-graduation-cap'],
+                    ];
             @endphp
 
             @foreach($stats as $s)

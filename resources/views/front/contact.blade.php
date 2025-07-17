@@ -41,12 +41,12 @@
                         </li>
                         <li class="flex items-center">
                             <i class="fas fa-phone text-red-600 mr-3"></i>
-                            <a href="tel:+123456789" class="hover:underline">+123 456 789</a>
+                            <a href="tel:+381642645425" >+381 64 2645 425</a>
                         </li>
                         <li class="flex items-center">
                             <i class="fas fa-envelope text-red-600 mr-3"></i>
-                            <a href="mailto:info@inzenjertim.com" class="hover:underline">info@inzenjertim.com</a>
-                        </li>
+                            <a href="mailto:inzenjer.tim@gmail.com" class="text-decoration: underline;">inzenjer.tim@gmail.com</a>
+                                                </li>
                     </ul>
                     <!-- Mali logo ispod kontakta -->
                     <div class="mt-10 flex justify-center lg:justify-start">

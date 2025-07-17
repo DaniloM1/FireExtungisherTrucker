@@ -20,13 +20,21 @@ class ContactController extends Controller
             'subject' => 'required|string|max:255',
             'message' => 'required|string|max:5000',
         ]);
-
-        // Slanje maila (podesi po potrebi)
-//        Mail::send('emails.contact', $data, function($message) use ($data) {
-//            $message->to('info@inzenjertim.com')
-//                ->subject('Nova poruka sa sajta: ' . $data['subject'])
-//                ->replyTo($data['email'], $data['name']);
-//        });
+        
+        // Promeni ključeve u novi niz, sa 'msg' umesto 'message'
+        $mailData = [
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'subject' => $data['subject'],
+            'msg' => $data['message'],  // promenjeno ime polja
+        ];
+        
+        Mail::send('emails.contact', $mailData, function($message) use ($mailData) {
+            $message->to('danilomilanovic123@gmail.com')
+                ->subject('Nova poruka sa sajta: ' . $mailData['subject'])
+                ->replyTo($mailData['email'], $mailData['name']);
+        });
+        
 
         return redirect()->route('contact')->with('success', 'Vaša poruka je uspešno poslata. Hvala vam!');
     }
