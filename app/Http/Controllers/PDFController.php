@@ -2,7 +2,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Spatie\LaravelPdf\Facades\Pdf;
+use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\ServiceEvent;
 use App\Models\Company;
 
@@ -32,9 +32,11 @@ class PDFController extends Controller
                 }
             ])->get();
 
-        return Pdf::view('admin.pdfTamplates.service_report', compact('companies', 'serviceEvent'))
-            ->format('a4')
-            ->name('service_report.pdf');
-
+        // Kreiraj PDF iz Blade view-a
+        $pdf = Pdf::loadView('admin.pdfTamplates.service_report', compact('companies', 'serviceEvent'))
+                  ->setPaper('a4');
+        return $pdf->download('service_report.pdf');
+        // ili za direktan prikaz:
+        // return $pdf->stream('service_report.pdf');
     }
 }
