@@ -178,8 +178,12 @@
                                                     <div class="w-full md:w-auto flex flex-wrap gap-2 mt-2 md:mt-0">
                                                         @foreach($loc->attachments as $attachment)
                                                             <div class="flex items-center bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded text-xs">
-                                                                <a href="{{ asset('storage/'.$attachment->path) }}" target="_blank" class="text-blue-700 dark:text-blue-300 hover:underline font-medium truncate max-w-[140px]">{{ $attachment->name }}</a>
-                                                                @hasrole('super_admin|admin')
+                                                                <a href="{{ route('attachments.view', $attachment) }}"
+                                                                target="_blank"
+                                                                class="text-blue-700 dark:text-blue-300 hover:underline font-medium truncate max-w-[140px]">
+                                                                 {{ $attachment->name }}
+                                                             </a>
+                                                                                                                             @hasrole('super_admin|admin')
                                                                 <form action="{{ route('attachments.destroy', $attachment) }}" method="POST" class="ml-1"
                                                                       onsubmit="return confirm('Obrisati prilog?')">
                                                                     @csrf @method('DELETE')

@@ -61,5 +61,10 @@ class User extends Authenticatable
     {
         return $this->hasMany(LocationCheck::class, 'inspector_id');
     }
+    public function canViewAttachment(\App\Models\Attachment $attachment)
+{
+    return $this->hasAnyRole(['super_admin', 'company']);
+}
+
 
 }

@@ -99,32 +99,33 @@
 
                     <div class="space-y-2 mb-4 max-h-60 overflow-y-auto pr-2">
                         @forelse($generalAttachments as $file)
-                            <div class="flex items-center justify-between bg-gray-50 dark:bg-gray-700 rounded-lg px-4 py-3 group hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
-                                <div class="flex items-center min-w-0">
-                                    <i class="far fa-file-alt text-xl mr-3 text-gray-500 dark:text-gray-300"></i>
-                                    <div class="min-w-0">
-                                        <a href="{{ asset('storage/'.$file->path) }}" target="_blank"
-                                           class="text-blue-600 dark:text-blue-300 font-medium hover:underline truncate block">
-                                            {{ $file->name }}
-                                        </a>
-                                        <span class="text-xs text-gray-500 dark:text-gray-400">{{ $file->type }}</span>
-                                    </div>
-                                </div>
-                                @hasrole('super_admin')
-                                <form action="{{ route('attachments.destroy', $file) }}" method="POST"
-                                      onsubmit="return confirm('Obrisati prilog?')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit"
-                                            class="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 px-2 py-1 rounded hover:bg-red-50 dark:hover:bg-gray-600 transition-colors">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </form>
-                                @endhasrole
-                            </div>
-                        @empty
-                            <div class="text-gray-400 dark:text-gray-500 text-sm py-3 text-center">Nema priloga.</div>
-                        @endforelse
+    <div class="flex items-center justify-between bg-gray-50 dark:bg-gray-700 rounded-lg px-4 py-3 group hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
+        <div class="flex items-center min-w-0">
+            <i class="far fa-file-alt text-xl mr-3 text-gray-500 dark:text-gray-300"></i>
+            <div class="min-w-0">
+                <a href="{{ route('attachments.view', $file) }}" target="_blank"
+                   class="text-blue-600 dark:text-blue-300 font-medium hover:underline truncate block">
+                    {{ $file->name }}
+                </a>
+                <span class="text-xs text-gray-500 dark:text-gray-400">{{ $file->type }}</span>
+            </div>
+        </div>
+        @hasrole('super_admin')
+        <form action="{{ route('attachments.destroy', $file) }}" method="POST"
+              onsubmit="return confirm('Obrisati prilog?')">
+            @csrf
+            @method('DELETE')
+            <button type="submit"
+                    class="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 px-2 py-1 rounded hover:bg-red-50 dark:hover:bg-gray-600 transition-colors">
+                <i class="fas fa-trash"></i>
+            </button>
+        </form>
+        @endhasrole
+    </div>
+@empty
+    <div class="text-gray-400 dark:text-gray-500 text-sm py-3 text-center">Nema priloga.</div>
+@endforelse
+
                     </div>
                     @hasrole('super_admin')
                     <!-- Upload Form -->
@@ -432,27 +433,28 @@
                             @endif
 
                             @if($service->attachments && $service->attachments->where('location_id', $location->id)->count())
-                                <div class="mt-3">
-                                    <div class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center">
-                                        <i class="fas fa-paperclip mr-2"></i>
-                                        Prilozi uz servis (za ovu lokaciju):
-                                    </div>
-                                    <div class="space-y-2">
-                                        @foreach($service->attachments->where('location_id', $location->id) as $att)
-                                            <div class="flex items-center justify-between bg-white dark:bg-gray-600 rounded px-3 py-2">
-                                                <div class="flex items-center min-w-0">
-                                                    <i class="far fa-file-alt text-gray-500 dark:text-gray-300 mr-2"></i>
-                                                    <a href="{{ asset('storage/'.$att->path) }}" target="_blank"
-                                                       class="text-blue-600 dark:text-blue-300 hover:underline truncate">
-                                                        {{ $att->name }}
-                                                    </a>
-                                                </div>
-                                                <span class="text-xs text-gray-500 dark:text-gray-400 ml-2 whitespace-nowrap">{{ $att->type }}</span>
-                                            </div>
-                                        @endforeach
-                                    </div>
+                            <div class="mt-3">
+                                <div class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center">
+                                    <i class="fas fa-paperclip mr-2"></i>
+                                    Prilozi uz servis (za ovu lokaciju):
                                 </div>
-                            @endif
+                                <div class="space-y-2">
+                                    @foreach($service->attachments->where('location_id', $location->id) as $att)
+                                        <div class="flex items-center justify-between bg-white dark:bg-gray-600 rounded px-3 py-2">
+                                            <div class="flex items-center min-w-0">
+                                                <i class="far fa-file-alt text-gray-500 dark:text-gray-300 mr-2"></i>
+                                                <a href="{{ route('attachments.view', $att) }}" target="_blank"
+                                                   class="text-blue-600 dark:text-blue-300 hover:underline truncate">
+                                                    {{ $att->name }}
+                                                </a>
+                                            </div>
+                                            <span class="text-xs text-gray-500 dark:text-gray-400 ml-2 whitespace-nowrap">{{ $att->type }}</span>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        @endif
+                        
 
 
                         </div>

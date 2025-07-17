@@ -8,11 +8,8 @@
     <div class="p-6">
 
         @php
-            // Prilozi vezani isključivo za servis (nema lokacije)
             $generalAttachments = $serviceEvent->attachments->whereNull('location_id');
-            // Prilozi vezani za TAČNU lokaciju (ako si na stranici lokacije)
             $localAttachments = $serviceEvent->attachments->where('location_id', $loc->id);
-            // Merge za company: general + svoji za lokaciju
             $companyAttachments = $generalAttachments->merge($localAttachments);
         @endphp
 
@@ -23,19 +20,19 @@
                     <div class="flex flex-col justify-between bg-gray-50 dark:bg-gray-700 rounded-lg p-4 border border-gray-200 dark:border-gray-600 mb-2">
                         @if($attachment->location)
                             <div class="mb-1">
-                                    <span class="inline-block bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 text-xs px-3 py-1 rounded-full font-semibold">
-                                        Lokacija: {{ $attachment->location->name }}
-                                        @if($attachment->location->city)
-                                            ({{ $attachment->location->city }})
-                                        @endif
-                                    </span>
+                                <span class="inline-block bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 text-xs px-3 py-1 rounded-full font-semibold">
+                                    Lokacija: {{ $attachment->location->name }}
+                                    @if($attachment->location->city)
+                                        ({{ $attachment->location->city }})
+                                    @endif
+                                </span>
                             </div>
                         @endif
                         <div class="flex items-center justify-between">
                             <div class="flex items-center min-w-0">
                                 <i class="far fa-file-alt text-2xl text-gray-500 dark:text-gray-400 mr-3"></i>
                                 <div class="min-w-0">
-                                    <a href="{{ asset('storage/'.$attachment->path) }}" target="_blank"
+                                    <a href="{{ route('attachments.view', $attachment) }}" target="_blank"
                                        class="text-blue-600 dark:text-blue-400 font-medium hover:underline truncate block">
                                         {{ $attachment->name }}
                                     </a>
@@ -74,7 +71,7 @@
                                 <div class="flex items-center min-w-0">
                                     <i class="far fa-file-alt text-2xl text-gray-500 dark:text-gray-400 mr-3"></i>
                                     <div class="min-w-0">
-                                        <a href="{{ asset('storage/'.$attachment->path) }}" target="_blank"
+                                        <a href="{{ route('attachments.view', $attachment) }}" target="_blank"
                                            class="text-blue-600 dark:text-blue-400 font-medium hover:underline truncate block">
                                             {{ $attachment->name }}
                                         </a>
@@ -82,7 +79,7 @@
                                     </div>
                                 </div>
                                 <div class="flex items-center space-x-2">
-                                    <a href="{{ asset('storage/'.$attachment->path) }}" target="_blank"
+                                    <a href="{{ route('attachments.view', $attachment) }}" target="_blank"
                                        class="text-blue-500 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 p-1 rounded hover:bg-blue-50 dark:hover:bg-gray-600">
                                         <i class="fas fa-eye"></i>
                                     </a>
@@ -155,7 +152,7 @@
             </form>
             @endhasrole
 
-            @endrole
+        @endrole
 
     </div>
 </div>

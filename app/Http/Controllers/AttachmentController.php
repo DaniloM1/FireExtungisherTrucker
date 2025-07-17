@@ -116,5 +116,19 @@ class AttachmentController extends Controller
         return back()->with('success', 'Prilog dodat!');
     }
 
+    public function view(Attachment $attachment)
+{
+    // Dozvoli samo ako je korisnik ulogovan i ima pravo da vidi ovaj attachment
+    if (!auth()->check() || !auth()->user()->canViewAttachment($attachment)) {
+        abort(403, 'Nemate pravo pristupa ovom prilogu.');
+    }
 
+    if (!\Storage::disk('public')->exists($attachment->path)) {
+        abort(404, 'Fajl ne postoji.');
+    }
+
+    return \Storage::disk('public')->response($attachment->path, $attachment->name);
+}
+
+    
 }

@@ -13,15 +13,40 @@
         </x-slot>
 
         <div class="mt-4 border-b border-gray-200 dark:border-gray-700">
-            <nav class="-mb-px flex justify-center space-x-4 whitespace-nowrap">
-                <button @click="setTab('overview')" :class="tab === 'overview' ? 'border-blue-500 text-blue-500' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'" class="py-4 px-1 border-b-2 font-medium text-sm">Pregled</button>
-                <button @click="setTab('services')" :class="tab === 'services' ? 'border-blue-500 text-blue-500' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'" class="py-4 px-1 border-b-2 font-medium text-sm">Servisi</button>
-                <button @click="setTab('inspections')" :class="tab === 'inspections' ? 'border-blue-500 text-blue-500' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'" class="py-4 px-1 border-b-2 font-medium text-sm">Inspekcije</button>
-                <button @click="setTab('calendar')" :class="tab === 'calendar' ? 'border-blue-500 text-blue-500' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'" class="py-4 px-1 border-b-2 font-medium text-sm">Kalendar</button>
-                <button @click="setTab('companies')" :class="tab === 'companies' ? 'border-blue-500 text-blue-500' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'" class="py-4 px-1 border-b-2 font-medium text-sm">Kompanije</button>
-                <button @click="setTab('trends')" :class="tab === 'trends' ? 'border-blue-500 text-blue-500' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'" class="py-4 px-1 border-b-2 font-medium text-sm">Trends</button>
+            <nav class="-mb-px flex justify-center space-x-3 sm:space-x-4 whitespace-nowrap">
+                <button @click="setTab('overview')" 
+                    :class="tab === 'overview' ? 'border-blue-500 text-blue-500' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'" 
+                    class="py-4 px-1 border-b-2 font-medium text-sm flex items-center justify-center">
+                    <i class="fas fa-chart-bar text-lg"></i>
+                </button>
+                <button @click="setTab('services')" 
+                    :class="tab === 'services' ? 'border-blue-500 text-blue-500' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'" 
+                    class="py-4 px-1 border-b-2 font-medium text-sm flex items-center justify-center">
+                    <i class="fas fa-tools text-lg"></i>
+                </button>
+                <button @click="setTab('inspections')" 
+                    :class="tab === 'inspections' ? 'border-blue-500 text-blue-500' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'" 
+                    class="py-4 px-1 border-b-2 font-medium text-sm flex items-center justify-center">
+                    <i class="fas fa-search text-lg"></i>
+                </button>
+                <button @click="setTab('calendar')" 
+                    :class="tab === 'calendar' ? 'border-blue-500 text-blue-500' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'" 
+                    class="py-4 px-1 border-b-2 font-medium text-sm flex items-center justify-center">
+                    <i class="fas fa-calendar-alt text-lg"></i>
+                </button>
+                <button @click="setTab('companies')" 
+                    :class="tab === 'companies' ? 'border-blue-500 text-blue-500' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'" 
+                    class="py-4 px-1 border-b-2 font-medium text-sm flex items-center justify-center">
+                    <i class="fas fa-building text-lg"></i>
+                </button>
+                <button @click="setTab('trends')" 
+                    :class="tab === 'trends' ? 'border-blue-500 text-blue-500' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'" 
+                    class="py-4 px-1 border-b-2 font-medium text-sm flex items-center justify-center">
+                    <i class="fas fa-chart-line text-lg"></i>
+                </button>
             </nav>
         </div>
+        
 
         <!-- Glavni sadržaj -->
         <div class="py-6">

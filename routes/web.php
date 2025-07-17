@@ -17,6 +17,8 @@ use App\Http\Controllers\ContactController;
 */
 
 
+Route::get('/attachments/view/{attachment}', [App\Http\Controllers\AttachmentController::class, 'view'])
+    ->name('attachments.view');
 
 Route::middleware('auth')->get('/private-documents/{filename}', [PrivateDocumentController::class, 'show'])->name('private.documents.show');
 
