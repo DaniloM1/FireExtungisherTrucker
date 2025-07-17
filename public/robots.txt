@@ -30,3 +30,4 @@ Disallow: /users/
 Disallow: /location_checks/
 Disallow: /student/
 Disallow: /contact/send   # POST ruta, nije relevantna za pretraživače
+Sitemap: https://inzenjertim.com/sitemap.xml
