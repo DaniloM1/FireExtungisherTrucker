@@ -8,7 +8,6 @@ use App\Models\Hydrant;
 use App\Models\Location;
 use App\Models\LocationCheck;
 use App\Models\ServiceEvent;
-use App\Models\ElectricalInspection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
@@ -21,25 +20,25 @@ class DashboardController extends Controller
         $fifteenDays = $now->copy()->addDays(15);
         $threeMonths = $now->copy()->addMonths(3);
 
-        $this->consolidateActiveServiceEvents($now, $fifteenDays);
+        $this->consolidateServiceEvents($now, $fifteenDays);
 
-        // 15‑day service events
+        // 15-day service events (samo active + done)
         $serviceEvents = ServiceEvent::with(['locations.company'])
-            ->where('status', 'active')
+            ->whereIn('status', ['active','done'])
             ->whereBetween('next_service_date', [$now->toDateString(), $fifteenDays->toDateString()])
             ->orderBy('next_service_date')
             ->paginate(12);
 
         $serviceEvents->getCollection()->each(fn ($e) => $this->calculateActiveDevices($e));
 
-        // 15‑day electrical inspections
+        // 15-day electrical inspections
         $locationChecks = LocationCheck::with('location.company')
             ->whereIn('type', ['inspection', 'test'])
             ->whereBetween('next_due_date', [$now->toDateString(), $fifteenDays->toDateString()])
             ->orderBy('next_due_date')
             ->get();
 
-        // companies needing service
+        // companies needing service (samo active + done)
         $companiesNeedingService = DB::table('companies')
             ->join('locations', 'companies.id', '=', 'locations.company_id')
             ->join('service_event_locations', 'locations.id', '=', 'service_event_locations.location_id')
@@ -51,7 +50,7 @@ class DashboardController extends Controller
                 'companies.pib',
                 DB::raw('MIN(service_events.next_service_date) as next_service_date')
             )
-            ->where('service_events.status', 'active')
+            ->whereIn('service_events.status', ['active','done'])
             ->whereBetween('service_events.next_service_date', [$now->toDateString(), $fifteenDays->toDateString()])
             ->groupBy('companies.id', 'companies.name', 'companies.city', 'companies.pib')
             ->orderBy('next_service_date')
@@ -62,23 +61,21 @@ class DashboardController extends Controller
         $serviceTrends = $this->getServiceTrends($now, $threeMonths);
         $deviceTrends  = $this->getDeviceTrends($now, $threeMonths);
 
-        // full‑year important dates
+        // full-year important dates (samo active + done)
         $yearStart = $now->copy()->startOfYear()->toDateString();
         $yearEnd   = $now->copy()->endOfYear()->toDateString();
 
         $serviceEventsForYear = ServiceEvent::with(['locations.company'])
-            ->where('status', 'active')
+            ->whereIn('status', ['active','done'])
             ->whereBetween('next_service_date', [$yearStart, $yearEnd])
             ->orderBy('next_service_date')
             ->get();
 
         $locationChecksForYear = LocationCheck::with('location.company')
-            ->whereIn('type', ['inspection', 'test'])        // samo ova dva tipa
+            ->whereIn('type', ['inspection', 'test'])
             ->whereBetween('next_due_date', [$yearStart, $yearEnd])
             ->orderBy('next_due_date')
             ->get();
-
-//
 
         $importantDates = [];
 
@@ -96,7 +93,7 @@ class DashboardController extends Controller
         foreach ($locationChecksForYear as $check) {
             $importantDates[] = [
                 'id'          => "{$check->type}-{$check->id}",
-                'date'  => Carbon::parse($check->next_due_date)->format('Y-m-d'),
+                'date'        => Carbon::parse($check->next_due_date)->format('Y-m-d'),
                 'type'        => ucfirst($check->type),
                 'label'       => ucfirst($check->type) . " #{$check->id}",
                 'description' => $check->location->name,
@@ -118,28 +115,27 @@ class DashboardController extends Controller
         ));
     }
 
-
     /**
-     * Konsoliduje aktivne servisne događaje na osnovu preklapanja lokacija.
+     * Konsoliduje servisne događaje na osnovu preklapanja lokacija.
      */
-    private function consolidateActiveServiceEvents(Carbon $start, Carbon $end)
+    private function consolidateServiceEvents(Carbon $start, Carbon $end)
     {
-        $activeEvents = ServiceEvent::where('status', 'active')
+        $events = ServiceEvent::whereIn('status', ['active','done'])
             ->whereBetween('next_service_date', [$start->toDateString(), $end->toDateString()])
             ->with('locations')
             ->orderBy('next_service_date', 'asc')
             ->get();
 
-        $grouped = $activeEvents->groupBy('category');
+        $grouped = $events->groupBy('category');
 
-        foreach ($grouped as $category => $events) {
-            $events = $events->values();
-            for ($i = 0; $i < count($events); $i++) {
-                $newEvent = $events[$i];
+        foreach ($grouped as $category => $items) {
+            $items = $items->values();
+            for ($i = 0; $i < count($items); $i++) {
+                $newEvent = $items[$i];
                 $newLocations = $newEvent->locations->pluck('id');
 
-                for ($j = $i + 1; $j < count($events); $j++) {
-                    $existingEvent = $events[$j];
+                for ($j = $i + 1; $j < count($items); $j++) {
+                    $existingEvent = $items[$j];
                     $existingLocations = $existingEvent->locations->pluck('id');
                     $common = $newLocations->intersect($existingLocations);
 
@@ -160,9 +156,6 @@ class DashboardController extends Controller
         }
     }
 
-    /**
-     * Izračunava broj aktivnih uređaja/hidranta za dati servisni događaj.
-     */
     private function calculateActiveDevices($event)
     {
         $locationIds = $event->locations->pluck('id');
@@ -174,18 +167,11 @@ class DashboardController extends Controller
 
         $event->activeDevices = $model
             ? $model::whereIn('location_id', $locationIds)
-                ->where('status', 'active')
+                ->whereIn('status', ['active','done'])
                 ->count()
             : 0;
     }
 
-    /**
-     * Grupisanje servisnih događaja po gradovima koristeći samo lokacije sa aktivnim pivot zapisima.
-     * Izračunava se minimalni next_service_date (najraniji datum) za svaki grad samo iz aktivnih zapisa.
-     *
-     * @param \Illuminate\Support\Collection $serviceEvents
-     * @return array [ $cities, $citySummaries ]
-     */
     private function groupByCities($serviceEvents)
     {
         $cities = [];
@@ -195,7 +181,7 @@ class DashboardController extends Controller
         foreach ($serviceEvents as $event) {
             $eventDate = Carbon::parse($event->next_service_date);
             foreach ($event->locations as $location) {
-                if (!isset($location->pivot) || $location->pivot->status !== 'active') {
+                if (!isset($location->pivot) || !in_array($location->pivot->status, ['active','done'])) {
                     continue;
                 }
 
@@ -238,7 +224,6 @@ class DashboardController extends Controller
 
         return [$cities, $citySummaries];
     }
-
 
     private function getServiceTrends($start, $end)
     {

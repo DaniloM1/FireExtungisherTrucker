@@ -115,6 +115,5 @@ Route::prefix('admin')->middleware('role:super_admin')->group(function () {
         Route::delete('/{post}', 'destroy')->name('posts.destroy');
     });
 
-    // API Routes
 });
 

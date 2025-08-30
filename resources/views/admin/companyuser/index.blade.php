@@ -41,25 +41,35 @@
 
             <!-- Tabs -->
             <div x-data="{ tab: 'locations' }">
-                <div class="mb-4 flex flex-wrap gap-2">
-                    <button @click="tab = 'locations'"
-                            :class="tab === 'locations' ? 'bg-blue-600 text-white' : 'bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200'"
-                            class="px-4 py-2 rounded-t-lg font-medium focus:outline-none transition w-full sm:w-auto">
-                        Lokacije
-                    </button>
-                    <button @click="tab = 'services'"
-                            :class="tab === 'services' ? 'bg-blue-600 text-white' : 'bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200'"
-                            class="px-4 py-2 rounded-t-lg font-medium focus:outline-none transition w-full sm:w-auto">
-                        Poslednji servisi
-                    </button>
-                    <button
-                        @click="tab = 'map'; $nextTick(() => window.dispatchEvent(new CustomEvent('tab-switch', {detail: 'leaflet-map-all'})))"
-                            :class="tab === 'map' ? 'bg-blue-600 text-white' : 'bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200'"
-                            class="px-4 py-2 rounded-t-lg font-medium focus:outline-none transition w-full sm:w-auto">
-                        Mapa
-                    </button>
-
-                </div>
+                <div x-data="{ tab: 'locations' }">
+                    <div class="mb-4 flex flex-wrap gap-2 justify-center sm:justify-start">
+                        <!-- Lokacije -->
+                        <button @click="tab = 'locations'"
+                                :class="tab === 'locations' ? 'bg-blue-600 text-white' : 'bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200'"
+                                class="px-4 py-2 rounded-lg font-medium focus:outline-none transition flex items-center justify-center w-12 sm:w-auto">
+                            <!-- Ikonica za mobilni -->
+                            <i class="fa-solid fa-building sm:mr-2"></i>
+                            <!-- Tekst samo na većim ekranima -->
+                            <span class="hidden sm:inline">Lokacije</span>
+                        </button>
+                
+                        <!-- Servisi -->
+                        <button @click="tab = 'services'"
+                                :class="tab === 'services' ? 'bg-blue-600 text-white' : 'bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200'"
+                                class="px-4 py-2 rounded-lg font-medium focus:outline-none transition flex items-center justify-center w-12 sm:w-auto">
+                            <i class="fa-solid fa-wrench sm:mr-2"></i>
+                            <span class="hidden sm:inline">Poslednji servisi</span>
+                        </button>
+                
+                        <!-- Mapa -->
+                        <button @click="tab = 'map'; $nextTick(() => window.dispatchEvent(new CustomEvent('tab-switch', {detail: 'leaflet-map-all'})))"
+                                :class="tab === 'map' ? 'bg-blue-600 text-white' : 'bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200'"
+                                class="px-4 py-2 rounded-lg font-medium focus:outline-none transition flex items-center justify-center w-12 sm:w-auto">
+                            <i class="fa-solid fa-map sm:mr-2"></i>
+                            <span class="hidden sm:inline">Mapa</span>
+                        </button>
+                    </div>
+                
 
                 <!-- Lokacije Tab -->
                 <div x-show="tab === 'locations'" x-cloak class="bg-white dark:bg-gray-800 rounded-b-xl shadow p-4 sm:p-6">

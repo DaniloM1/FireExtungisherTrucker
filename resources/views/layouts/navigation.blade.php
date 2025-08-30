@@ -64,6 +64,9 @@ class="bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700">
                 <x-nav-link :href="route('exam.index')" :active="request()->routeIs('exam.*', 'exam-groups.*')">
                     {{ __('S I') }}
                 </x-nav-link>
+                <x-nav-link :href="route('location_checks.index')" :active="request()->routeIs('location_checks.*')">
+                    {{ __('Inspekcije') }}
+                </x-nav-link>
                 @endhasrole
                 @hasrole('company')
                 <!-- Kompanijski korisnik vidi samo ovo -->
@@ -184,6 +187,12 @@ class="bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700">
             {{ __('Strucni Ispit') }}
         </x-responsive-nav-link>
     </div>
+    <div class="pt-2 pb-3 space-y-1">
+        <x-responsive-nav-link :href="route('location_checks.index')" :active="request()->routeIs('location_checks.*')">
+            {{ __('Inspekcije') }}
+        </x-responsive-nav-link>
+    </div>
+   
     @endhasrole
     @hasrole('company')
     <div class="pt-2 pb-3 space-y-1">

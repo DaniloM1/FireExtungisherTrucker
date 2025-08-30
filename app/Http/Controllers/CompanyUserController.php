@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\ServiceEvent;
 use App\Models\Location;
+use App\Models\Device;
+use App\Models\Hydrant;
 use Illuminate\Http\Request;
 
 class CompanyUserController extends Controller
@@ -40,11 +42,12 @@ class CompanyUserController extends Controller
             ->get(['id', 'name', 'latitude', 'longitude', 'city', 'address'])
             ->toArray();
 
-        $serviceStats = [
-            'total' => ServiceEvent::whereHas('locations', fn ($q) => $q->where('company_id', $companyId))->count(),
-            'pp_devices' => ServiceEvent::where('category', 'pp_device')->whereHas('locations', fn ($q) => $q->where('company_id', $companyId))->count(),
-            'hydrants' => ServiceEvent::where('category', 'hydrant')->whereHas('locations', fn ($q) => $q->where('company_id', $companyId))->count(),
-        ];
+            $serviceStats = [
+                'total' => ServiceEvent::whereHas('locations', fn ($q) => $q->where('company_id', $companyId))->count(),
+                'pp_devices' => Device::whereHas('location', fn ($q) => $q->where('company_id', $companyId))->count(),
+                'hydrants' => Hydrant::whereHas('location', fn ($q) => $q->where('company_id', $companyId))->count(),
+            ];
+            
 
         return view('admin.companyuser.index', compact('locations', 'serviceEvents', 'serviceStats', 'locationsMap'));
     }
