@@ -525,11 +525,21 @@
                             </div>
 
 
-                        @if($check->description)
-                                <div class="text-sm text-gray-600 dark:text-gray-300 mt-2 whitespace-pre-line">
-                                    {{ $check->description }}
-                                </div>
-                            @endif
+                            @if($check->description)
+                            @php
+                                $desc = $check->description;
+                                $descWithLinks = preg_replace(
+                                    '/(https?:\/\/[^\s]+)/',
+                                    '<a href="$1" target="_blank" class="text-blue-600 dark:text-blue-400 underline">Otvori dokument</a>',
+                                    e($desc)
+                                );
+                            @endphp
+                        
+                            <div class="text-sm text-gray-600 dark:text-gray-300 mt-2 whitespace-pre-line">
+                                {!! $descWithLinks !!}
+                            </div>
+                        @endif
+                        
                         </div>
                     @empty
                         <div class="text-center text-gray-500 dark:text-gray-400 py-6">

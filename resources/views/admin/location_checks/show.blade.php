@@ -87,9 +87,20 @@
                             <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 flex items-center">
                                 <i class="fas fa-align-left mr-2"></i> Opis
                             </dt>
-                            <dd class="mt-2 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg text-gray-800 dark:text-gray-200 whitespace-pre-line">
-                                {{ $locationCheck->description ?: 'Nema opisa.' }}
-                            </dd>
+                            @php
+                            $description = $locationCheck->description ?: 'Nema opisa.';
+                            $descriptionWithLinks = preg_replace(
+                                '/(https?:\/\/[^\s]+)/',
+                                '<a href="$1" target="_blank" class="text-blue-600 dark:text-blue-400 underline">Otvori link</a>',
+                                e($description)
+                            );
+                        @endphp
+                        
+                        <dd class="mt-2 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg text-gray-800 dark:text-gray-200 whitespace-pre-line">
+                            {!! $descriptionWithLinks !!}
+                        </dd>
+                        
+                        
                         </div>
                     </dl>
                 </div>

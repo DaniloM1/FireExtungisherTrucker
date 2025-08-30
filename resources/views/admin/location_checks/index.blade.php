@@ -125,9 +125,20 @@
                                         class="text-blue-600 dark:text-blue-400 hover:underline self-start text-sm transition-colors duration-200">
                                     Više informacija
                                 </button>
-                                <div id="desc-{{ $check->id }}" class="mt-2 text-sm text-gray-700 dark:text-gray-300 hidden break-words whitespace-pre-line">
-                                    {{ $check->description }}
-                                </div>
+                                @php
+                                $desc = $check->description ?: 'Nema opisa.';
+                                $descWithLinks = preg_replace(
+                                    '/(https?:\/\/[^\s]+)/',
+                                    '<a href="$1" target="_blank" class="text-blue-600 dark:text-blue-400 underline">link</a>',
+                                    e($desc)
+                                );
+                            @endphp
+
+                            <div id="desc-{{ $check->id }}"
+                                class="mt-2 text-sm text-gray-700 dark:text-gray-300 hidden break-words whitespace-pre-line">
+                                {!! $descWithLinks !!}
+                            </div>
+
                             </div>
                         @endif
                     </div>

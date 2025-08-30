@@ -61,7 +61,7 @@ class LocationCheckController extends Controller
         // Automatski izračun sledećeg termina ako nije unet
         if (!isset($validated['next_due_date']) && !empty($validated['last_performed_date'])) {
             $lastDate = \Carbon\Carbon::parse($validated['last_performed_date']);
-            $yearsToAdd = ($validated['type'] === 'inspection') ? 3 : 5;
+            $yearsToAdd = ($validated['type'] === 'inspection') ? 3 : 3;
             $validated['next_due_date'] = $lastDate->copy()->addYears($yearsToAdd)->format('Y-m-d');
         }
 
