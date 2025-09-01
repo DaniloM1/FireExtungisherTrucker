@@ -39,7 +39,7 @@
                         <a href="{{ route('services.protection') }}" class="block px-4 py-2 text-gray-800 hover:bg-gray-200 {{ request()->routeIs('services.protection') ? 'bg-gray-200 font-bold' : '' }}">Protivpožarni Sistemi</a>
                         <a href="{{ route('services.evacuation') }}" class="block px-4 py-2 text-gray-800 hover:bg-gray-200 {{ request()->routeIs('services.evacuation') ? 'bg-gray-200 font-bold' : '' }}">Evakuacijski Planovi</a>
                         <a href="{{ route('services.installation') }}" class="block px-4 py-2 text-gray-800 hover:bg-gray-200 {{ request()->routeIs('services.installation') ? 'bg-gray-200 font-bold' : '' }}">Ugradnja i Servis</a>
-                        <a href="{{ route('services.exam') }}" class="block px-4 py-2 text-gray-800 hover:bg-gray-200 {{ request()->routeIs('services.exam') ? 'bg-gray-200 font-bold' : '' }}">Polaganje Ispita</a>
+                        <a href="{{ route('services.exam') }}" class="block px-4 py-2 text-gray-800 hover:bg-gray-200 {{ request()->routeIs('services.exam') ? 'bg-gray-200 font-bold' : '' }}">Polaganje Stručnog Ispita</a>
                         <a href="{{ route('services.training') }}" class="block px-4 py-2 text-gray-800 hover:bg-gray-200 {{ request()->routeIs('services.training') ? 'bg-gray-200 font-bold' : '' }}">Obuke i Edukacija</a>
                     </div>
                 </div>

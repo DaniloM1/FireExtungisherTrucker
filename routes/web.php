@@ -43,7 +43,7 @@ Route::controller(FrontController::class)->group(function () {
         Route::get('/protivpozarni-sistemi', 'protection')->name('protection');
         Route::get('/evakuacijski-planovi', 'evacuation')->name('evacuation');
         Route::get('/ugradnja-servis', 'installation')->name('installation');
-        Route::get('/polaganje-ispita', 'exam')->name('exam');
+        Route::get('/polaganje-strucnog-ispita', 'exam')->name('exam');
         Route::get('/obuke-edukacija', 'training')->name('training');
     });
 });
