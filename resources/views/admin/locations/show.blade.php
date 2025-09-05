@@ -213,7 +213,7 @@
                         @endhasrole
                     </h3>
 
-                    @hasrole('super_admin')  <a href="{{route('locations.devices.create',$location->id)}}" class="text-sm text-blue-600 dark:text-blue-400 hover:underline">+ Dodaj aparat</a>@endhasrole
+                    @hasrole('super_admin')  <a href="{{route('locations.devices.create',$location->id)}}" class="text-sm text-blue-600 dark:text-blue-400 hover:underline"><i class="fa fa-plus"></i></a>@endhasrole
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -301,7 +301,7 @@
                         </a>
                         @endhasrole
                     </h3>
-                    @hasrole('super_admin')<a href="{{route('locations.hydrants.create', $location->id)}}" class="text-sm text-blue-600 dark:text-blue-400 hover:underline">+ Dodaj hidrant</a>@endhasrole
+                    @hasrole('super_admin')<a href="{{route('locations.hydrants.create', $location->id)}}" class="text-sm text-blue-600 dark:text-blue-400 hover:underline"><i class="fa fa-plus"></i></a>@endhasrole
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -384,7 +384,7 @@
                         <i class="fas fa-tools mr-2 text-purple-500"></i>
                         Servisi ({{ $location->serviceEvents->count() }})
                     </h3>
-                    @hasrole('super_admin') <a href="{{route('service-events.create')}}" class="text-sm text-blue-600 dark:text-blue-400 hover:underline">+ Dodaj servis</a>@endhasrole
+                    @hasrole('super_admin') <a href="{{route('service-events.create')}}" class="text-sm text-blue-600 dark:text-blue-400 hover:underline"><i class="fa fa-plus"></i></a>@endhasrole
                 </div>
 
                 <div class="space-y-4">
@@ -484,9 +484,10 @@
                         Inspekcije i Testovi ({{ $location->locationChecks->count() }})
                     </h3>
                     @hasrole('super_admin')
-                    <a href="{{ route('location_checks.create') }}" class="text-sm text-blue-600 dark:text-blue-400 hover:underline">
-                        + Dodaj inspekciju/test
-                    </a>
+                    <a href="{{ route('location_checks.create', ['company_id' => $location->company_id, 'location_id' => $location->id]) }}"
+                        class="text-sm text-blue-600 dark:text-blue-400 hover:underline">
+                        <i class="fa fa-plus"></i>
+                     </a>
                     @endhasrole
                 </div>
 

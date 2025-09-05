@@ -33,14 +33,16 @@
                         {{ __('Kompanija') }}
                     </label>
                     <select name="company_id" id="company_id" required
-                            class="mt-1 block w-full rounded-md border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 focus:border-blue-500 focus:ring-blue-500">
-                        <option value="">{{ __('-- Izaberi kompaniju --') }}</option>
-                        @foreach ($companies as $company)
-                            <option value="{{ $company->id }}" {{ old('company_id') == $company->id ? 'selected' : '' }}>
-                                {{ $company->name }}
-                            </option>
-                        @endforeach
-                    </select>
+                    class="mt-1 block w-full rounded-md border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 focus:border-blue-500 focus:ring-blue-500">
+                <option value="">{{ __('-- Izaberi kompaniju --') }}</option>
+                @foreach ($companies as $company)
+                    <option value="{{ $company->id }}"
+                        {{ (string)old('company_id', request('company_id')) === (string)$company->id ? 'selected' : '' }}>
+                        {{ $company->name }}
+                    </option>
+                @endforeach
+            </select>
+            
                 </div>
 
                 <!-- Location select, options će se menjati JS-om na osnovu kompanije -->
@@ -196,5 +198,59 @@
                     });
             });
         });
-    </script>
+document.addEventListener('DOMContentLoaded', function () {
+    const companySelect  = document.getElementById('company_id');
+    const locationSelect = document.getElementById('location_id');
+
+    // Prefill vrednosti (od old() ili od query parametara)
+    const prefillCompanyId  = "{{ (string)old('company_id', request('company_id')) }}";
+    const prefillLocationId = "{{ (string)old('location_id', request('location_id')) }}";
+
+    // Funkcija koja popunjava <select> lokacija za zadatu kompaniju
+    async function loadLocations(companyId, selectedLocationId = null) {
+        locationSelect.innerHTML = '<option value="">{{ @__("Učitavanje...") }}</option>';
+
+        if (!companyId) {
+            locationSelect.innerHTML = '<option value="">{{ @__("Prvo izaberi kompaniju") }}</option>';
+            return;
+        }
+
+        try {
+            const res  = await fetch(`/api/companies/${companyId}/locations`);
+            const data = await res.json();
+
+            // Napuni opcije
+            locationSelect.innerHTML = '<option value="">{{ @__("Izaberi lokaciju") }}</option>';
+
+            data.forEach(loc => {
+                const opt = document.createElement('option');
+                opt.value = String(loc.id);
+                opt.textContent = loc.name;
+                locationSelect.appendChild(opt);
+            });
+
+            // Ako imamo preselektovanu lokaciju, setuj je
+            if (selectedLocationId) {
+                locationSelect.value = String(selectedLocationId);
+            }
+        } catch (e) {
+            locationSelect.innerHTML = '<option value="">{{ @__("Greška pri učitavanju") }}</option>';
+        }
+    }
+
+    // Ako smo stigli sa prosleđenom kompanijom, odmah je postavi i učitaj lokacije.
+    if (prefillCompanyId) {
+        companySelect.value = String(prefillCompanyId);
+        loadLocations(prefillCompanyId, prefillLocationId);
+    }
+
+    // Inače se oslanjamo na postojeći "change" handler da učita lokacije dinamički
+    companySelect.addEventListener('change', function () {
+        loadLocations(this.value, null);
+    });
+});
+</script>
+
+  
+
 </x-app-layout>
